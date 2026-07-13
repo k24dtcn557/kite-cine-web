@@ -1,0 +1,98 @@
+name: CI-CD on MAIN
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  DEPLOY_ENV: main
+  DOCKER_IMAGE: kite-cine-web
+  K8S_NAMESPACE: platform
+
+jobs:
+  build_and_push:
+    name: Build and push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitLab Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.gitlab.com
+          username: ${{ secrets.GITLAB_USERNAME }}
+          password: ${{ secrets.GITLAB_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: registry.gitlab.com/${{ secrets.GITLAB_PROJECT_PATH }}/${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=sha,format=short
+      
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/arm64/v8
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy_to_k8s:
+    name: Deploy to Kubernetes
+    needs: build_and_push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up kubeconfig
+        uses: azure/k8s-set-context@v3
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Extract Docker tag
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: registry.gitlab.com/${{ secrets.GITLAB_PROJECT_PATH }}/${{ env.DOCKER_IMAGE }}
+          tags: |
+            type=sha,format=short
+      - name: Deploy to Kubernetes
+        run: |
+          # Create temporary directory
+          mkdir -p temp
+
+          # Copy deployment file to temp directory
+          cp deployment.yaml temp/deployment.yaml
+
+          # Get the SHA tag from metadata
+          SHA_TAG=$(echo "${{ steps.meta.outputs.tags }}" | grep "sha-" | head -n 1)
+
+          # Update image in deployment file
+          sed -i "s|image:.*|image: ${SHA_TAG}|g" temp/deployment.yaml
+          # Verify namespace in deployment file
+          if grep -q "namespace: ${{ env.K8S_NAMESPACE }}" temp/deployment.yaml; then
+            echo "Namespace already correctly set to ${{ env.K8S_NAMESPACE }}"
+          else
+            sed -i "s|namespace: .*|namespace: ${{ env.K8S_NAMESPACE }}|g" temp/deployment.yaml
+          fi
+
+          # Apply deployment
+          kubectl apply -f temp/deployment.yaml
+
+          # Wait for deployment to complete
+          kubectl rollout status deployment/kite-cine-web -n ${{ env.K8S_NAMESPACE }}
+
+          # Clean up
+          rm -rf temp
