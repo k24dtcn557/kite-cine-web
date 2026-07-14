@@ -1,0 +1,126 @@
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  transition: border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="light"] .card {
+  background: rgba(255, 248, 247, 0.78);
+  border-color: rgba(94, 63, 59, 0.15);
+}
+
+.card:hover {
+  border-color: rgba(229, 9, 20, 0.4); /* hover:border-primary/40 */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+/* ── Icon Container ── */
+.iconContainer {
+  padding: 0.5rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Background utilities */
+.bg-primary { background-color: rgba(229, 9, 20, 0.1); }
+.bg-secondary { background-color: rgba(0, 222, 237, 0.1); }
+.bg-tertiary { background-color: rgba(0, 114, 215, 0.1); }
+.bg-surface { background-color: var(--color-surface-container-highest); }
+
+/* Text utilities */
+.text-primary { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-tertiary { color: var(--color-tertiary); }
+.text-surface { color: var(--color-on-surface); }
+
+/* ── Badge ── */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.badgeIcon {
+  font-size: 0.75rem;
+  margin-right: 0.25rem;
+}
+
+.badge-secondary { color: var(--color-secondary); }
+.badge-surface { color: var(--color-on-surface-variant); }
+.badge-primary { color: var(--color-primary); }
+
+/* ── Content ── */
+.title {
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.subtext {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* ── Progress Single ── */
+.progressSingle {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: var(--color-surface-container-highest);
+  height: 0.25rem; /* h-1 */
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  background-color: var(--color-primary);
+  height: 100%;
+}
+
+/* ── Progress Segmented ── */
+.progressSegmented {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.25rem; /* space-x-1 */
+}
+
+.segment {
+  height: 0.5rem; /* h-2 */
+  flex: 1;
+  border-radius: var(--radius-full);
+}
+
+.segmentFilled {
+  background-color: var(--color-primary);
+}
+
+.segmentEmpty {
+  background-color: var(--color-surface-container-highest);
+}

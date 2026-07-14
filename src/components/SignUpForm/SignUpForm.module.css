@@ -1,0 +1,350 @@
+/* =========================================================
+   SignUpForm — Glass card (mirrors LoginForm aesthetics)
+   ========================================================= */
+
+/* ── Glass card ── */
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 28rem;
+  background: rgba(42, 22, 20, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(94, 63, 59, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 180, 170, 0.05);
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  overflow: hidden;
+}
+
+[data-theme="light"] .card {
+  background: rgba(255, 248, 247, 0.78);
+  border-color: rgba(94, 63, 59, 0.15);
+}
+
+/* Spotlight pseudo-element */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    400px circle at var(--mouse-x) var(--mouse-y),
+    rgba(229, 9, 20, 0.06) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Card header ── */
+.cardHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: var(--color-on-surface);
+  margin-bottom: 0.375rem;
+  letter-spacing: -0.02em;
+}
+
+.subheading {
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+/* ── Form ── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  transition: color 0.2s ease;
+}
+
+.fieldGroup:focus-within .label {
+  color: var(--color-secondary);
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-outline-variant);
+  padding: 0.625rem 0;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  color: var(--color-on-surface);
+  outline: none;
+  transition: border-color 0.25s ease;
+}
+
+.input::placeholder {
+  color: var(--color-on-surface-variant);
+  opacity: 0.45;
+}
+
+.input:focus {
+  border-bottom-color: var(--color-secondary);
+}
+
+.inputError {
+  border-bottom-color: var(--color-error) !important;
+}
+
+.errorMsg {
+  font-size: 0.75rem;
+  color: var(--color-error);
+  margin-top: 0.125rem;
+}
+
+/* ── Password row ── */
+.passwordWrapper {
+  position: relative;
+}
+
+.passwordWrapper .input {
+  padding-right: 2.5rem;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 0;
+  bottom: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.eyeBtn .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.eyeBtn:hover {
+  color: var(--color-on-surface);
+}
+
+/* ── Password strength ── */
+.strengthBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.375rem;
+}
+
+.strengthFill {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strengthWeak   { background: var(--color-error); width: 33%; }
+.strengthFair   { background: #f59e0b; width: 66%; }
+.strengthStrong { background: #22c55e; width: 100%; }
+
+.strengthLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* ── Terms ── */
+.terms {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  line-height: 1.5;
+}
+
+.termsLink {
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.termsLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Submit button ── */
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-primary-container);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.15s ease, opacity 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.submitBtn:hover {
+  box-shadow: 0 0 24px rgba(229, 9, 20, 0.65);
+}
+
+.submitBtn:active {
+  transform: scale(0.98);
+}
+
+.submitBtnLoading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.75rem 0;
+}
+
+.dividerLine {
+  flex: 1;
+  height: 1px;
+  background-color: rgba(94, 63, 59, 0.3);
+}
+
+.dividerLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+  padding: 0 0.25rem;
+}
+
+/* ── SSO ── */
+.ssoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.ssoBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--color-on-surface);
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.ssoBtn:hover {
+  background: var(--glass-hover-bg);
+}
+
+.ssoBtn:active {
+  transform: scale(0.95);
+}
+
+.socialIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* ── Log-in row ── */
+.loginText {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+.loginLink {
+  color: var(--color-primary);
+  font-weight: 700;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s ease;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
+}
+
+/* ── Floating particle ── */
+.particle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(2px);
+  background-color: var(--color-primary);
+  opacity: 0.2;
+  z-index: 0;
+}

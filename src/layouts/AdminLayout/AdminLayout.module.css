@@ -1,0 +1,20 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+}
+
+.mainContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 16rem; /* Match sidebar width */
+}
+
+.content {
+  flex: 1;
+  padding: 6rem 3rem 3rem 3rem; /* pt-24 px-spacing-margin-desktop pb-spacing-gutter equivalent */
+  background-color: var(--color-background);
+}

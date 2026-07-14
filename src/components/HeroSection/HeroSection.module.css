@@ -1,0 +1,186 @@
+.hero {
+  position: relative;
+  height: 921px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* ---- Backdrop ---- */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.backdropImg {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  animation: subtlePulse 10s ease-in-out infinite alternate;
+}
+
+@keyframes subtlePulse {
+  from { transform: scale(1.05); }
+  to   { transform: scale(1.1); }
+}
+
+.gradientLeft {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--hero-gradient-from) 0%,
+    rgba(0, 0, 0, 0.55) 50%,
+    transparent 100%
+  );
+}
+
+.gradientBottom {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--hero-gradient-from) 0%,
+    transparent 60%
+  );
+}
+
+/* ---- Content ---- */
+.content {
+  position: relative;
+  z-index: 10;
+  padding: 0 var(--margin-desktop);
+  max-width: var(--container-max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.contentInner {
+  max-width: 42rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ---- Meta ---- */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.trendingBadge {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  color: var(--color-secondary);
+  gap: 4px;
+}
+
+.starIcon {
+  font-size: 18px !important;
+}
+
+.ratingValue {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+/* ---- Title ---- */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 4px 32px rgba(0,0,0,0.5);
+}
+
+/* ---- Description ---- */
+.description {
+  color: var(--color-on-surface-variant);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 32rem;
+}
+
+/* ---- Genre pills ---- */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.genrePill {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 0.375rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+/* ---- CTAs ---- */
+.ctas {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 1rem;
+}
+
+.btnPrimary,
+.btnSecondary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+
+.btnPrimary:active,
+.btnSecondary:active {
+  transform: scale(0.95);
+}
+
+.btnPrimary {
+  background-color: var(--color-primary-container);
+  color: #fff;
+}
+
+.btnPrimary:hover {
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+}
+
+.btnSecondary {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.btnSecondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}

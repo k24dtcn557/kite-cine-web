@@ -1,0 +1,81 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 16rem; /* 64 (tailwind w-64) */
+  height: 100vh;
+  background-color: var(--color-surface-container-low);
+  border-right: 1px solid var(--color-outline-variant);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+  z-index: 50;
+}
+
+/* ── Brand ── */
+.brandContainer {
+  padding: 0 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.brandTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.brandSubtitle {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* ── Navigation ── */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-right: 4px solid transparent;
+}
+
+.navItem:hover {
+  background-color: var(--color-surface-container-high);
+}
+
+.navItemActive {
+  color: var(--color-primary);
+  font-weight: 700;
+  border-right-color: var(--color-primary);
+  background-color: rgba(255, 180, 170, 0.1); /* Primary with 10% opacity */
+}
+
+.navItemActive:hover {
+  background-color: rgba(255, 180, 170, 0.15);
+}
+
+.navIcon {
+  margin-right: 1rem;
+  font-size: 1.5rem;
+}
+
+.navLabel {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+
