@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../contexts";
 import styles from "./LoginForm.module.css";
 
@@ -113,7 +114,21 @@ const LoginForm: React.FC<LoginFormProps> = ({
           "Login failed. Please check your credentials.",
       })
       .then(() => {
-        navigate('/my-cine');
+        const token = localStorage.getItem('access_token');
+        if (token) {
+          try {
+            const decoded: any = jwtDecode(token);
+            if (decoded?.scope?.includes('ROLE_ADMIN')) {
+              navigate('/admin');
+            } else {
+              navigate('/my-cine');
+            }
+          } catch (e) {
+            navigate('/my-cine');
+          }
+        } else {
+          navigate('/my-cine');
+        }
       })
       .finally(() => {
         setIsSubmitting(false);

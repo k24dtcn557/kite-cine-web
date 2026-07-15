@@ -8,3 +8,11 @@ export interface ApiResponse<T> {
   message: string;
   result: T;
 }
+
+export interface PageResponse<T> {
+  data?: T[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+}

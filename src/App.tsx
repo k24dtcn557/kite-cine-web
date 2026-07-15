@@ -7,6 +7,7 @@ import SignUpPage from './pages/SignUpPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import { AdminLayout, DashboardLayout } from './layouts';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminCinemasPage from './pages/AdminCinemasPage';
 import DashboardPage from './pages/DashboardPage';
 import { ProtectedRoute } from './components';
 import { AuthProvider } from './contexts';
@@ -36,7 +37,8 @@ const App: React.FC = () => (
           <Route path="/admin" element={<ProtectedRoute />}>
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
-              {/* Add other admin sub-routes here later (e.g. cinemas, movies) */}
+              <Route path="cinemas" element={<AdminCinemasPage />} />
+              {/* Add other admin sub-routes here later (e.g. movies) */}
             </Route>
           </Route>
 

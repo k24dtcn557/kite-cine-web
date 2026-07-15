@@ -1,0 +1,118 @@
+.container {
+  background-color: var(--color-surface-container);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(94, 63, 59, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: var(--font-label);
+  font-size: 0.625rem;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+.editBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface-container-high);
+  padding: 0.625rem 0; /* py-2.5 */
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(94, 63, 59, 0.3);
+  color: var(--color-on-surface);
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editBtn:hover {
+  border-color: var(--color-primary-container);
+}
+
+.icon {
+  font-size: 1.125rem; /* text-lg */
+  transition: color 0.2s ease;
+}
+
+.editBtn:hover .icon {
+  color: var(--color-primary);
+}
+
+.btnGroup {
+  display: flex;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.controlBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface-container-high);
+  padding: 0.5rem 0; /* py-2 */
+  border-radius: var(--radius-lg);
+  color: var(--color-on-surface);
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 700;
+  border: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+}
+
+.controlBtnIcon {
+  font-size: 0.875rem; /* text-sm */
+}
+
+/* Tier Actions Section */
+.tierGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.tierBtn {
+  background-color: var(--color-surface-container-high);
+  padding: 0.375rem 0.75rem; /* px-3 py-1.5 */
+  border-radius: var(--radius-lg);
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 700;
+  color: var(--color-on-surface);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tierBtn:hover {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.footer {
+  margin-top: 1rem; /* mt-4 */
+  padding-top: 1rem; /* pt-4 */
+  border-top: 1px solid rgba(94, 63, 59, 0.1);
+}
+
+.footerText {
+  font-size: 0.625rem; /* text-[10px] */
+  color: var(--color-on-surface-variant);
+  font-style: italic;
+}
