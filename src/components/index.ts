@@ -9,8 +9,8 @@ export { default as ThemeToggle } from './ThemeToggle';
 export { default as LoginForm } from './LoginForm';
 export { default as SignUpForm } from './SignUpForm';
 export { default as ForgotPasswordForm } from './ForgotPasswordForm';
+export { default as UserSidebar } from './UserSidebar/UserSidebar';
+export { default as UserTopbar } from './UserTopbar/UserTopbar';
 export { default as AdminSidebar } from './AdminSidebar';
 export { default as AdminTopbar } from './AdminTopbar';
 export { default as ProtectedRoute } from './ProtectedRoute';
-
-

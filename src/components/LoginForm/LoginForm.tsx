@@ -113,7 +113,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           "Login failed. Please check your credentials.",
       })
       .then(() => {
-        navigate('/admin');
+        navigate('/my-cine');
       })
       .finally(() => {
         setIsSubmitting(false);

@@ -5,8 +5,9 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import { AdminLayout } from './layouts';
+import { AdminLayout, DashboardLayout } from './layouts';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import DashboardPage from './pages/DashboardPage';
 import { ProtectedRoute } from './components';
 import { AuthProvider } from './contexts';
 import { Toaster } from 'react-hot-toast';
@@ -36,6 +37,13 @@ const App: React.FC = () => (
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
               {/* Add other admin sub-routes here later (e.g. cinemas, movies) */}
+            </Route>
+          </Route>
+
+          {/* User Routes - Protected */}
+          <Route path="/my-cine" element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route index element={<DashboardPage />} />
             </Route>
           </Route>
         </Routes>

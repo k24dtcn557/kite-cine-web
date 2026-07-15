@@ -1,0 +1,146 @@
+.header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: calc(100% - 16rem); /* 100% minus sidebar width */
+  height: 4rem; /* h-16 */
+  background: rgba(32, 14, 12, 0.8); /* surface/80 */
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem; /* px-12 / px-spacing-margin-desktop equivalent */
+  z-index: 40;
+}
+
+[data-theme="light"] .header {
+  background: rgba(255, 248, 247, 0.85); /* surface/85 */
+}
+
+/* ── Mobile Menu ── */
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  margin-right: 1rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.menuButton:hover {
+  background-color: var(--color-surface-container);
+}
+
+@media (max-width: 768px) {
+  .header {
+    width: 100%;
+    padding: 0 1.5rem;
+  }
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ── Search ── */
+.searchContainer {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 36rem; /* max-w-xl */
+}
+
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem; /* text-sm */
+}
+
+.searchInput {
+  width: 100%;
+  background-color: var(--color-surface-container-highest);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.5rem 1rem 0.5rem 2.5rem; /* pl-10 pr-4 py-2 */
+  font-family: var(--font-body);
+  font-size: 0.875rem; /* text-sm */
+  color: var(--color-on-surface);
+  outline: none;
+  transition: box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.searchInput::placeholder {
+  color: rgba(233, 188, 182, 0.5); /* text-on-surface-variant/50 roughly */
+}
+
+.searchInput:focus {
+  box-shadow: 0 0 0 2px rgba(255, 180, 170, 0.5); /* ring-2 ring-primary/50 */
+}
+
+/* ── Actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* gap-6 */
+  margin-left: auto;
+}
+
+.iconWrapper {
+  position: relative;
+  cursor: pointer;
+  color: var(--color-on-surface);
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconWrapper:hover {
+  color: var(--color-primary);
+}
+
+.notificationDot {
+  position: absolute;
+  top: -0.1rem;
+  right: -0.1rem;
+  width: 0.5rem; /* w-2 */
+  height: 0.5rem; /* h-2 */
+  background-color: var(--color-primary-container);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.3); /* glow-red roughly */
+}
+
+.divider {
+  height: 1.5rem; /* h-6 */
+  width: 1px;
+  background-color: var(--color-outline-variant);
+}
+
+.brandLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* gap-2 */
+}
+
+.brandText {
+  font-family: var(--font-title);
+  color: var(--color-primary);
+  font-size: 0.875rem; /* text-sm */
+  text-transform: uppercase;
+  font-weight: 700; /* font-bold */
+  letter-spacing: 0.1em; /* tracking-widest */
+}
