@@ -7,23 +7,40 @@ import SignUpPage from './pages/SignUpPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import { AdminLayout } from './layouts';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import { ProtectedRoute } from './components';
+import { AuthProvider } from './contexts';
+import { Toaster } from 'react-hot-toast';
 
 const App: React.FC = () => (
   <ThemeProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/"       element={<HomePage />} />
-        <Route path="/login"  element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboardPage />} />
-          {/* Add other admin sub-routes here later (e.g. cinemas, movies) */}
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: 'var(--color-surface-container-high)',
+              color: 'var(--color-on-surface)',
+              border: '1px solid var(--color-outline-variant)',
+            },
+          }}
+        />
+        <Routes>
+          <Route path="/"       element={<HomePage />} />
+          <Route path="/login"  element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          
+          {/* Admin Routes - Protected */}
+          <Route path="/admin" element={<ProtectedRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route index element={<AdminDashboardPage />} />
+              {/* Add other admin sub-routes here later (e.g. cinemas, movies) */}
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   </ThemeProvider>
 );
 

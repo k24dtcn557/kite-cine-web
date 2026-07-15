@@ -194,3 +194,16 @@
 .actionBtn:hover {
   color: var(--color-primary);
 }
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .tableContainer {
+    border-radius: var(--radius-lg);
+  }
+}

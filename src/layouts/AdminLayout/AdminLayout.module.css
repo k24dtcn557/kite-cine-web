@@ -18,3 +18,12 @@
   padding: 6rem 3rem 3rem 3rem; /* pt-24 px-spacing-margin-desktop pb-spacing-gutter equivalent */
   background-color: var(--color-background);
 }
+
+@media (max-width: 768px) {
+  .mainContainer {
+    margin-left: 0;
+  }
+  .content {
+    padding: 5rem 1rem 1.5rem 1rem;
+  }
+}

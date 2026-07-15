@@ -2,9 +2,18 @@ import React from 'react';
 import { ThemeToggle } from '../../components';
 import styles from './AdminTopbar.module.css';
 
-const AdminTopbar: React.FC = () => {
+interface AdminTopbarProps {
+  onMenuClick?: () => void;
+}
+
+const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
   return (
     <header className={styles.header}>
+      {/* Mobile Menu Button */}
+      <button className={styles.menuButton} onClick={onMenuClick} aria-label="Open menu">
+        <span className="material-symbols-outlined">menu</span>
+      </button>
+
       {/* Search */}
       <div className={styles.searchContainer}>
         <div className={styles.searchWrapper}>

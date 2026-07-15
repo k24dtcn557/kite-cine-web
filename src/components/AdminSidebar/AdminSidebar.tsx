@@ -11,11 +11,24 @@ const NAV_ITEMS = [
   { label: 'Settings', icon: 'settings', path: '/admin/settings' },
 ];
 
-const AdminSidebar: React.FC = () => {
+interface AdminSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation();
 
   return (
-    <aside className={styles.sidebar}>
+    <>
+      {/* Mobile Overlay */}
+      <div 
+        className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`} 
+        onClick={onClose} 
+        aria-hidden="true" 
+      />
+
+      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
       {/* Brand */}
       <div className={styles.brandContainer}>
         <h1 className={styles.brandTitle}>CineAdmin</h1>
@@ -40,8 +53,8 @@ const AdminSidebar: React.FC = () => {
           );
         })}
       </nav>
-
     </aside>
+    </>
   );
 };
 

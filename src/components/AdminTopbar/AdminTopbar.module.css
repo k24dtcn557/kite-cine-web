@@ -19,6 +19,35 @@
   background: rgba(255, 248, 247, 0.85); /* surface/85 */
 }
 
+/* ── Mobile Menu ── */
+.menuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  margin-right: 1rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.menuButton:hover {
+  background-color: var(--color-surface-container);
+}
+
+@media (max-width: 768px) {
+  .header {
+    width: 100%;
+    padding: 0 1.5rem;
+  }
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 /* ── Search ── */
 .searchContainer {
   display: flex;
@@ -144,4 +173,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .profileInfo {
+    display: none;
+  }
+  .profileWidget {
+    padding: 0;
+  }
 }
