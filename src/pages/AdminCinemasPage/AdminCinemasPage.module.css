@@ -60,16 +60,6 @@
   padding-right: 0.25rem;
 }
 
-.seatMapScroll::-webkit-scrollbar { width: 4px; }
-.seatMapScroll::-webkit-scrollbar-track { background: transparent; }
-.seatMapScroll::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-}
-[data-theme="light"] .seatMapScroll::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.12);
-}
-
 /* ── Stats row below seat map ── */
 .statsGrid {
   display: grid;

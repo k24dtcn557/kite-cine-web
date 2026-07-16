@@ -138,27 +138,6 @@
   align-items: start;
 }
 
-/* Custom scrollbar for the seat grid */
-.grid::-webkit-scrollbar {
-  width: 6px;
-}
-.grid::-webkit-scrollbar-track {
-  background: transparent;
-}
-.grid::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-full);
-}
-.grid:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.4);
-}
-[data-theme="light"] .grid::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.15);
-}
-[data-theme="light"] .grid:hover::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
 @media (max-width: 768px) {
   .grid {
     padding: 0;
