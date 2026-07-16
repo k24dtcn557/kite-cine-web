@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './AuditoriumTabs.module.css';
 import { cinemaService, AuditoriumDto } from '../../../../api/cinema.service';
 
 interface AuditoriumTabsProps {
   cinemaId?: number;
+  selectedAuditorium?: AuditoriumDto;
+  onSelectAuditorium: (auditorium?: AuditoriumDto) => void;
 }
 
-const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({ cinemaId }) => {
+const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({ cinemaId, selectedAuditorium, onSelectAuditorium }) => {
   const [auditoriums, setAuditoriums] = useState<AuditoriumDto[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeId, setActiveId] = useState<number | null>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newName, setNewName] = useState('');
@@ -25,12 +27,17 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({ cinemaId }) => {
       const result = await cinemaService.searchAuditoriums({ cinemaId, page: 0, size: 99999 });
       const data = Array.isArray(result) ? result : (result?.data || []);
       setAuditoriums(data);
-      if (data.length > 0) setActiveId(prev => prev || data[0].id);
+      if (data.length > 0 && !selectedAuditorium) {
+        onSelectAuditorium(data[0]);
+      } else if (data.length === 0) {
+        onSelectAuditorium(undefined);
+      }
     } catch (error) {
       console.error('Failed to fetch auditoriums', error);
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cinemaId]);
 
   useEffect(() => {
@@ -67,12 +74,12 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({ cinemaId }) => {
         auditoriums.map(auditorium => (
           <button 
             key={auditorium.id}
-            className={activeId === auditorium.id ? styles.tabBtnActive : styles.tabBtn}
-            onClick={() => setActiveId(auditorium.id)}
+            className={selectedAuditorium?.id === auditorium.id ? styles.tabBtnActive : styles.tabBtn}
+            onClick={() => onSelectAuditorium(auditorium)}
           >
-            <span className={`material-symbols-outlined ${activeId === auditorium.id ? styles.iconActive : styles.icon}`}>meeting_room</span>
+            <span className={`material-symbols-outlined ${selectedAuditorium?.id === auditorium.id ? styles.iconActive : styles.icon}`}>meeting_room</span>
             <div>
-              <p className={`${styles.label} ${activeId === auditorium.id ? styles.labelActive : ''}`}>{auditorium.name}</p>
+              <p className={`${styles.label} ${selectedAuditorium?.id === auditorium.id ? styles.labelActive : ''}`}>{auditorium.name}</p>
               <p className={styles.subLabel}>Standard</p>
             </div>
           </button>
@@ -85,7 +92,7 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({ cinemaId }) => {
           <span className={styles.addText}>Add Auditorium</span>
         </button>
       )}
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Create New Auditorium</h3>
@@ -110,7 +117,8 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({ cinemaId }) => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

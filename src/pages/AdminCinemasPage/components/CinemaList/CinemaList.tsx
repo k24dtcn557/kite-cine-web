@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './CinemaList.module.css';
 import { cinemaService } from '../../../../api/cinema.service';
 
@@ -93,7 +94,7 @@ const CinemaList: React.FC<CinemaListProps> = ({ selectedCinemaId, onSelectCinem
         )}
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Create New Cinema</h3>
@@ -130,7 +131,8 @@ const CinemaList: React.FC<CinemaListProps> = ({ selectedCinemaId, onSelectCinem
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

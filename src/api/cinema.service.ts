@@ -39,6 +39,27 @@ export interface CreateAuditoriumPayload {
   cinemaId: number;
 }
 
+export type SeatType = 'STANDARD' | 'VIP' | 'COUPLE';
+
+export interface AddRowPayload {
+  auditoriumId: number;
+  rowLetter: string;
+  numberOfSeats: number;
+  seatType: SeatType;
+}
+
+export interface SeatDto {
+  rowLetter: string;
+  seatNumber: number;
+  seatType: string;
+  auditoriumId: number;
+}
+
+export interface SeatRowDto {
+  rowLetter: string;
+  seats: SeatDto[];
+}
+
 export const cinemaService = {
   search: async (payload: SearchCinemasPayload): Promise<PageResponse<CinemaDto>> => {
     const response = await apiClient.post<ApiResponse<PageResponse<CinemaDto>>>('/kite-cine/management/cinemas/search', payload);
@@ -54,6 +75,16 @@ export const cinemaService = {
   },
   createAuditorium: async (payload: CreateAuditoriumPayload): Promise<AuditoriumDto> => {
     const response = await apiClient.post<ApiResponse<AuditoriumDto>>('/kite-cine/management/cinemas/auditoriums', payload);
+    return response.data.result;
+  },
+  getAuditoriumSeats: async (auditoriumId: number): Promise<SeatRowDto[]> => {
+    const response = await apiClient.get<ApiResponse<SeatRowDto[]> | SeatRowDto[]>(`/kite-cine/management/cinemas/auditoriums/${auditoriumId}/seats`);
+    const data = response.data;
+    // Handle both cases: wrapped in ApiResponse or direct array
+    return (data as ApiResponse<SeatRowDto[]>).result;
+  },
+  addRow: async (payload: AddRowPayload): Promise<any> => {
+    const response = await apiClient.post<ApiResponse<any>>('/kite-cine/management/cinemas/auditoriums/seats/add-row', payload);
     return response.data.result;
   }
 };
