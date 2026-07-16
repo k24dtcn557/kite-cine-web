@@ -15,13 +15,14 @@
 
 .glowDecor {
   position: absolute;
-  top: -6rem; /* -top-24 */
-  right: -6rem; /* -right-24 */
-  width: 16rem; /* w-64 */
-  height: 16rem; /* h-64 */
-  background-color: rgba(229, 9, 20, 0.1); /* primary-container/10 */
+  top: -6rem;
+  right: 0; /* Clamped to container edge — avoids horizontal overflow */
+  width: 16rem;
+  height: 16rem;
+  background-color: rgba(229, 9, 20, 0.1);
   filter: blur(100px);
   border-radius: 50%;
+  pointer-events: none;
 }
 
 .header {
@@ -130,12 +131,11 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: 0.75rem; /* gap-3 */
-  margin-top: 1.5rem; /* mt-6 */
+  grid-template-columns: auto 1fr; /* row label gets its natural width, seats fill the rest */
+  gap: 0.5rem 0.75rem;
+  margin-top: 1.5rem;
   width: 100%;
-  max-width: 56rem; /* max-w-4xl */
-  padding: 0 1rem; /* px-4 */
+  align-items: start;
 }
 
 /* Custom scrollbar for the seat grid */
@@ -168,21 +168,20 @@
 }
 
 .rowLabel {
-  grid-column: span 1;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.75rem; /* text-xs */
+  font-size: 0.75rem;
   opacity: 0.4;
+  padding: 0.125rem 0.25rem;
 }
 
 .seatRow {
-  grid-column: span 11;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem; /* smaller gap */
+  justify-content: center; /* Centered so empty space splits evenly left/right */
+  gap: 0.25rem;
   margin-bottom: 0.5rem;
 }
 
