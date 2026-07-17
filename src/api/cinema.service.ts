@@ -10,9 +10,21 @@ export interface CinemaDto {
   status: string;
 }
 
+export type AuditoriumType = 'PREMIUM' | 'GOLD_CLASS' | 'LAMOUR' | 'CINE_SUITE' | 'FOURDX' | 'IMAX';
+
+export const AUDITORIUM_TYPE_LABELS: Record<AuditoriumType, string> = {
+  PREMIUM: 'PREMIUM',
+  GOLD_CLASS: 'GOLD CLASS',
+  LAMOUR: "L'AMOUR",
+  CINE_SUITE: 'CINE SUITE',
+  FOURDX: '4DX',
+  IMAX: 'IMAX',
+};
+
 export interface AuditoriumDto {
   id: number;
   name: string;
+  type: AuditoriumType;
   createdAt: string;
   updatedAt: string;
   status: string;
@@ -37,6 +49,7 @@ export interface CreateCinemaPayload {
 export interface CreateAuditoriumPayload {
   name: string;
   cinemaId: number;
+  type: AuditoriumType;
 }
 
 export type SeatType = 'STANDARD' | 'VIP' | 'COUPLE';
