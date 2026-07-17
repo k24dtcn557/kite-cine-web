@@ -1,29 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import styles from './CinemaList.module.css';
-import { cinemaService } from '../../../../api/cinema.service';
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import toast from "react-hot-toast";
+import styles from "./CinemaList.module.css";
+import { cinemaService } from "../../../../api/cinema.service";
+import { getApiErrorMessage } from "../../../../api/types";
 
 interface CinemaListProps {
   selectedCinemaId?: number;
   onSelectCinema?: (id: number) => void;
 }
 
-const CinemaList: React.FC<CinemaListProps> = ({ selectedCinemaId, onSelectCinema }) => {
+const CinemaList: React.FC<CinemaListProps> = ({
+  selectedCinemaId,
+  onSelectCinema,
+}) => {
   const [cinemas, setCinemas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newAddress, setNewAddress] = useState('');
+  const [newName, setNewName] = useState("");
+  const [newAddress, setNewAddress] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [addressError, setAddressError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchCinemas = async () => {
     try {
-      const result = await cinemaService.search({ page: 0, size: 999999 });
-      // Depending on backend pagination response, it might be in content, data, or direct array
-      const data = Array.isArray(result) ? result : (result?.data || result?.data || []);
+      const result = await cinemaService.getCinemas();
+      const data = result;
       setCinemas(data);
     } catch (error) {
-      console.error('Failed to fetch cinemas', error);
+      console.error("Failed to fetch cinemas", error);
     } finally {
       setLoading(false);
     }
@@ -33,20 +39,50 @@ const CinemaList: React.FC<CinemaListProps> = ({ selectedCinemaId, onSelectCinem
     fetchCinemas();
   }, []);
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewName("");
+    setNewAddress("");
+    setNameError("");
+    setAddressError("");
+  };
+
   const handleCreateCinema = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newName.trim() || !newAddress.trim()) return;
-    
+    setNameError("");
+    setAddressError("");
+
+    let hasError = false;
+
+    if (!newName.trim()) {
+      setNameError("Vui lòng nhập tên rạp");
+      hasError = true;
+    } else if (newName.trim().length < 2) {
+      setNameError("Tên rạp phải có ít nhất 2 ký tự");
+      hasError = true;
+    }
+
+    if (!newAddress.trim()) {
+      setAddressError("Vui lòng nhập địa chỉ");
+      hasError = true;
+    } else if (newAddress.trim().length < 5) {
+      setAddressError("Địa chỉ phải có ít nhất 5 ký tự");
+      hasError = true;
+    }
+
+    if (hasError) return;
+
     try {
       setIsSubmitting(true);
       await cinemaService.create({ name: newName, address: newAddress });
-      setIsModalOpen(false);
-      setNewName('');
-      setNewAddress('');
+      handleCloseModal();
       fetchCinemas();
+      toast.success(`Rạp "${newName}" đã được tạo thành công!`);
     } catch (error) {
-      console.error('Failed to create cinema', error);
-      alert('Failed to create cinema');
+      console.error("Failed to create cinema", error);
+      toast.error(
+        getApiErrorMessage(error, "Tạo rạp thất bại. Vui lòng thử lại."),
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -55,85 +91,146 @@ const CinemaList: React.FC<CinemaListProps> = ({ selectedCinemaId, onSelectCinem
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Cinemas</h3>
-        <button className={styles.addBtn} aria-label="Add Cinema" onClick={() => setIsModalOpen(true)}>
+        <h3 className={styles.title}>Rạp chiếu phim</h3>
+        <button
+          className={styles.addBtn}
+          aria-label="Thêm rạp"
+          onClick={() => setIsModalOpen(true)}
+        >
           <span className="material-symbols-outlined">add_circle</span>
         </button>
       </div>
 
       <div className={`${styles.list} custom-scrollbar`}>
         {loading ? (
-          <p className="text-sm text-on-surface-variant p-4">Loading cinemas...</p>
+          <div className={styles.listPlaceholder}>
+            <span className="material-symbols-outlined">sync</span>
+            Đang tải danh sách rạp...
+          </div>
         ) : cinemas.length === 0 ? (
-          <p className="text-sm text-on-surface-variant p-4">No cinemas found.</p>
+          <div className={styles.listPlaceholder}>
+            <span className="material-symbols-outlined">movie</span>
+            Chưa có rạp nào. Hãy thêm rạp mới!
+          </div>
         ) : (
           cinemas.map((cinema, index) => (
-            <div 
-              key={cinema.id || index} 
-              className={selectedCinemaId === cinema.id ? styles.cardActive : styles.cardInactive}
+            <div
+              key={cinema.id || index}
+              className={
+                selectedCinemaId === cinema.id
+                  ? styles.cardActive
+                  : styles.cardInactive
+              }
               onClick={() => onSelectCinema && onSelectCinema(cinema.id)}
             >
               <div className={styles.cardHeader}>
                 <span className={styles.cardTitle}>{cinema.name}</span>
-                <span className={`material-symbols-outlined ${styles.moreIcon}`}>more_vert</span>
+                <span
+                  className={`material-symbols-outlined ${styles.moreIcon}`}
+                >
+                  more_vert
+                </span>
               </div>
-              
+
               {cinema.address && (
                 <p className={styles.address}>
-                  <span className={`material-symbols-outlined ${styles.addressIcon}`}>map</span> 
+                  <span
+                    className={`material-symbols-outlined ${styles.addressIcon}`}
+                  >
+                    map
+                  </span>
                   {cinema.address}
                 </p>
               )}
-              
+
               <div className={styles.tags}>
-                <span className={styles.tagScreen}>{cinema.screens || 1} Screens</span>
-                {cinema.vip && <span className={styles.tagVip}>VIP Hub</span>}
+                <span className={styles.tagScreen}>
+                  {cinema.numberOfAuditoriums} Phòng chiếu
+                </span>
               </div>
             </div>
           ))
         )}
       </div>
 
-      {isModalOpen && createPortal(
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <h3>Create New Cinema</h3>
-            <form onSubmit={handleCreateCinema} className={styles.form}>
-              <div className={styles.formGroup}>
-                <label>Name</label>
-                <input 
-                  type="text" 
-                  value={newName} 
-                  onChange={(e) => setNewName(e.target.value)} 
-                  required 
-                  disabled={isSubmitting}
-                  className={styles.input}
-                  placeholder="e.g. Rạp Thăng Long"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label>Address</label>
-                <input 
-                  type="text" 
-                  value={newAddress} 
-                  onChange={(e) => setNewAddress(e.target.value)} 
-                  required 
-                  disabled={isSubmitting}
-                  className={styles.input}
-                  placeholder="e.g. Tầng 3, VinCom"
-                />
-              </div>
-              <div className={styles.modalActions}>
-                <button type="button" onClick={() => setIsModalOpen(false)} disabled={isSubmitting} className={styles.cancelBtn}>Cancel</button>
-                <button type="submit" disabled={isSubmitting} className={styles.submitBtn}>
-                  {isSubmitting ? 'Creating...' : 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>,
-        document.body
-      )}
+      {isModalOpen &&
+        createPortal(
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h3>Tạo rạp mới</h3>
+              <form onSubmit={handleCreateCinema} className={styles.form}>
+                <div className={styles.formGroup}>
+                  <div className={styles.labelRow}>
+                    <label>Tên rạp (*)</label>
+                    <span
+                      className={`${styles.charCount} ${newName.length >= 80 ? styles.charCountOver : ""}`}
+                    >
+                      {newName.length}/50
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    value={newName}
+                    maxLength={50}
+                    onChange={(e) => {
+                      setNewName(e.target.value);
+                      if (nameError) setNameError("");
+                    }}
+                    disabled={isSubmitting}
+                    className={`${styles.input} ${nameError ? styles.inputError : ""}`}
+                    placeholder="vd: Rạp Thăng Long"
+                  />
+                  {nameError && (
+                    <p className={styles.fieldError}>{nameError}</p>
+                  )}
+                </div>
+                <div className={styles.formGroup}>
+                  <div className={styles.labelRow}>
+                    <label>Địa chỉ (*)</label>
+                    <span
+                      className={`${styles.charCount} ${newAddress.length >= 180 ? styles.charCountOver : ""}`}
+                    >
+                      {newAddress.length}/200
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    value={newAddress}
+                    maxLength={200}
+                    onChange={(e) => {
+                      setNewAddress(e.target.value);
+                      if (addressError) setAddressError("");
+                    }}
+                    disabled={isSubmitting}
+                    className={`${styles.input} ${addressError ? styles.inputError : ""}`}
+                    placeholder="vd: Tầng 3, VinCom Nguyễn Chí Thanh"
+                  />
+                  {addressError && (
+                    <p className={styles.fieldError}>{addressError}</p>
+                  )}
+                </div>
+                <div className={styles.modalActions}>
+                  <button
+                    type="button"
+                    onClick={handleCloseModal}
+                    disabled={isSubmitting}
+                    className={styles.cancelBtn}
+                  >
+                    Bỏ qua
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={styles.submitBtn}
+                  >
+                    {isSubmitting ? "Đang tạo..." : "Tạo"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

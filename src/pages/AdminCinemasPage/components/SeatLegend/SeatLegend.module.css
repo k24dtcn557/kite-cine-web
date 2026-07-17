@@ -34,19 +34,37 @@
   border: 1px solid;
 }
 
+.boxStandard {
+  background-color: rgba(80, 120, 180, 0.25);
+  border-color: rgba(80, 120, 180, 0.6);
+}
+
 .boxVip {
-  background-color: rgba(0, 222, 237, 0.4); 
-  border-color: var(--color-secondary);
+  background-color: rgba(220, 160, 20, 0.28);
+  border-color: rgba(220, 160, 20, 0.75);
 }
 
-.boxRegular {
-  background-color: rgba(94, 63, 59, 0.3); 
-  border-color: rgba(94, 63, 59, 0.3); 
+.boxCouple {
+  background-color: rgba(210, 60, 100, 0.22);
+  border-color: rgba(210, 60, 100, 0.65);
 }
 
-.boxAcc {
-  background-color: rgba(0, 114, 215, 0.4); 
-  border-color: var(--color-tertiary);
+.boxSelected {
+  background-color: rgba(229, 9, 20, 0.35);
+  border-color: var(--color-primary-container);
+}
+
+.badgeIcon {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.badgeVip {
+  color: rgba(220, 160, 20, 1);
+}
+
+.badgeCouple {
+  color: rgba(210, 60, 100, 1);
 }
 
 .label {

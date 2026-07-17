@@ -72,13 +72,48 @@
   font-size: 0.75rem; /* text-xs */
   font-weight: 700;
   border: none;
-  opacity: 0.5;
-  cursor: not-allowed;
+  cursor: pointer;
   transition: all 0.2s ease;
+}
+
+.controlBtn:hover:not(:disabled) {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.controlBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .controlBtnIcon {
   font-size: 0.875rem; /* text-sm */
+}
+
+.addRowBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  padding: 0.6rem 0;
+  border-radius: var(--radius-lg);
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addRowBtn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.addRowBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Tier Actions Section */
@@ -100,9 +135,23 @@
   transition: all 0.2s ease;
 }
 
-.tierBtn:hover {
+.tierBtn:hover:not(:disabled) {
   background-color: var(--color-primary-container);
   color: var(--color-on-primary-container);
+}
+
+.tierBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tierBtnPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.tierBtnPrimary:hover:not(:disabled) {
+  opacity: 0.88;
 }
 
 .footer {

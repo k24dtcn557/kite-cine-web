@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styles from "./AdminCinemasPage.module.css";
 import {
   CinemaList,
@@ -16,6 +16,49 @@ const AdminCinemasPage: React.FC = () => {
   const [selectedAuditorium, setSelectedAuditorium] = useState<
     AuditoriumDto | undefined
   >();
+  const [openAddRowModal, setOpenAddRowModal] = useState<(() => void) | null>(
+    null,
+  );
+  const [openAddSeatModal, setOpenAddSeatModal] = useState<(() => void) | null>(
+    null,
+  );
+  const [openDeleteSeatsModal, setOpenDeleteSeatsModal] = useState<
+    (() => void) | null
+  >(null);
+  const [openChangeSeatTypeModal, setOpenChangeSeatTypeModal] = useState<
+    (() => void) | null
+  >(null);
+  const [clearSelection, setClearSelection] = useState<(() => void) | null>(
+    null,
+  );
+  const [openSelectRowModal, setOpenSelectRowModal] = useState<
+    (() => void) | null
+  >(null);
+
+  const handleOpenAddRowModal = useCallback(
+    (fn: () => void) => setOpenAddRowModal(() => fn),
+    [],
+  );
+  const handleOpenAddSeatModal = useCallback(
+    (fn: () => void) => setOpenAddSeatModal(() => fn),
+    [],
+  );
+  const handleOpenDeleteSeatsModal = useCallback(
+    (fn: () => void) => setOpenDeleteSeatsModal(() => fn),
+    [],
+  );
+  const handleOpenChangeSeatTypeModal = useCallback(
+    (fn: () => void) => setOpenChangeSeatTypeModal(() => fn),
+    [],
+  );
+  const handleClearSelectionBridge = useCallback(
+    (fn: () => void) => setClearSelection(() => fn),
+    [],
+  );
+  const handleOpenSelectRowModal = useCallback(
+    (fn: () => void) => setOpenSelectRowModal(() => fn),
+    [],
+  );
 
   return (
     <div className={styles.pageContainer}>
@@ -42,11 +85,27 @@ const AdminCinemasPage: React.FC = () => {
 
           {/* Scrollable area: SeatMap + stats + bulk actions */}
           <div className={styles.seatMapScroll}>
-            <SeatMap auditorium={selectedAuditorium} />
+            <SeatMap
+              auditorium={selectedAuditorium}
+              openAddRowModal={handleOpenAddRowModal}
+              openAddSeatModal={handleOpenAddSeatModal}
+              openDeleteSeatsModal={handleOpenDeleteSeatsModal}
+              openChangeSeatTypeModal={handleOpenChangeSeatTypeModal}
+              clearSelectionBridge={handleClearSelectionBridge}
+              openSelectRowModal={handleOpenSelectRowModal}
+            />
 
             <div className={styles.statsGrid}>
               <SeatLegend />
-              <SeatControls />
+              <SeatControls
+                hasAuditorium={!!selectedAuditorium}
+                onAddRow={() => openAddRowModal?.()}
+                onAddSeat={() => openAddSeatModal?.()}
+                onDeleteSeats={() => openDeleteSeatsModal?.()}
+                onChangeSeatType={() => openChangeSeatTypeModal?.()}
+                onClearSelection={() => clearSelection?.()}
+                onSelectRow={() => openSelectRowModal?.()}
+              />
             </div>
           </div>
         </section>

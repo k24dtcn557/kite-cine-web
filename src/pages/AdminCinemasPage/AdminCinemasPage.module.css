@@ -54,6 +54,7 @@
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden; /* Prevent horizontal scrollbar */
+  -webkit-overflow-scrolling: touch; /* Enable momentum scrolling */
   display: flex;
   flex-direction: column;
   gap: 1rem;
