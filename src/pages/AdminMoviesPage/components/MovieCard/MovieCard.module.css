@@ -1,0 +1,198 @@
+.movieCard {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  padding: 1rem;
+  border-radius: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  border: 1px solid rgba(94, 63, 59, 0.15);
+  transition: border-color 0.3s;
+}
+
+.movieCard:hover {
+  border-color: rgba(229, 9, 20, 0.3); /* primary-container */
+}
+
+/* Poster */
+.posterWrapper {
+  position: relative;
+  width: 10rem; /* w-40 */
+  height: 14rem; /* h-56 */
+  border-radius: 0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.posterBadge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.625rem; /* text-[10px] */
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(8px);
+}
+
+.badgeNowShowing {
+  background-color: rgba(229, 9, 20, 0.9); /* primary-container */
+  color: #fff;
+}
+
+.badgeComingSoon {
+  background-color: rgba(0, 222, 237, 0.9); /* secondary-container */
+  color: #000;
+}
+
+/* Card Content */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0.5rem 0;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.movieTitle {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  line-height: 1.2;
+  transition: color 0.2s;
+}
+
+.movieCard:hover .movieTitle {
+  color: var(--color-primary);
+}
+
+.movieMeta {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.moreBtn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.moreBtn:hover {
+  background-color: var(--color-surface-variant);
+}
+
+/* Card Stats Grid */
+.cardStatsGrid {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.statBox {
+  background-color: rgba(42, 22, 20, 0.4); /* surface-container-low */
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(94, 63, 59, 0.1);
+}
+
+.statBoxLabel {
+  font-size: 0.625rem; /* text-[10px] */
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+
+.statBoxValueGroup {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.statBoxValue {
+  font-family: var(--font-headline);
+  font-size: 1.125rem; /* text-lg */
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.statBoxGrowth {
+  color: var(--color-secondary);
+  font-size: 0.625rem;
+  font-weight: 700;
+  margin-bottom: 0.125rem;
+}
+
+.starIcon {
+  color: #eab308; /* text-yellow-500 */
+  font-size: 1rem !important;
+  font-variation-settings: 'FILL' 1;
+}
+
+/* Card Actions */
+.cardActions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(94, 63, 59, 0.1);
+}
+
+.manageBtn {
+  flex-grow: 1;
+  padding: 0.5rem 0;
+  background-color: rgba(70, 47, 44, 0.5); /* surface-variant/50 */
+  color: var(--color-on-surface);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.manageBtn:hover {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+}
+
+.analyticsBtn {
+  padding: 0.5rem 1rem;
+  background-color: rgba(70, 47, 44, 0.5);
+  color: var(--color-on-surface);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analyticsBtn:hover {
+  background-color: var(--color-surface-variant);
+}
