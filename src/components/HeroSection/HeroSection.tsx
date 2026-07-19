@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./HeroSection.module.css";
 import { movieService } from "../../api/movie.service";
 import { MovieDto } from "../../api/movie.service";
 
 const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
   const [movies, setMovies] = useState<MovieDto[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -44,6 +46,7 @@ const HeroSection: React.FC = () => {
           "https://placehold.co/1920x1080/1E1B1B/FFFFFF?text=No+Background",
         // Default rating since missing from dto
         rating: "8.5",
+        id: currentMovie.id,
       }
     : null;
 
@@ -54,7 +57,10 @@ const HeroSection: React.FC = () => {
   return (
     <section className={styles.hero}>
       {/* Backdrop */}
-      <div className={styles.backdrop}>
+      <div
+        className={styles.backdrop}
+        onClick={() => navigate(`/movies/${displayData.id}`)}
+      >
         <div
           className={styles.ambientImg}
           style={{ backgroundImage: `url('${displayData.backdropUrl}')` }}

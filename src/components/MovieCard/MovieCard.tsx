@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./MovieCard.module.css";
 import { MovieDto } from "../../api/movie.service";
 
@@ -8,6 +9,7 @@ interface MovieCardProps {
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
+  const navigate = useNavigate();
   const handleBook = () => {
     if (movie.id) onBook?.(movie.id.toString());
   };
@@ -19,7 +21,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
     movie.genres && movie.genres.length > 0 ? movie.genres[0] : "Chưa rõ";
 
   return (
-    <article className={styles.card}>
+    <article className={styles.card} onClick={() => navigate(`/movies/${movie.id}`)}>
       <img
         className={styles.poster}
         src={poster}

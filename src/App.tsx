@@ -11,6 +11,7 @@ import AdminCinemasPage from "./pages/AdminCinemasPage";
 import AdminMoviesPage from "./pages/AdminMoviesPage";
 import AdminMovieFormPage from "./pages/AdminMovieFormPage";
 import DashboardPage from "./pages/DashboardPage";
+import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
 import { ProtectedRoute } from "./components";
 import { AuthProvider } from "./contexts";
 import { Toaster } from "react-hot-toast";
@@ -35,6 +36,7 @@ const App: React.FC = () => (
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/movies/:id" element={<MovieDetailsPage />} />
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<ProtectedRoute />}>

@@ -1,0 +1,101 @@
+.page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-background);
+  position: relative;
+  padding-top: 10px; /* Offset for fixed navbar */
+}
+
+/* ---- Premium Loading State ---- */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-body-base, Inter);
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(229, 9, 20, 0.2);
+  border-top-color: var(--color-primary-container);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-size: 1.125rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ---- Premium Error State ---- */
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  text-align: center;
+  padding: 0 var(--margin-desktop);
+  font-family: var(--font-body-base, Inter);
+}
+
+.errorIcon {
+  font-size: 4rem;
+  color: var(--color-error);
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.errorTitle {
+  font-family: var(--font-display-lg, Montserrat);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-on-background);
+  margin-bottom: 1rem;
+}
+
+.errorDesc {
+  font-size: 1.125rem;
+  color: var(--color-on-surface-variant);
+  max-width: 400px;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.homeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-radius: var(--radius-full, 9999px);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.homeBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(229, 9, 20, 0.4);
+}

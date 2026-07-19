@@ -1,14 +1,22 @@
 .hero {
   position: relative;
   z-index: 1;
-  margin-top: 78px;
-  height: 50vh;
-  min-height: 450px;
-  max-height: 600px;
+  margin-top: 78px; /* Offset for fixed navbar */
+  height: 40vh;
+  min-height: 250px;
+  max-height: 400px;
   width: 100%;
   display: flex;
   align-items: center;
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero {
+    height: 50vh;
+    min-height: 450px;
+    max-height: 600px;
+  }
 }
 
 /* ---- Backdrop ---- */
@@ -16,6 +24,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  cursor: pointer;
 }
 
 .ambientImg {

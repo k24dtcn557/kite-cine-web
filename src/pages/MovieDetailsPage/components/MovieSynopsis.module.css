@@ -1,0 +1,323 @@
+.section {
+  padding: 0;
+  padding-bottom: 2rem;
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 5rem var(--margin-desktop);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+/* ---- Poster & CTAs ---- */
+.posterCol {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .posterCol {
+    grid-column: span 4;
+  }
+}
+
+.posterWrapper {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .posterWrapper {
+    border-radius: var(--radius-xl, 0.75rem);
+    border: 1px solid var(--glass-border);
+  }
+}
+
+.posterImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.posterWrapper:hover .posterImg {
+  transform: scale(1.05);
+}
+
+.ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 var(--margin-desktop, 1.5rem);
+}
+
+@media (min-width: 768px) {
+  .ctas {
+    padding: 0;
+  }
+}
+
+.btnPrimary,
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: var(--radius-full, 9999px);
+  font-weight: 700;
+  font-family: var(--font-body-base, Inter);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.btnPrimary {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border: none;
+  box-shadow: 0 4px 14px rgba(229, 9, 20, 0.4);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
+}
+
+.btnSecondary {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  color: var(--color-on-background);
+}
+
+.btnSecondary:hover {
+  background: var(--glass-hover-bg);
+  transform: translateY(-2px);
+}
+
+
+/* ---- Content ---- */
+.contentCol {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align top */
+  padding: 0 var(--margin-mobile, 1.5rem);
+}
+
+@media (min-width: 768px) {
+  .contentCol {
+    grid-column: span 8;
+    padding: 0;
+  }
+}
+
+.title {
+  font-family: var(--font-display-lg, Montserrat);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 800;
+  color: var(--color-on-background);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.genrePill {
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--glass-bg);
+  color: var(--color-on-surface);
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  border: 1px solid var(--glass-border);
+}
+
+.genrePillPrimary {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-color: var(--color-primary-container);
+}
+
+.detailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.detailItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-body-base, Inter);
+  font-size: 0.875rem;
+}
+
+.detailIcon {
+  font-size: 1.25rem;
+  color: var(--color-primary-container);
+}
+
+.heading {
+  font-family: var(--font-headline, Montserrat);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.synopsisText {
+  font-family: var(--font-body-base, Inter);
+  font-size: 1.125rem;
+  color: var(--color-on-surface-variant);
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+}
+
+/* ---- Info Grid ---- */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl, 0.75rem);
+}
+
+@media (min-width: 768px) {
+  .infoGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.infoLabel {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.infoValue {
+  font-weight: 700;
+  color: var(--color-on-background);
+}
+
+/* ---- Crew Grid ---- */
+.crewGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.crewRole {
+  color: var(--color-on-surface-variant);
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-body-base, Inter);
+}
+
+.crewName {
+  font-weight: 700;
+  color: var(--color-on-background);
+  font-size: 1rem;
+}
+
+/* ---- Trailer Modal ---- */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.modalContent {
+  width: 100%;
+  max-width: 960px;
+  background: #000;
+  border-radius: var(--radius-lg, 0.75rem);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.closeButton:hover {
+  background: rgba(229, 9, 20, 0.8);
+}
+
+.videoWrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 ratio */
+  height: 0;
+}
+
+.videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
