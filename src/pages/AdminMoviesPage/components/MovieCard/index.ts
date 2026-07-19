@@ -1,2 +1,1 @@
-export { default } from './MovieCard';
-export type { MovieData } from './MovieCard';
+export { default } from "./MovieCard";

@@ -1,20 +1,28 @@
-import React from 'react';
-import styles from './MovieCard.module.css';
-import { Movie } from '../../types/movie';
+import React from "react";
+import styles from "./MovieCard.module.css";
+import { MovieDto } from "../../api/movie.service";
 
 interface MovieCardProps {
-  movie: Movie;
+  movie: MovieDto;
   onBook?: (movieId: string) => void;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
-  const handleBook = () => onBook?.(movie.id);
+  const handleBook = () => {
+    if (movie.id) onBook?.(movie.id.toString());
+  };
+
+  const poster =
+    movie.poster || "https://placehold.co/400x600/1E1B1B/FFFFFF?text=No+Poster";
+  const rating = "8.5"; // Hardcoded default as API doesn't provide this yet
+  const genre =
+    movie.genres && movie.genres.length > 0 ? movie.genres[0] : "Chưa rõ";
 
   return (
     <article className={styles.card}>
       <img
         className={styles.poster}
-        src={movie.posterUrl}
+        src={poster}
         alt={`${movie.title} movie poster`}
         loading="lazy"
       />
@@ -22,36 +30,15 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
       {/* Gradient overlay */}
       <div className={styles.overlay}>
         <div className={styles.info}>
-          <h3 className={styles.title}>{movie.title}</h3>
-          <div className={styles.meta}>
-            <div className={styles.rating}>
-              <span className={`material-symbols-outlined icon-filled ${styles.starIcon}`}>
-                star
-              </span>
-              <span>{movie.rating}</span>
-            </div>
-            <span className={styles.genre}>{movie.genre}</span>
-          </div>
           <button
             className={styles.bookBtn}
             onClick={handleBook}
-            aria-label={`Book tickets for ${movie.title}`}
+            aria-label={`Đặt vé cho ${movie.title}`}
           >
-            BOOK NOW
+            ĐẶT VÉ
           </button>
         </div>
       </div>
-
-      {/* Format badges */}
-      {movie.badges && movie.badges.length > 0 && (
-        <div className={styles.badges}>
-          {movie.badges.map((badge) => (
-            <span key={badge} className={styles.badge}>
-              {badge}
-            </span>
-          ))}
-        </div>
-      )}
     </article>
   );
 };

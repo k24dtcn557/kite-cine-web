@@ -1,0 +1,81 @@
+.castItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-outline-variant);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.castItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.castAvatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-on-surface);
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.castInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.castName {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-on-surface);
+  margin-bottom: 0.25rem;
+}
+
+.castRole {
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+}
+
+.deleteCastBtn {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid transparent;
+  color: #ff453a;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.castItem:hover .deleteCastBtn {
+  opacity: 1;
+}
+
+.deleteCastBtn:hover {
+  background: #ff453a;
+  color: #fff;
+  transform: scale(1.05);
+}

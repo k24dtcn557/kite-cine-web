@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './Navbar.module.css';
-import ThemeToggle from '../ThemeToggle';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Navbar.module.css";
+import ThemeToggle from "../ThemeToggle";
 
-const NAV_LINKS = ['Movies', 'Theaters', 'Offers', 'Gift Cards'];
+const NAV_LINKS = ["Phim Đang Chiếu", "Sắp Chiếu", "Thành Viên"];
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -11,21 +11,45 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleNavClick = (link: string) => {
+    navigate("/");
+    setTimeout(() => {
+      if (link === "Phim Đang Chiếu") {
+        document
+          .getElementById("now-playing")
+          ?.scrollIntoView({ behavior: "smooth" });
+      } else if (link === "Sắp Chiếu") {
+        document
+          .getElementById("coming-soon")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 100);
+  };
+
   return (
-    <nav className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ''}`}>
+    <nav
+      className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ""}`}
+    >
       <div className={styles.inner}>
         {/* Logo + Nav Links */}
         <div className={styles.left}>
-          <span className={styles.logo}>KiteCine</span>
+          <span
+            className={styles.logo}
+            onClick={() => navigate("/")}
+            style={{ cursor: "pointer" }}
+          >
+            KITECINE
+          </span>
           <div className={styles.navLinks}>
-            {NAV_LINKS.map((link, i) => (
+            {NAV_LINKS.map((link) => (
               <button
                 key={link}
-                className={`${styles.navLink} ${i === 0 ? styles.navLinkActive : ''}`}
+                className={styles.navLink}
+                onClick={() => handleNavClick(link)}
               >
                 {link}
               </button>
@@ -35,28 +59,17 @@ const Navbar: React.FC = () => {
 
         {/* Search + Actions */}
         <div className={styles.right}>
-          <div className={styles.searchWrapper}>
-            <span className={`material-symbols-outlined ${styles.searchIcon}`}>search</span>
-            <input
-              className={styles.searchInput}
-              type="text"
-              placeholder="Search movies, actors..."
-            />
-          </div>
           <div className={styles.actions}>
-            <button className={styles.iconBtn} aria-label="Location">
-              <span className={`material-symbols-outlined ${styles.actionIcon}`}>location_on</span>
-            </button>
+            <ThemeToggle />
             <button
               className={styles.signInBtn}
-              onClick={() => navigate('/login')}
+              onClick={() => navigate("/login")}
               aria-label="Sign in"
             >
               <span className="material-symbols-outlined">person</span>
-              Sign In
+              Đăng nhập
             </button>
             {/* Theme toggle */}
-            <ThemeToggle />
           </div>
         </div>
       </div>

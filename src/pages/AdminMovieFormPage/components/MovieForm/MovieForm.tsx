@@ -1,27 +1,81 @@
-import React from 'react';
-import styles from './MovieForm.module.css';
+import React, { useState } from "react";
+import { createPortal } from "react-dom";
+import { toast } from "react-hot-toast";
+import { getApiErrorMessage } from "../../../../api/types";
+import { CrewMemberItem } from "../CrewMemberItem";
+import styles from "./MovieForm.module.css";
+import {
+  movieService,
+  MovieStatus,
+  GENRE_LIST,
+  MOVIE_STATUS_LABELS,
+  CrewMemberDto,
+} from "../../../../api/movie.service";
+import { CrewMemberModal } from "../CrewMemberModal";
 
 export interface MovieFormData {
   title: string;
-  tagline: string;
-  synopsis: string;
+  description: string;
   genres: string[];
   runtime: string;
-  language: string;
-  status: string;
+  status: MovieStatus;
+  isHighlighted: boolean;
   releaseDate: string;
-  contentRating: string;
-  metaTitle: string;
-  metaDescription: string;
-  cast: { name: string; role: string }[];
+  cast: CrewMemberDto[];
+  poster: string;
+  background: string;
+  video: string;
 }
 
 interface MovieFormProps {
   formData: MovieFormData;
   setFormData: React.Dispatch<React.SetStateAction<MovieFormData>>;
+  movieId?: number;
 }
 
-const MovieForm: React.FC<MovieFormProps> = ({ formData, setFormData }) => {
+const MovieForm: React.FC<MovieFormProps> = ({
+  formData,
+  setFormData,
+  movieId,
+}) => {
+  const [isCrewModalOpen, setIsCrewModalOpen] = useState(false);
+  const [memberToDelete, setMemberToDelete] = useState<{
+    member: CrewMemberDto;
+    index: number;
+  } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const confirmDeleteCrewMember = async () => {
+    if (!memberToDelete) return;
+    setIsDeleting(true);
+    const { member, index } = memberToDelete;
+
+    if (member.id) {
+      try {
+        await movieService.deleteCrewMember(member.id);
+        toast.success(`Đã xóa ${member.name} khỏi phim!`);
+      } catch (error) {
+        toast.error(getApiErrorMessage(error, "Lỗi khi xóa thành viên."));
+        setIsDeleting(false);
+        setMemberToDelete(null);
+        return;
+      }
+    }
+
+    const newCast = formData.cast.filter((_, i) => i !== index);
+    setFormData({ ...formData, cast: newCast });
+    setIsDeleting(false);
+    setMemberToDelete(null);
+  };
+
+  const handleAddSuccess = (member: CrewMemberDto) => {
+    setFormData({
+      ...formData,
+      cast: [...formData.cast, member],
+    });
+    setIsCrewModalOpen(false);
+  };
+
   return (
     <div className={styles.grid}>
       {/* Left Column */}
@@ -29,101 +83,186 @@ const MovieForm: React.FC<MovieFormProps> = ({ formData, setFormData }) => {
         {/* Basic Info */}
         <section className={`${styles.card} ${styles.glowRed}`}>
           <div className={styles.cardHeader}>
-            <span className="material-symbols-outlined" style={{ color: 'var(--color-primary)' }}>info</span>
-            <h3>Basic Information</h3>
+            <span
+              className="material-symbols-outlined"
+              style={{ color: "var(--color-primary)" }}
+            >
+              info
+            </span>
+            <h3>Thông tin cơ bản</h3>
           </div>
-          
+
           <div className={styles.formGroup}>
-            <label>Movie Title</label>
-            <input 
-              type="text" 
-              placeholder="e.g. Interstellar: The Lost Voyage" 
+            <label>Tên phim</label>
+            <input
+              type="text"
+              placeholder="VD: Interstellar: The Lost Voyage"
               className={styles.inputTitle}
               value={formData.title}
-              onChange={e => setFormData({...formData, title: e.target.value})}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label>Tagline</label>
-            <input 
-              type="text" 
-              placeholder="Humanity was born on Earth..."
-              className={styles.inputItalic}
-              value={formData.tagline}
-              onChange={e => setFormData({...formData, tagline: e.target.value})}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label>Synopsis</label>
-            <textarea 
-              rows={4} 
-              placeholder="Enter a compelling summary..."
-              value={formData.synopsis}
-              onChange={e => setFormData({...formData, synopsis: e.target.value})}
+            <label>Tóm tắt nội dung</label>
+            <textarea
+              rows={10}
+              placeholder="Nhập tóm tắt nội dung phim..."
+              value={formData.description}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
             ></textarea>
           </div>
 
-          <div className={styles.twoCols}>
-            <div className={styles.formGroup}>
-              <label>Genre</label>
-              <div className={styles.genreBox}>
-                {formData.genres.map(g => (
-                  <span key={g} className={styles.genreChip}>
-                    {g} <span className="material-symbols-outlined">close</span>
+          <div className={styles.formGroup}>
+            <label>Thể loại</label>
+            <div className={styles.genreBox}>
+              {GENRE_LIST.map((g) => {
+                const isSelected = formData.genres.includes(g);
+                return (
+                  <span
+                    key={g}
+                    className={`${styles.genreChip} ${
+                      isSelected ? styles.genreChipSelected : ""
+                    }`}
+                    onClick={() => {
+                      if (isSelected) {
+                        setFormData({
+                          ...formData,
+                          genres: formData.genres.filter(
+                            (genre) => genre !== g,
+                          ),
+                        });
+                      } else {
+                        setFormData({
+                          ...formData,
+                          genres: [...formData.genres, g],
+                        });
+                      }
+                    }}
+                  >
+                    {g}
                   </span>
-                ))}
-                <button className={styles.addGenreBtn}>+ Add Genre</button>
-              </div>
+                );
+              })}
             </div>
-            <div className={styles.twoColsInner}>
-              <div className={styles.formGroup}>
-                <label>Runtime</label>
-                <div className={styles.inputWithSuffix}>
-                  <input type="number" placeholder="169" value={formData.runtime} onChange={e => setFormData({...formData, runtime: e.target.value})} />
-                  <span>min</span>
-                </div>
-              </div>
-              <div className={styles.formGroup}>
-                <label>Language</label>
-                <select value={formData.language} onChange={e => setFormData({...formData, language: e.target.value})}>
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>French</option>
-                  <option>Japanese</option>
-                </select>
-              </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Thời lượng</label>
+            <div className={styles.inputWithSuffix} style={{ width: "130px" }}>
+              <input
+                type="number"
+                placeholder="0"
+                value={formData.runtime}
+                onChange={(e) =>
+                  setFormData({ ...formData, runtime: e.target.value })
+                }
+              />
+              <span>phút</span>
             </div>
           </div>
         </section>
 
         {/* Media Upload */}
         <section className={styles.card}>
-           <div className={styles.cardHeader}>
-            <span className="material-symbols-outlined" style={{ color: 'var(--color-secondary)' }}>cloud_upload</span>
-            <h3>Media Upload</h3>
+          <div className={styles.cardHeader}>
+            <span
+              className="material-symbols-outlined"
+              style={{ color: "var(--color-secondary)" }}
+            >
+              cloud_upload
+            </span>
+            <h3>Tải lên phương tiện</h3>
           </div>
           <div className={styles.twoCols}>
             <div className={styles.formGroup}>
-              <label>Movie Poster (2:3)</label>
-              <div className={`${styles.uploadBox} ${styles.posterUpload}`}>
-                 <span className="material-symbols-outlined">add_photo_alternate</span>
-                 <p>Drag and drop or click to upload</p>
+              <label>Poster phim (2:3)</label>
+              <div
+                className={`${styles.uploadBox} ${styles.posterUpload}`}
+                style={
+                  formData.poster
+                    ? {
+                        backgroundImage: `url(${formData.poster})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        border: "none",
+                      }
+                    : {}
+                }
+              >
+                {!formData.poster && (
+                  <>
+                    <span className="material-symbols-outlined">
+                      add_photo_alternate
+                    </span>
+                    <p>Chưa có ảnh</p>
+                  </>
+                )}
               </div>
+              <input
+                type="url"
+                className={styles.input}
+                placeholder="Nhập link ảnh (URL)..."
+                value={formData.poster}
+                onChange={(e) =>
+                  setFormData({ ...formData, poster: e.target.value })
+                }
+                style={{ marginTop: "0.5rem" }}
+              />
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1.5rem",
+              }}
+            >
               <div className={styles.formGroup}>
-                <label>Backdrop Image (16:9)</label>
-                <div className={`${styles.uploadBox} ${styles.backdropUpload}`}>
-                  <span className="material-symbols-outlined">wallpaper</span>
+                <label>Ảnh nền (16:9)</label>
+                <div
+                  className={`${styles.uploadBox} ${styles.backdropUpload}`}
+                  style={
+                    formData.background
+                      ? {
+                          backgroundImage: `url(${formData.background})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                          border: "none",
+                        }
+                      : {}
+                  }
+                >
+                  {!formData.background && (
+                    <span className="material-symbols-outlined">wallpaper</span>
+                  )}
                 </div>
+                <input
+                  type="url"
+                  className={styles.input}
+                  placeholder="Nhập link ảnh (URL)..."
+                  value={formData.background}
+                  onChange={(e) =>
+                    setFormData({ ...formData, background: e.target.value })
+                  }
+                  style={{ marginTop: "0.5rem" }}
+                />
               </div>
               <div className={styles.formGroup}>
-                <label>Trailer URL</label>
+                <label>Đường dẫn Trailer</label>
                 <div className={styles.inputWithIcon}>
                   <span className="material-symbols-outlined">play_circle</span>
-                  <input type="url" placeholder="https://youtube.com..." />
+                  <input
+                    type="url"
+                    placeholder="https://youtube.com..."
+                    value={formData.video}
+                    onChange={(e) =>
+                      setFormData({ ...formData, video: e.target.value })
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -131,114 +270,201 @@ const MovieForm: React.FC<MovieFormProps> = ({ formData, setFormData }) => {
         </section>
 
         {/* Cast & Crew */}
-        <section className={styles.card}>
-          <div className={styles.cardHeaderRow}>
-            <div className={styles.cardHeader}>
-              <span className="material-symbols-outlined" style={{ color: 'var(--color-on-tertiary-container)' }}>groups</span>
-              <h3>Cast & Crew</h3>
-            </div>
-            <button className={styles.addTextBtn}>
-              <span className="material-symbols-outlined">add_circle</span> Add Person
-            </button>
-          </div>
-          
-          <div className={styles.castGrid}>
-            {formData.cast.map((c, i) => (
-              <div key={i} className={styles.castItem}>
-                <div className={styles.castAvatar}>
-                  <span className="material-symbols-outlined">person</span>
-                </div>
-                <div className={styles.castInfo}>
-                  <input type="text" value={c.name} onChange={()=>{}} className={styles.castName} placeholder="Name" />
-                  <input type="text" value={c.role} onChange={()=>{}} className={styles.castRole} placeholder="Role" />
-                </div>
-                <button className={styles.deleteCastBtn}>
-                  <span className="material-symbols-outlined">delete</span>
-                </button>
-              </div>
-            ))}
-          </div>
-        </section>
-
       </div>
 
       {/* Right Column */}
       <div className={styles.rightCol}>
         {/* Release Details */}
         <section className={styles.card}>
-           <div className={styles.cardHeader}>
-            <span className="material-symbols-outlined" style={{ color: 'var(--color-primary-fixed-dim)' }}>event</span>
-            <h3>Release Details</h3>
+          <div className={styles.cardHeader}>
+            <span
+              className="material-symbols-outlined"
+              style={{ color: "var(--color-primary-fixed-dim)" }}
+            >
+              event
+            </span>
+            <h3>Thông tin phát hành</h3>
           </div>
           <div className={styles.formGroup}>
-            <label>Release Date</label>
-            <input type="date" value={formData.releaseDate} onChange={e => setFormData({...formData, releaseDate: e.target.value})} />
+            <label>Ngày phát hành</label>
+            <input
+              type="date"
+              value={formData.releaseDate}
+              onChange={(e) =>
+                setFormData({ ...formData, releaseDate: e.target.value })
+              }
+            />
           </div>
           <div className={styles.formGroup}>
-            <label>Status</label>
+            <label>Trạng thái</label>
             <div className={styles.radioGroup}>
-              <label className={styles.radioLabel}>
-                <input type="radio" name="status" value="Coming Soon" checked={formData.status === 'Coming Soon'} onChange={e => setFormData({...formData, status: e.target.value})} />
-                Coming Soon
+              <label
+                className={`${styles.radioLabel} ${formData.status === MovieStatus.COMING_SOON ? styles.radioLabelActive : ""}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: MovieStatus.COMING_SOON,
+                  }));
+                }}
+              >
+                <input
+                  type="radio"
+                  name="status"
+                  value={MovieStatus.COMING_SOON}
+                  checked={formData.status === MovieStatus.COMING_SOON}
+                  readOnly
+                />
+                <span>{MOVIE_STATUS_LABELS[MovieStatus.COMING_SOON]}</span>
               </label>
-              <label className={styles.radioLabel}>
-                <input type="radio" name="status" value="Now Showing" checked={formData.status === 'Now Showing'} onChange={e => setFormData({...formData, status: e.target.value})} />
-                Now Showing
+              <label
+                className={`${styles.radioLabel} ${formData.status === MovieStatus.NOW_SHOWING ? styles.radioLabelActive : ""}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: MovieStatus.NOW_SHOWING,
+                  }));
+                }}
+              >
+                <input
+                  type="radio"
+                  name="status"
+                  value={MovieStatus.NOW_SHOWING}
+                  checked={formData.status === MovieStatus.NOW_SHOWING}
+                  readOnly
+                />
+                <span>{MOVIE_STATUS_LABELS[MovieStatus.NOW_SHOWING]}</span>
               </label>
-              <label className={styles.radioLabel}>
-                <input type="radio" name="status" value="Draft" checked={formData.status === 'Draft'} onChange={e => setFormData({...formData, status: e.target.value})} />
-                Draft
+              <label
+                className={`${styles.radioLabel} ${formData.status === MovieStatus.DRAFT ? styles.radioLabelActive : ""}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: MovieStatus.DRAFT,
+                  }));
+                }}
+              >
+                <input
+                  type="radio"
+                  name="status"
+                  value={MovieStatus.DRAFT}
+                  checked={formData.status === MovieStatus.DRAFT}
+                  readOnly
+                />
+                <span>{MOVIE_STATUS_LABELS[MovieStatus.DRAFT]}</span>
+              </label>
+              <label
+                className={`${styles.radioLabel} ${formData.status === MovieStatus.ARCHIVED ? styles.radioLabelActive : ""}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: MovieStatus.ARCHIVED,
+                  }));
+                }}
+              >
+                <input
+                  type="radio"
+                  name="status"
+                  value={MovieStatus.ARCHIVED}
+                  checked={formData.status === MovieStatus.ARCHIVED}
+                  readOnly
+                />
+                <span>{MOVIE_STATUS_LABELS[MovieStatus.ARCHIVED]}</span>
               </label>
             </div>
           </div>
           <div className={styles.formGroup}>
-            <label>Content Rating</label>
-            <div className={styles.ratingGroup}>
-              {['G', 'PG', 'PG-13', 'R'].map(rating => (
-                <button 
-                  key={rating}
-                  className={`${styles.ratingBtn} ${formData.contentRating === rating ? styles.ratingBtnActive : ''}`}
-                  onClick={() => setFormData({...formData, contentRating: rating})}
-                >
-                  {rating}
-                </button>
-              ))}
+            <label>Nổi bật</label>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={formData.isHighlighted}
+                onChange={(e) =>
+                  setFormData({ ...formData, isHighlighted: e.target.checked })
+                }
+              />
+              <span>Đánh dấu phim này là nổi bật</span>
+            </label>
+          </div>
+        </section>
+        <section className={styles.card}>
+          <div className={styles.cardHeaderRow}>
+            <div className={styles.cardHeader}>
+              <span
+                className="material-symbols-outlined"
+                style={{ color: "var(--color-primary)" }}
+              >
+                groups
+              </span>
+              <h4>Đoàn phim</h4>
             </div>
+            <button
+              className={styles.addTextBtn}
+              type="button"
+              onClick={() => setIsCrewModalOpen(true)}
+            >
+              <span className="material-symbols-outlined">add_circle</span>
+            </button>
+          </div>
+
+          <div className={styles.castGrid}>
+            {formData.cast.map((c, i) => (
+              <CrewMemberItem
+                key={c.id || i}
+                member={c}
+                onDelete={() => setMemberToDelete({ member: c, index: i })}
+              />
+            ))}
           </div>
         </section>
-
-        {/* SEO & Metadata */}
-        <section className={`${styles.card} ${styles.glowBlue}`}>
-           <div className={styles.cardHeader}>
-            <span className="material-symbols-outlined" style={{ color: 'var(--color-secondary)' }}>search_check</span>
-            <h3>SEO & Metadata</h3>
-          </div>
-          <div className={styles.formGroup}>
-            <label>Meta Title</label>
-            <input type="text" placeholder="SEO optimized title..." value={formData.metaTitle} onChange={e => setFormData({...formData, metaTitle: e.target.value})} />
-          </div>
-          <div className={styles.formGroup}>
-            <label>Meta Description</label>
-            <textarea rows={3} placeholder="Enter meta description..." value={formData.metaDescription} onChange={e => setFormData({...formData, metaDescription: e.target.value})}></textarea>
-          </div>
-          <div className={styles.seoPreview}>
-            <p className={styles.seoPreviewLabel}>Search Preview</p>
-            <p className={styles.seoPreviewTitle}>{formData.metaTitle || 'Movie Title'} | CineAdmin Booking</p>
-            <p className={styles.seoPreviewUrl}>https://cineadmin.com/movie/...</p>
-            <p className={styles.seoPreviewDesc}>{formData.metaDescription || 'Humanity was born on Earth. It was never meant to die here...'}</p>
-          </div>
-        </section>
-
-        {/* Publishing Tips */}
-        <div className={styles.tipsBox}>
-          <h4><span className="material-symbols-outlined">help_outline</span> Publishing Tips</h4>
-          <ul>
-            <li>High-quality posters improve click-rates by 40%.</li>
-            <li>Include at least 3 main cast members for better SEO.</li>
-            <li>Synopsis should be between 200-500 characters.</li>
-          </ul>
-        </div>
       </div>
+
+      <CrewMemberModal
+        isOpen={isCrewModalOpen}
+        onClose={() => setIsCrewModalOpen(false)}
+        movieId={movieId}
+        onAddSuccess={handleAddSuccess}
+      />
+
+      {memberToDelete &&
+        createPortal(
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent} style={{ maxWidth: "400px" }}>
+              <h3>Xác nhận xóa</h3>
+              <p
+                style={{
+                  margin: "1rem 0",
+                  color: "var(--color-on-surface-variant)",
+                }}
+              >
+                Bạn có chắc muốn xóa thành viên{" "}
+                <strong>{memberToDelete.member.name}</strong> khỏi phim?
+              </p>
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.cancelBtn}
+                  onClick={() => setMemberToDelete(null)}
+                  disabled={isDeleting}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  className={styles.deleteConfirmBtn}
+                  onClick={confirmDeleteCrewMember}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Đang xóa..." : "Xóa"}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

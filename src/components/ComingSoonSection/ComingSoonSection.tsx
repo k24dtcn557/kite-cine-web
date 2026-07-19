@@ -1,69 +1,120 @@
-import React from 'react';
-import styles from './ComingSoonSection.module.css';
-import { COMING_SOON_MOVIES } from '../../data/homeData';
-import { ComingSoonMovie } from '../../types/movie';
+import React, { useState, useEffect } from "react";
+import styles from "./ComingSoonSection.module.css";
+import { movieService, MovieDto } from "../../api/movie.service";
+import MovieCarousel from "../MovieCarousel";
 
-const FeaturedCard: React.FC<{ movie: ComingSoonMovie }> = ({ movie }) => (
-  <div className={`${styles.card} ${styles.cardFeatured}`}>
-    <img
-      className={styles.cardImg}
-      src={movie.imageUrl}
-      alt={`${movie.title} coming soon`}
-      loading="lazy"
-    />
-    <div className={styles.cardOverlay}>
-      <span className={styles.releaseDate}>{movie.releaseDate}</span>
-      <h3 className={`${styles.cardTitle} ${styles.cardTitleLg}`}>{movie.title}</h3>
-      {movie.description && (
-        <p className={styles.cardDesc}>{movie.description}</p>
-      )}
-    </div>
-  </div>
-);
+const formatDateVI = (dateStr?: string) => {
+  if (!dateStr) return "TBA";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString("vi-VN");
+};
 
-const SideCard: React.FC<{ movie: ComingSoonMovie }> = ({ movie }) => (
-  <div className={`${styles.card} ${styles.cardSide}`}>
-    <img
-      className={styles.cardImg}
-      src={movie.imageUrl}
-      alt={`${movie.title} coming soon`}
-      loading="lazy"
-    />
-    <div className={styles.cardOverlaySide}>
-      <span className={styles.releaseDateSide}>{movie.releaseDate}</span>
-      <h3 className={styles.cardTitle}>{movie.title}</h3>
+const FeaturedCard: React.FC<{ movie: MovieDto }> = ({ movie }) => {
+  const imageUrl =
+    movie.background ||
+    movie.poster ||
+    "https://placehold.co/800x400/1E1B1B/FFFFFF?text=No+Image";
+  return (
+    <div className={`${styles.card} ${styles.cardFeatured}`}>
+      <img
+        className={styles.cardImg}
+        src={imageUrl}
+        alt={`${movie.title} coming soon`}
+        loading="lazy"
+      />
+      <div className={styles.dateChip}>{formatDateVI(movie.releaseDate)}</div>
+      <div className={styles.cardOverlay}>
+        <h3 className={`${styles.cardTitle} ${styles.cardTitleLg}`}>
+          {movie.title}
+        </h3>
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+const SideCard: React.FC<{ movie: MovieDto }> = ({ movie }) => {
+  const imageUrl =
+    movie.background ||
+    movie.poster ||
+    "https://placehold.co/400x300/1E1B1B/FFFFFF?text=No+Image";
+  return (
+    <div className={`${styles.card} ${styles.cardSide}`}>
+      <img
+        className={styles.cardImg}
+        src={imageUrl}
+        alt={`${movie.title} coming soon`}
+        loading="lazy"
+      />
+      <div className={styles.dateChip}>{formatDateVI(movie.releaseDate)}</div>
+      <div className={styles.cardOverlaySide}>
+        <h3 className={styles.cardTitle}>{movie.title}</h3>
+      </div>
+    </div>
+  );
+};
 
 const ComingSoonSection: React.FC = () => {
-  const featured = COMING_SOON_MOVIES.find((m) => m.featured);
-  const side = COMING_SOON_MOVIES.filter((m) => !m.featured);
+  const [movies, setMovies] = useState<MovieDto[]>([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const comingSoon = await movieService.getComingSoonMovies();
+        setMovies(comingSoon || []);
+      } catch (error) {
+        console.error("Failed to fetch coming soon movies:", error);
+      }
+    };
+    fetchMovies();
+  }, []);
+
+  const featured = movies.length > 0 ? movies[0] : null;
+  const side = movies.slice(1, 2);
+  const rest = movies.slice(2);
 
   return (
-    <section className={styles.section}>
+    <section id="coming-soon" className={styles.section}>
       <div className={styles.inner}>
         {/* Section header */}
         <div className={styles.header}>
           <div>
-            <span className={styles.label}>ANTICIPATED RELEASES</span>
-            <h2 className={styles.heading}>Coming Soon</h2>
+            <span className={styles.label}>PHIM MỚI SẮP RA MẮT</span>
+            <h2 className={styles.heading}>Sắp Chiếu</h2>
           </div>
-          <button className={styles.viewAll}>
-            View All
-            <span className="material-symbols-outlined">arrow_forward</span>
-          </button>
         </div>
 
         {/* Bento grid */}
-        <div className={styles.bentoGrid}>
-          {featured && <FeaturedCard movie={featured} />}
-          <div className={styles.sideCards}>
-            {side.map((movie) => (
-              <SideCard key={movie.id} movie={movie} />
-            ))}
-          </div>
-        </div>
+        {movies.length > 0 ? (
+          <>
+            <div className={styles.bentoGrid}>
+              {featured && <FeaturedCard movie={featured} />}
+              <div className={styles.sideCards}>
+                {side.map((movie) => (
+                  <SideCard key={movie.id} movie={movie} />
+                ))}
+              </div>
+            </div>
+            {rest.length > 0 && (
+              <div style={{ marginTop: "3rem" }}>
+                <h3
+                  style={{
+                    color: "var(--color-on-surface)",
+                    marginBottom: "1rem",
+                    fontFamily: "var(--font-display)",
+                  }}
+                >
+                  Phim Sắp Chiếu Khác
+                </h3>
+                <MovieCarousel movies={rest} />
+              </div>
+            )}
+          </>
+        ) : (
+          <p style={{ color: "var(--color-on-surface-variant)" }}>
+            Hiện tại không có phim sắp chiếu.
+          </p>
+        )}
       </div>
     </section>
   );

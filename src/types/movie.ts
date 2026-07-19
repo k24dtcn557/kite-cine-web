@@ -15,11 +15,3 @@ export interface ComingSoonMovie {
   description?: string;
   featured?: boolean;
 }
-
-export type GenreFilter =
-  | 'All Movies'
-  | 'Action'
-  | 'Drama'
-  | 'Horror'
-  | 'Sci-Fi'
-  | 'Comedy';

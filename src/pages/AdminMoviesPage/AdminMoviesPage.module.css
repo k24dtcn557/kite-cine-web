@@ -1,6 +1,7 @@
 .container {
   overflow-y: auto;
   height: 100%;
+  padding-right: 0.75rem;
 }
 
 .header {
@@ -108,6 +109,8 @@
   gap: 1rem;
   margin-bottom: 2rem;
   justify-content: space-between;
+  align-items: center;
+  min-height: 2.5rem;
 }
 
 .filterTabs {
@@ -144,6 +147,7 @@
 .filterSelects {
   display: flex;
   gap: 1rem;
+  min-height: 2.5rem;
 }
 
 .filterSelect {
@@ -168,6 +172,8 @@
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 2rem;
+  min-height: 600px;
+  align-content: start;
 }
 
 @media (min-width: 1024px) {
@@ -176,4 +182,110 @@
   }
 }
 
+/* Empty State */
+.emptyState {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background-color: var(--color-surface-container);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-outline-variant);
+}
 
+.emptyIcon {
+  font-size: 3rem;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.emptyText {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  margin-bottom: 0.25rem;
+  font-weight: 700;
+}
+
+.emptySubtext {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+/* Loading State */
+.loadingState {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-body);
+}
+
+.spinner {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.5rem;
+}
+
+.pageBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-outline);
+  background-color: transparent;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pageBtn span {
+  font-size: 1.125rem !important;
+}
+
+.pageBtn:hover:not(:disabled) {
+  background-color: var(--color-surface-variant);
+  border-color: var(--color-on-surface);
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}

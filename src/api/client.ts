@@ -16,7 +16,10 @@ const apiClient = axios.create({
 
 const NO_AUTH_ENDPOINTS = [
   '/auth/token',
-  '/users/registration'
+  '/users/registration',
+  '/movies/highlighted',
+  '/movies/now-showing',
+  '/movies/coming-soon'
 ];
 
 // Request Interceptor: Attach the JWT token if available

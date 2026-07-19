@@ -1,31 +1,44 @@
-import React, { useState, useCallback } from 'react';
-import styles from './NowPlayingSection.module.css';
-import MovieCard from '../MovieCard';
-import { NOW_PLAYING_MOVIES, GENRE_FILTERS } from '../../data/homeData';
-import { GenreFilter } from '../../types/movie';
+import React, { useState, useCallback, useEffect } from "react";
+import styles from "./NowPlayingSection.module.css";
+import MovieCarousel from "../MovieCarousel";
+import { movieService, MovieDto, GENRE_FILTERS } from "../../api/movie.service";
 
 const NowPlayingSection: React.FC = () => {
-  const [activeFilter, setActiveFilter] = useState<GenreFilter>('All Movies');
+  const [activeFilter, setActiveFilter] = useState<string>("Tất Cả");
+  const [movies, setMovies] = useState<MovieDto[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const filteredMovies = activeFilter === 'All Movies'
-    ? NOW_PLAYING_MOVIES
-    : NOW_PLAYING_MOVIES.filter((m) => m.genre === activeFilter);
+  useEffect(() => {
+    const fetchMovies = async () => {
+      setLoading(true);
+      try {
+        const genreParam = activeFilter === "Tất Cả" ? undefined : activeFilter;
+        const nowShowing = await movieService.getNowShowingMovies(genreParam);
+        setMovies(nowShowing || []);
+      } catch (error) {
+        console.error("Failed to fetch now showing movies:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMovies();
+  }, [activeFilter]);
 
   const handleBook = useCallback((movieId: string) => {
     // TODO: navigate to booking flow
-    console.log('Book movie:', movieId);
+    console.log("Book movie:", movieId);
   }, []);
 
   return (
-    <section className={styles.section}>
+    <section id="now-playing" className={styles.section}>
       {/* Header */}
       <div className={styles.header}>
-        <h2 className={styles.heading}>Now Playing</h2>
+        <h2 className={styles.heading}>Phim Đang Chiếu</h2>
         <div className={styles.filters} role="group" aria-label="Genre filters">
           {GENRE_FILTERS.map((filter) => (
             <button
               key={filter}
-              className={`${styles.filterBtn} ${activeFilter === filter ? styles.filterBtnActive : ''}`}
+              className={`${styles.filterBtn} ${activeFilter === filter ? styles.filterBtnActive : ""}`}
               onClick={() => setActiveFilter(filter)}
               aria-pressed={activeFilter === filter}
             >
@@ -37,11 +50,15 @@ const NowPlayingSection: React.FC = () => {
 
       {/* Movie Grid */}
       <div className={styles.grid}>
-        {filteredMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} onBook={handleBook} />
-        ))}
-        {filteredMovies.length === 0 && (
-          <p className={styles.emptyState}>No movies found for this genre.</p>
+        {loading ? (
+          <p className={styles.emptyState}>Đang tải phim...</p>
+        ) : (
+          <MovieCarousel movies={movies} onBook={handleBook} />
+        )}
+        {!loading && movies.length === 0 && (
+          <p className={styles.emptyState}>
+            Không tìm thấy phim nào cho thể loại này.
+          </p>
         )}
       </div>
     </section>

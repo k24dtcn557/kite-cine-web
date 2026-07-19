@@ -1,6 +1,7 @@
 .container {
   overflow-y: auto;
   height: 100%;
+  padding-right: 0.75rem;
 }
 
 /* Header */
@@ -94,4 +95,9 @@
   transform: scale(0.95);
 }
 
-
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

@@ -1,73 +1,109 @@
-import React from 'react';
-import styles from './HeroSection.module.css';
-import { HERO_MOVIE } from '../../data/homeData';
+import React, { useState, useEffect } from "react";
+import styles from "./HeroSection.module.css";
+import { movieService } from "../../api/movie.service";
+import { MovieDto } from "../../api/movie.service";
 
 const HeroSection: React.FC = () => {
-  const { title, tagline, rating, description, genres, backdropUrl } = HERO_MOVIE;
+  const [movies, setMovies] = useState<MovieDto[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const highlighted = await movieService.getHighlightedMovies();
+        if (highlighted && highlighted.length > 0) {
+          setMovies(highlighted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch highlighted movies:", error);
+      }
+    };
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    if (movies.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % movies.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [movies.length]);
+
+  // Fallback to static hero if no highlighted movies exist
+  const currentMovie = movies.length > 0 ? movies[currentIndex] : null;
+
+  const displayData = currentMovie
+    ? {
+        title: currentMovie.title || "",
+        tagline: currentMovie.tagline || "HIGHLIGHTED",
+        description: currentMovie.description || "",
+        genres: currentMovie.genres || [],
+        backdropUrl:
+          currentMovie.background ||
+          currentMovie.poster ||
+          "https://placehold.co/1920x1080/1E1B1B/FFFFFF?text=No+Background",
+        // Default rating since missing from dto
+        rating: "8.5",
+      }
+    : null;
+
+  if (!displayData) {
+    return <section className={styles.hero} />;
+  }
 
   return (
     <section className={styles.hero}>
       {/* Backdrop */}
       <div className={styles.backdrop}>
         <div
-          className={styles.backdropImg}
-          style={{ backgroundImage: `url('${backdropUrl}')` }}
-          role="img"
-          aria-label="Stellaris: Void Protocol movie backdrop"
+          className={styles.ambientImg}
+          style={{ backgroundImage: `url('${displayData.backdropUrl}')` }}
         />
-        <div className={styles.gradientLeft} />
-        <div className={styles.gradientBottom} />
+        <div
+          className={styles.backdropImg}
+          style={{ backgroundImage: `url('${displayData.backdropUrl}')` }}
+          role="img"
+          aria-label={`${displayData.title} movie backdrop`}
+        />
       </div>
 
-      {/* Content */}
-      <div className={styles.content}>
-        <div className={styles.contentInner}>
-          {/* Meta badges */}
-          <div className={styles.meta}>
-            <span className={styles.trendingBadge}>{tagline}</span>
-            <div className={styles.rating}>
-              <span className={`material-symbols-outlined icon-filled ${styles.starIcon}`}>
-                star
-              </span>
-              <span className={styles.ratingValue}>{rating}</span>
-            </div>
-          </div>
+      {/* Navigation Arrows */}
+      {movies.length > 1 && (
+        <>
+          <button
+            className={`${styles.navButton} ${styles.prevButton}`}
+            onClick={() =>
+              setCurrentIndex(
+                (prev) => (prev - 1 + movies.length) % movies.length,
+              )
+            }
+            aria-label="Previous slide"
+          >
+            <span className="material-symbols-outlined">chevron_left</span>
+          </button>
+          <button
+            className={`${styles.navButton} ${styles.nextButton}`}
+            onClick={() =>
+              setCurrentIndex((prev) => (prev + 1) % movies.length)
+            }
+            aria-label="Next slide"
+          >
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
 
-          {/* Title */}
-          <h1 className={styles.title}>
-            {title.split('\n').map((line, i) => (
-              <React.Fragment key={i}>
-                {line}
-                {i < title.split('\n').length - 1 && <br />}
-              </React.Fragment>
+          {/* Carousel Dots */}
+          <div className={styles.dots}>
+            {movies.map((_, index) => (
+              <button
+                key={index}
+                className={`${styles.dot} ${index === currentIndex ? styles.dotActive : ""}`}
+                onClick={() => setCurrentIndex(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
             ))}
-          </h1>
-
-          {/* Description */}
-          <p className={styles.description}>{description}</p>
-
-          {/* Genre pills */}
-          <div className={styles.genres}>
-            {genres.map((genre) => (
-              <span key={genre} className={styles.genrePill}>
-                {genre}
-              </span>
-            ))}
           </div>
-
-          {/* CTAs */}
-          <div className={styles.ctas}>
-            <button className={styles.btnPrimary}>
-              <span className="material-symbols-outlined">confirmation_number</span>
-              BOOK NOW
-            </button>
-            <button className={styles.btnSecondary}>
-              <span className="material-symbols-outlined">play_circle</span>
-              WATCH TRAILER
-            </button>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </section>
   );
 };

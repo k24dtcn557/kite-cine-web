@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './TheaterLocator.module.css';
-import { HERO_MOVIE } from '../../data/homeData';
+
+const MAP_IMAGE_URL = 'https://lh3.googleusercontent.com/aida-public/AB6AXuDtgEX7b7r3anqSq5wHxBrT0_Cas70UUhDoildFDIvh0UXn4WTaXLUbBRP-Z-mRzIFG8HLtbWlWJt_8oupaCjtjGH5NWfItAcEDMLcrqmW5zauS-bDurOAFKTcE2TNvmA4TEO8w5LiWCIvCs5s4ZuCEhtC_KQ_vTnkKWxaz-NJvtH5UhcLHBgSohmBN90RUTg2YreS_2DJw31WyhZAg1AOD8g6mcHBbGeuO4KQCVvCoW5LL85qr62bD84OxDJ9YTi9RIQ_BIkmTCZM';
 
 const TheaterLocator: React.FC = () => {
   const [query, setQuery] = useState('');
@@ -49,7 +50,7 @@ const TheaterLocator: React.FC = () => {
           <div className={styles.mapWrapper}>
             <img
               className={styles.mapImg}
-              src={HERO_MOVIE.mapImageUrl}
+              src={MAP_IMAGE_URL}
               alt="Map showing nearby Cineplex theater locations"
               loading="lazy"
             />

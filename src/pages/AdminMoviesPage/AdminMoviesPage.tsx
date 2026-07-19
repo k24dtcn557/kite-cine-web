@@ -1,60 +1,79 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminMoviesPage.module.css";
-import { MovieCard, MovieData } from "./components";
+import { MovieCard } from "./components";
+import { movieService, MovieDto } from "../../api/movie.service";
 
-const MOVIES_DATA: MovieData[] = [
-  {
-    id: 1,
-    title: "Neon Horizon",
-    genre: "Sci-Fi",
-    duration: "2h 24m",
-    year: "2024",
-    posterUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDlUg_5W-X5ay04jhb5f_sREHGgSLkZtFcvYY1NW5BbnKo-w2TLrErZNLdRMRxkm6d_Njl0mrpGzfqhcYxpOBtrltYt-c3U3zfg6PktJd0YgoftvUHKAYDFVNiKhZdoFox0p4vSbEdD1EzazrKlO6SjeehQgjpcYIGwxOZ9Z51UvJJpY0BbhtBzDBu25XqHZlVuokU1BTUBY7lGtLTCAN-F7c4uK8aL3YcSovFmvO1I6-6FHwHFIeZT",
-    status: "NOW SHOWING",
-    ticketSales: "$42,300",
-    salesGrowth: "+15%",
-    imdbRating: "8.7",
-  },
-  {
-    id: 2,
-    title: "Shadow Waltz",
-    genre: "Thriller",
-    duration: "1h 55m",
-    year: "Oct 2024",
-    posterUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCIgUMn4CybnZPR2eTS_TFnkVzF7zFEzruxrQwDGN7cJHU7Zi-HKc_-Oq751zDDDb8CmCcphPyjFAI8_ECWkNlUUSH_fUug692dhvftZmoVDkpelJAsiEHedrqUfCWj6eX0xJb_lFRHxMdFMhKWHFJZORVBw8c2BSgVdpT1s5NQIhFjCrNzj3lQl83GHHzuuSn8J2D1FnGvm0awN7w9GRTsvPY6TGrqk9Cq3tUi4wouI47Xd3xwZXb0",
-    status: "COMING SOON",
-    ticketSales: "$0",
-    salesGrowth: "0%",
-    imdbRating: "N/A",
-  },
+const FILTER_TABS = [
+  "Tất cả",
+  "Nổi bật",
+  "Đang chiếu",
+  "Sắp ra mắt",
+  "Lưu trữ",
+  "Bản nháp",
 ];
 
-const FILTER_TABS = ["All Movies", "Now Showing", "Coming Soon", "Archived"];
+const getStatusQuery = (tab: string) => {
+  if (tab === "Đang chiếu") return "NOW_SHOWING";
+  if (tab === "Sắp ra mắt") return "COMING_SOON";
+  if (tab === "Lưu trữ") return "ARCHIVED";
+  if (tab === "Bản nháp") return "DRAFT";
+  return undefined;
+};
 
 const AdminMoviesPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("All Movies");
+  const [activeTab, setActiveTab] = useState("Tất cả");
+  const [movies, setMovies] = useState<MovieDto[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const navigate = useNavigate();
+
+  // Reset page when tab changes
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [activeTab]);
+
+  useEffect(() => {
+    fetchMovies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, currentPage]);
+
+  const fetchMovies = async () => {
+    setLoading(true);
+    try {
+      const result = await movieService.searchMovies({
+        page: currentPage,
+        size: 10,
+        status: getStatusQuery(activeTab),
+        highlighted: activeTab === "Nổi bật" ? true : undefined,
+      });
+
+      setTotalPages(result.totalPages);
+      setMovies(result.data || []);
+    } catch (error) {
+      console.error("Failed to fetch movies", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h2 className={styles.title}>Movie Catalog</h2>
+          <h2 className={styles.title}>Danh sách phim</h2>
           <p className={styles.subtitle}>
-            Manage global movie metadata, showtimes, and distribution analytics.
+            Quản lý thông tin phim, lịch chiếu và thống kê doanh thu.
           </p>
         </div>
         <div className={styles.actions}>
-          <button className={styles.filterBtn}>
-            <span className="material-symbols-outlined">filter_list</span>
-            Advanced Filters
-          </button>
-          <button className={styles.addBtn} onClick={() => navigate('/admin/movies/new')}>
+          <button
+            className={styles.addBtn}
+            onClick={() => navigate("/admin/movies/new")}
+          >
             <span className="material-symbols-outlined">add</span>
-            New Movie
+            Thêm phim mới
           </button>
         </div>
       </div>
@@ -63,28 +82,28 @@ const AdminMoviesPage: React.FC = () => {
       <div className={styles.statsGrid}>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span>Active Movies</span>
+            <span>Phim đang chiếu</span>
             <span className="material-symbols-outlined">theaters</span>
           </div>
           <p className={styles.statValue}>24</p>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span>Ticket Sales</span>
+            <span>Doanh thu vé</span>
             <span className="material-symbols-outlined">payments</span>
           </div>
           <p className={styles.statValue}>$142.8k</p>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span>Avg Rating</span>
+            <span>Đánh giá TB</span>
             <span className="material-symbols-outlined">star</span>
           </div>
           <p className={styles.statValue}>4.8</p>
         </div>
         <div className={styles.statCard}>
           <div className={styles.statHeader}>
-            <span>Upcoming</span>
+            <span>Sắp ra mắt</span>
             <span className="material-symbols-outlined">upcoming</span>
           </div>
           <p className={styles.statValue}>12</p>
@@ -105,26 +124,60 @@ const AdminMoviesPage: React.FC = () => {
           ))}
         </div>
         <div className={styles.filterSelects}>
-          <select className={styles.filterSelect}>
-            <option>All Genres</option>
-            <option>Action</option>
-            <option>Drama</option>
-            <option>Sci-Fi</option>
-          </select>
-          <select className={styles.filterSelect}>
-            <option>All Locations</option>
-            <option>Downtown IMAX</option>
-            <option>Grand Plaza</option>
-            <option>Sunset Cinema</option>
-          </select>
+          <div className={styles.pagination}>
+            <button
+              className={styles.pageBtn}
+              disabled={loading || currentPage === 0}
+              onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+            >
+              <span className="material-symbols-outlined">chevron_left</span>
+            </button>
+            <span className={styles.pageInfo}>
+              Trang {currentPage + 1} / {Math.max(1, totalPages)}
+            </span>
+            <button
+              className={styles.pageBtn}
+              disabled={loading || currentPage >= Math.max(0, totalPages - 1)}
+              onClick={() =>
+                setCurrentPage((p) =>
+                  Math.min(Math.max(0, totalPages - 1), p + 1),
+                )
+              }
+            >
+              <span className="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Movies Grid */}
       <div className={styles.moviesGrid}>
-        {MOVIES_DATA.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
+        {loading ? (
+          <div className={styles.loadingState}>
+            <span className={`material-symbols-outlined ${styles.spinner}`}>
+              sync
+            </span>
+            <p>Đang tải phim...</p>
+          </div>
+        ) : movies.length > 0 ? (
+          movies.map((movie) => (
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onRefresh={() => fetchMovies()}
+            />
+          ))
+        ) : (
+          <div className={styles.emptyState}>
+            <span className={`material-symbols-outlined ${styles.emptyIcon}`}>
+              movie_filter
+            </span>
+            <p className={styles.emptyText}>Không tìm thấy phim nào.</p>
+            <p className={styles.emptySubtext}>
+              Vui lòng thử thay đổi bộ lọc hoặc thêm phim mới.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

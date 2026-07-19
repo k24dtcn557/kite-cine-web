@@ -1,12 +1,11 @@
-import React from 'react';
+import React from "react";
 import {
   Navbar,
   HeroSection,
   NowPlayingSection,
   ComingSoonSection,
-  TheaterLocator,
   Footer,
-} from '../../components';
+} from "../../components";
 
 const HomePage: React.FC = () => (
   <>
@@ -15,7 +14,6 @@ const HomePage: React.FC = () => (
       <HeroSection />
       <NowPlayingSection />
       <ComingSoonSection />
-      <TheaterLocator />
     </main>
     <Footer />
   </>
