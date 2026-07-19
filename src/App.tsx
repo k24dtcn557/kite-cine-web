@@ -10,6 +10,7 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminCinemasPage from "./pages/AdminCinemasPage";
 import AdminMoviesPage from "./pages/AdminMoviesPage";
 import AdminMovieFormPage from "./pages/AdminMovieFormPage";
+import AdminMovieShowtimesPage from "./pages/AdminMovieShowtimesPage";
 import DashboardPage from "./pages/DashboardPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
 import { ProtectedRoute } from "./components";
@@ -46,6 +47,7 @@ const App: React.FC = () => (
               <Route path="movies" element={<AdminMoviesPage />} />
               <Route path="movies/new" element={<AdminMovieFormPage />} />
               <Route path="movies/:id/edit" element={<AdminMovieFormPage />} />
+              <Route path="movies/:id/showtimes" element={<AdminMovieShowtimesPage />} />
             </Route>
           </Route>
 

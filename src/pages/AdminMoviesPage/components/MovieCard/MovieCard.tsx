@@ -111,6 +111,16 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onRefresh }) => {
                   <span className="material-symbols-outlined">edit</span> Sửa
                 </button>
                 <button
+                  className={styles.dropdownItem}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMenuOpen(false);
+                    navigate(`/admin/movies/${movie.id}/showtimes`);
+                  }}
+                >
+                  <span className="material-symbols-outlined">calendar_month</span> Lịch chiếu
+                </button>
+                <button
                   className={`${styles.dropdownItem} ${styles.danger}`}
                   onClick={(e) => {
                     e.stopPropagation();

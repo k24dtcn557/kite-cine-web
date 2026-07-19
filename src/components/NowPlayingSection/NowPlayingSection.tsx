@@ -49,13 +49,15 @@ const NowPlayingSection: React.FC = () => {
       </div>
 
       {/* Movie Grid */}
-      <div className={styles.grid}>
-        {loading ? (
-          <p className={styles.emptyState}>Đang tải phim...</p>
-        ) : (
+      <div className={`${styles.grid} ${loading ? styles.gridLoading : ""}`}>
+        {movies.length > 0 ? (
           <MovieCarousel movies={movies} onBook={handleBook} />
-        )}
-        {!loading && movies.length === 0 && (
+        ) : loading ? (
+          <div className={styles.loader}>
+            <div className={styles.spinner} />
+            <p>Đang tải phim...</p>
+          </div>
+        ) : (
           <p className={styles.emptyState}>
             Không tìm thấy phim nào cho thể loại này.
           </p>
