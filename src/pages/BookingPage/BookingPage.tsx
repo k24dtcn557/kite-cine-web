@@ -10,16 +10,26 @@ import { Navbar } from "../../components";
 import { cinemaService, SeatRowDto, SeatDto } from "../../api/cinema.service";
 import { MovieDto } from "../../api/movie.service";
 import { ShowTimeBriefDto } from "../../api/show-time.service";
+import { ticketService, TicketDto } from "../../api/ticket.service";
+import { toast } from "react-hot-toast";
+import { CommonUtils } from "../../utils/CommonUtils";
+import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
+
+const getSeatTypeLabel = (type: string) => {
+  return PRICE_MODEL_SEAT_TYPES.find((t) => t.type === type)?.label || type;
+};
 
 const BookingPage: React.FC = () => {
   const { showtimeId } = useParams<{ showtimeId: string }>();
   const [searchParams] = useSearchParams();
-  const auditoriumId = searchParams.get("auditoriumId");
   const navigate = useNavigate();
   const location = useLocation();
 
   const movie = location.state?.movie as MovieDto | undefined;
   const cinemaName = location.state?.cinemaName as string | undefined;
+  const cinemaAddress = location.state?.cinemaAddress as string | undefined;
+  const auditoriumId = location.state?.auditoriumId as number | undefined;
+  const auditoriumName = location.state?.auditoriumName as string | undefined;
   const showtime = location.state?.showtime as ShowTimeBriefDto | undefined;
 
   const formatDateVN = (dateStr?: string) => {
@@ -48,41 +58,169 @@ const BookingPage: React.FC = () => {
 
   const [seatRows, setSeatRows] = useState<SeatRowDto[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedSeats, setSelectedSeats] = useState<SeatDto[]>([]);
+  const [selectedTickets, setSelectedTickets] = useState<TicketDto[]>([]);
+  const [bookedTickets, setBookedTickets] = useState<TicketDto[]>([]);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchSeats = async () => {
-      if (!auditoriumId) return;
+    if (selectedTickets.length === 0) {
+      setTimeLeft(null);
+      return;
+    }
+
+    const earliestTicket = selectedTickets.reduce((earliest, ticket) => {
+      return new Date(ticket.expirationTime) < new Date(earliest.expirationTime)
+        ? ticket
+        : earliest;
+    }, selectedTickets[0]);
+
+    const targetTime = new Date(earliestTicket.expirationTime).getTime();
+
+    const handleTimeout = async () => {
+      toast.error("Hết thời gian giữ ghế, vui lòng chọn lại!");
+      try {
+        await Promise.all(
+          selectedTickets.map((t) => ticketService.unreserveTicket(t.id)),
+        );
+      } catch (e) {
+        console.error("Failed to unreserve on timeout", e);
+      }
+      setSelectedTickets([]);
+
+      if (showtimeId) {
+        try {
+          const booked = await ticketService.getBookedTickets(
+            parseInt(showtimeId, 10),
+          );
+          setBookedTickets(booked || []);
+        } catch (e) {}
+      }
+    };
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const diff = targetTime - now;
+      if (diff <= 0) {
+        setTimeLeft(0);
+        return true; // Expired
+      }
+      setTimeLeft(Math.floor(diff / 1000));
+      return false; // Not expired
+    };
+
+    const isExpiredInitially = updateTimer();
+    if (isExpiredInitially) {
+      handleTimeout();
+      return;
+    }
+
+    const interval = setInterval(() => {
+      const expired = updateTimer();
+      if (expired) {
+        clearInterval(interval);
+        handleTimeout();
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedTickets, showtimeId]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      if (!auditoriumId || !showtimeId) return;
       try {
         setLoading(true);
-        const rows = await cinemaService.getAuditoriumSeats(
-          parseInt(auditoriumId, 10),
-        );
+        const [rows, holdings, booked] = await Promise.all([
+          cinemaService.getPublicAuditoriumSeats(auditoriumId),
+          ticketService.getMyHoldings(parseInt(showtimeId, 10)),
+          ticketService.getBookedTickets(parseInt(showtimeId, 10)),
+        ]);
         setSeatRows(rows || []);
+        setSelectedTickets(holdings || []);
+        setBookedTickets(booked || []);
       } catch (error) {
-        console.error("Failed to fetch seats", error);
+        console.error("Failed to fetch initial data", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSeats();
-  }, [auditoriumId]);
+    fetchInitialData();
+  }, [auditoriumId, showtimeId]);
 
-  const toggleSeat = (seat: SeatDto) => {
-    setSelectedSeats((prev) => {
-      const exists = prev.find((s) => s.id === seat.id);
-      if (exists) {
-        return prev.filter((s) => s.id !== seat.id);
-      } else {
-        return [...prev, seat];
+  const handleRemoveTicket = async (ticket: TicketDto) => {
+    const loadingToastId = toast.loading("Đang bỏ chọn ghế...");
+    try {
+      await ticketService.unreserveTicket(ticket.id);
+      setSelectedTickets((prev) => prev.filter((t) => t.id !== ticket.id));
+      toast.success(`Đã bỏ chọn ghế ${ticket.rowLetter}${ticket.seatNumber}`, {
+        id: loadingToastId,
+      });
+    } catch (error) {
+      console.error("Failed to unreserve ticket", error);
+      toast.error("Không thể bỏ chọn ghế. Vui lòng thử lại.", {
+        id: loadingToastId,
+      });
+    }
+  };
+
+  const toggleSeat = async (seat: SeatDto) => {
+    const isBooked = bookedTickets.some((t) => t.seatId === seat.id);
+    if (isBooked) {
+      toast.error("Ghế này đã có người đặt.");
+      return;
+    }
+
+    const exists = selectedTickets.find((t) => t.seatId === seat.id);
+    if (exists) {
+      handleRemoveTicket(exists);
+    } else {
+      if (!showtimeId) {
+        toast.error("Thiếu thông tin suất chiếu.");
+        return;
       }
-    });
+      const loadingToastId = toast.loading("Đang giữ chỗ...");
+      try {
+        const rawTicket = await ticketService.reserveSeat({
+          showtimeId: parseInt(showtimeId, 10),
+          seatId: seat.id,
+        });
+        const ticket: TicketDto = {
+          ...rawTicket,
+          rowLetter: rawTicket.rowLetter || seat.rowLetter,
+          seatNumber: rawTicket.seatNumber || String(seat.seatNumber),
+          seatType: rawTicket.seatType || seat.seatType,
+          purchasePrice: rawTicket.purchasePrice,
+        };
+        setSelectedTickets((prev) => [...prev, ticket]);
+        toast.success(`Đã chọn ghế ${seat.rowLetter}${seat.seatNumber}`, {
+          id: loadingToastId,
+        });
+      } catch (error) {
+        console.error("Failed to reserve seat", error);
+        toast.error("Ghế này đã có người đặt hoặc xảy ra lỗi.", {
+          id: loadingToastId,
+        });
+      }
+    }
   };
 
   const getSeatClass = (seat: SeatDto) => {
-    const isSelected = selectedSeats.some((s) => s.id === seat.id);
-    let classNames = [styles.seat, styles.seatAvailable];
+    const isSelected = selectedTickets.some((t) => t.seatId === seat.id);
+    const isBooked = bookedTickets.some((t) => t.seatId === seat.id);
+    let classNames = [styles.seat];
+
+    if (isBooked) {
+      classNames.push(styles.seatOccupied);
+    } else {
+      classNames.push(styles.seatAvailable);
+    }
 
     if (seat.seatType === "VIP") {
       classNames.push(styles.seatVip);
@@ -101,22 +239,36 @@ const BookingPage: React.FC = () => {
       }
     }
 
-    // We will add occupied logic later when the user provides the booked seats API
-    // if (isOccupied) { classNames.push(styles.seatOccupied); }
-
     return classNames.join(" ");
   };
 
   const getSeatContent = (seat: SeatDto) => {
+    const isBooked = bookedTickets.some((t) => t.seatId === seat.id);
     return (
       <>
-        <span className={styles.seatNumber}>{seat.seatNumber}</span>
-        {seat.seatType === "VIP" && (
+        {isBooked ? (
+          <span
+            className={`material-symbols-outlined ${styles.seatBadge}`}
+            style={{
+              fontSize: "1rem",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bottom: "auto",
+              right: "auto",
+            }}
+          >
+            close
+          </span>
+        ) : (
+          <span className={styles.seatNumber}>{seat.seatNumber}</span>
+        )}
+        {!isBooked && seat.seatType === "VIP" && (
           <span className={`material-symbols-outlined ${styles.seatBadge}`}>
             star
           </span>
         )}
-        {seat.seatType === "COUPLE" && (
+        {!isBooked && seat.seatType === "COUPLE" && (
           <span className={`material-symbols-outlined ${styles.seatBadge}`}>
             favorite
           </span>
@@ -126,14 +278,10 @@ const BookingPage: React.FC = () => {
   };
 
   const calculateTotal = () => {
-    // Placeholder prices
-    let total = 0;
-    selectedSeats.forEach((seat) => {
-      if (seat.seatType === "VIP") total += 24;
-      else if (seat.seatType === "COUPLE") total += 30;
-      else total += 15;
-    });
-    return total;
+    return selectedTickets.reduce(
+      (acc, ticket) => acc + ticket.purchasePrice,
+      0,
+    );
   };
 
   if (!auditoriumId) {
@@ -141,8 +289,44 @@ const BookingPage: React.FC = () => {
       <div className={styles.page}>
         <Navbar />
         <div className={styles.loadingState}>
-          <p>Thiếu thông tin phòng chiếu.</p>
-          <button onClick={() => navigate(-1)}>Quay lại</button>
+          <span
+            className="material-symbols-outlined"
+            style={{
+              fontSize: "4rem",
+              color: "var(--color-primary)",
+              marginBottom: "1rem",
+            }}
+          >
+            error
+          </span>
+          <h2
+            style={{
+              color: "var(--color-on-surface)",
+              marginBottom: "0.5rem",
+              fontSize: "1.5rem",
+            }}
+          >
+            Thiếu thông tin phòng chiếu
+          </h2>
+          <p
+            style={{
+              color: "var(--color-on-surface-variant)",
+              marginBottom: "2rem",
+              textAlign: "center",
+              maxWidth: "400px",
+              lineHeight: "1.5",
+            }}
+          >
+            Không thể tải sơ đồ ghế ngồi do thiếu thông tin. Vui lòng quay lại
+            chọn lại suất chiếu!
+          </p>
+          <button
+            className={styles.proceedBtn}
+            onClick={() => navigate(-1)}
+            style={{ width: "auto", padding: "0.75rem 2.5rem" }}
+          >
+            Quay lại
+          </button>
         </div>
       </div>
     );
@@ -157,7 +341,7 @@ const BookingPage: React.FC = () => {
           {/* Screen Indicator */}
           <div className={styles.screenIndicatorWrapper}>
             <div className={styles.screenCurve}></div>
-            <p className={styles.screenText}>Màn hình</p>
+            <p className={styles.screenText}>Màn hình chiếu phim</p>
           </div>
 
           {/* Seat Map Area */}
@@ -193,38 +377,53 @@ const BookingPage: React.FC = () => {
 
           {/* Legend */}
           <div className={styles.legendArea}>
-            <div className={styles.legendItem}>
-              <div className={styles.legendBoxAvailable}></div>
-              <span>Trống</span>
-            </div>
-            <div className={styles.legendItem}>
-              <div className={styles.legendBoxSelected}></div>
-              <span>Đang chọn</span>
-            </div>
-            <div className={styles.legendItem}>
-              <div className={styles.legendBoxOccupied}>
-                <span
-                  className={`material-symbols-outlined ${styles.legendIcon}`}
-                >
-                  close
-                </span>
+            <div
+              style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}
+            >
+              <div className={styles.legendItem}>
+                <div className={styles.legendBoxSelected}></div>
+                <span>Đang chọn</span>
               </div>
-              <span>Đã bán</span>
-            </div>
-            <div className={styles.legendDivider}></div>
-            <div className={styles.legendItem}>
-              <div className={styles.legendBoxVip}>
-                <span
-                  className={`material-symbols-outlined ${styles.legendIconVip}`}
+              <div className={styles.legendItem}>
+                <div
+                  className={`${styles.legendBoxOccupied} ${styles.seatOccupied}`}
                 >
-                  star
-                </span>
+                  <span
+                    className={`material-symbols-outlined ${styles.legendIcon}`}
+                  >
+                    close
+                  </span>
+                </div>
+                <span>Đã bán</span>
               </div>
-              <span>VIP</span>
             </div>
-            <div className={styles.legendItem}>
-              <div className={styles.legendBoxCouple}></div>
-              <span>Couple</span>
+
+            <div
+              style={{
+                marginLeft: "auto",
+                display: "flex",
+                gap: "1.5rem",
+                alignItems: "center",
+              }}
+            >
+              <div className={styles.legendItem}>
+                <div className={styles.legendBoxAvailable}></div>
+                <span>{getSeatTypeLabel("STANDARD")}</span>
+              </div>
+              <div className={styles.legendItem}>
+                <div className={styles.legendBoxVip}>
+                  <span
+                    className={`material-symbols-outlined ${styles.legendIconVip}`}
+                  >
+                    star
+                  </span>
+                </div>
+                <span>{getSeatTypeLabel("VIP")}</span>
+              </div>
+              <div className={styles.legendItem}>
+                <div className={styles.legendBoxCouple}></div>
+                <span>{getSeatTypeLabel("COUPLE")}</span>
+              </div>
             </div>
           </div>
         </section>
@@ -241,17 +440,42 @@ const BookingPage: React.FC = () => {
                 }}
               ></div>
               <div className={styles.movieDetails}>
-                <h2 className={styles.movieTitle}>
-                  {movie?.title || "Phim đang chọn"}
-                </h2>
-                <p className={styles.movieDetailText}>
+                <h2 className={styles.movieTitle}>{movie?.title}</h2>
+                <div
+                  className={styles.movieDetailText}
+                  style={{ alignItems: "flex-start" }}
+                >
                   <span
                     className={`material-symbols-outlined ${styles.movieDetailIcon}`}
+                    style={{ marginTop: "2px" }}
                   >
                     location_on
                   </span>
-                  {cinemaName || "Cineplex"}
-                </p>
+                  <div>
+                    <div>{cinemaName || "Cineplex"}</div>
+                    {cinemaAddress && (
+                      <div
+                        style={{
+                          fontSize: "0.85em",
+                          opacity: 0.8,
+                          marginTop: "2px",
+                        }}
+                      >
+                        {cinemaAddress}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {auditoriumName && (
+                  <p className={styles.movieDetailText}>
+                    <span
+                      className={`material-symbols-outlined ${styles.movieDetailIcon}`}
+                    >
+                      meeting_room
+                    </span>
+                    Phòng {auditoriumName}
+                  </p>
+                )}
                 <p className={styles.movieDetailText}>
                   <span
                     className={`material-symbols-outlined ${styles.movieDetailIcon}`}
@@ -266,18 +490,50 @@ const BookingPage: React.FC = () => {
                   >
                     schedule
                   </span>
+                  Suất{" "}
                   {showtime?.startTime
                     ? showtime.startTime.substring(0, 5)
-                    : "Giờ chiếu"}
+                    : ""}
                 </p>
               </div>
             </div>
 
             {/* Ticket Summary */}
             <div className={styles.ticketSummarySection}>
-              <h3 className={styles.ticketSummaryTitle}>Vé đang chọn</h3>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "1rem",
+                }}
+              >
+                <h3 className={styles.ticketSummaryTitle} style={{ margin: 0 }}>
+                  Vé đang chọn
+                </h3>
+                {timeLeft !== null && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.25rem",
+                      color: "var(--color-primary)",
+                    }}
+                  >
+                    <span style={{ fontWeight: "bold", fontSize: "1.2rem" }}>
+                      {formatTime(timeLeft)}
+                    </span>
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: "1.2rem" }}
+                    >
+                      timer
+                    </span>
+                  </div>
+                )}
+              </div>
               <ul className={styles.ticketList}>
-                {selectedSeats.length === 0 ? (
+                {selectedTickets.length === 0 ? (
                   <li
                     style={{
                       color: "var(--color-on-surface-variant)",
@@ -287,26 +543,42 @@ const BookingPage: React.FC = () => {
                     Chưa có ghế nào được chọn.
                   </li>
                 ) : (
-                  selectedSeats.map((seat) => (
-                    <li key={seat.id} className={styles.ticketItem}>
+                  selectedTickets.map((ticket) => (
+                    <li key={ticket.id} className={styles.ticketItem}>
                       <div>
                         <span className={styles.ticketSeatId}>
-                          Ghế {seat.rowLetter}
-                          {seat.seatNumber}
+                          Ghế {ticket.rowLetter}
+                          {ticket.seatNumber}
                         </span>
                         <span className={styles.ticketSeatType}>
-                          {seat.seatType}
+                          {getSeatTypeLabel(ticket.seatType)}
                         </span>
                       </div>
-                      <span className={styles.ticketPrice}>
-                        $
-                        {seat.seatType === "VIP"
-                          ? 24
-                          : seat.seatType === "COUPLE"
-                            ? 30
-                            : 15}
-                        .00
-                      </span>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <span className={styles.ticketPrice}>
+                          {CommonUtils.formatNumberVietnamese(
+                            ticket.purchasePrice,
+                          )}
+                        </span>
+                        <button
+                          className={styles.removeBtn}
+                          onClick={() => handleRemoveTicket(ticket)}
+                          aria-label="Bỏ chọn vé"
+                        >
+                          <span
+                            className="material-symbols-outlined"
+                            style={{ fontSize: "1.25rem" }}
+                          >
+                            delete
+                          </span>
+                        </button>
+                      </div>
                     </li>
                   ))
                 )}
@@ -318,12 +590,17 @@ const BookingPage: React.FC = () => {
               <div className={styles.totalsRow}>
                 <span className={styles.totalLabel}>Tổng cộng</span>
                 <span className={styles.totalValue}>
-                  ${calculateTotal().toFixed(2)}
+                  {CommonUtils.formatNumberVietnamese(calculateTotal())}
                 </span>
               </div>
               <button
                 className={styles.proceedBtn}
-                disabled={selectedSeats.length === 0}
+                disabled={selectedTickets.length === 0}
+                onClick={() =>
+                  navigate("/checkout", {
+                    state: { movie, cinemaName, showtime, selectedTickets },
+                  })
+                }
               >
                 Thanh toán
                 <span className="material-symbols-outlined">arrow_forward</span>

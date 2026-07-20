@@ -131,19 +131,19 @@ const MovieShowtimes: React.FC<Props> = ({ movieId, movie }) => {
                           key={st.id}
                           className={styles.timeBtn}
                           onClick={() =>
-                            navigate(
-                              `/booking/${st.id}?auditoriumId=${auditorium.id}`,
-                              {
-                                state: {
-                                  movie,
-                                  cinemaName: cinema.name,
-                                  showtime: {
-                                    ...st,
-                                    date: st.date,
-                                  },
+                            navigate(`/booking/${st.id}`, {
+                              state: {
+                                movie,
+                                cinemaName: cinema.name,
+                                cinemaAddress: cinema.address,
+                                auditoriumId: auditorium.id,
+                                auditoriumName: auditorium.name,
+                                showtime: {
+                                  ...st,
+                                  date: st.date,
                                 },
                               },
-                            )
+                            })
                           }
                         >
                           {st.startTime

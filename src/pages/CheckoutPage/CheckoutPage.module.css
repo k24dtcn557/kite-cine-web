@@ -1,0 +1,496 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+}
+
+.mainContent {
+  flex-grow: 1;
+  padding-top: 8rem;
+  padding-bottom: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .mainContent {
+    padding-left: var(--layout-margin);
+    padding-right: var(--layout-margin);
+  }
+}
+
+@media (min-width: 1024px) {
+  .mainContent {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.leftColumn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .leftColumn {
+    width: auto;
+    flex: 7; /* roughly matching lg:col-span-7 */
+    min-width: 0;
+  }
+}
+
+.rightColumn {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .rightColumn {
+    flex: 5; /* roughly matching lg:col-span-5 */
+    flex-shrink: 0;
+  }
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.timerPill {
+  background: color-mix(in srgb, var(--color-surface-container) 80%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-outline-variant);
+}
+
+.timerIcon {
+  color: var(--color-primary-container);
+  font-size: 0.875rem;
+}
+
+.timerText {
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  letter-spacing: 0.05em;
+}
+
+.timerTime {
+  color: var(--color-on-surface);
+  font-weight: 700;
+  margin-left: 0.25rem;
+}
+
+.glassPanel {
+  background: color-mix(in srgb, var(--color-surface-container) 80%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.stickyPanel {
+  position: sticky;
+  top: 8rem;
+  overflow: hidden;
+  padding: 0; /* Removing padding for banner */
+  display: flex;
+  flex-direction: column;
+}
+
+.panelTitle {
+  font-family: var(--font-title-lg, Inter);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.panelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.panelIcons {
+  display: flex;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.expressButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .expressButtons {
+    flex-direction: row;
+  }
+}
+
+.btnApplePay {
+  flex: 1;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 9999px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.btnApplePay:hover {
+  opacity: 0.9;
+}
+
+.btnGooglePay {
+  flex: 1;
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-on-surface);
+  border-radius: 9999px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+}
+
+.btnGooglePay:hover {
+  background-color: var(--color-surface-bright);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.dividerLine {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
+  flex-grow: 1;
+}
+
+.dividerText {
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: block;
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.5rem;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.inputField {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-on-surface);
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  font-family: var(--font-body-base, Inter);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.inputField:focus {
+  outline: none;
+  border-bottom-color: var(--color-secondary);
+  box-shadow: 0 1px 0 0 var(--color-secondary);
+}
+
+.inputField::placeholder {
+  color: rgba(255, 218, 213, 0.4);
+}
+
+.inputIcon {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.promoContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .promoContainer {
+    flex-direction: row;
+  }
+}
+
+.btnApply {
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-on-surface);
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s;
+  font-size: 0.875rem;
+}
+
+.btnApply:hover {
+  background-color: var(--color-surface-bright);
+}
+
+/* Order Summary */
+.movieBanner {
+  position: relative;
+  height: 12rem;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.movieBannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+}
+
+.movieBannerContent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.movieTag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 0.5rem;
+}
+
+.movieBannerTitle {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.summaryBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sessionInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.infoLabel {
+  display: block;
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.25rem;
+}
+
+.infoValue {
+  display: block;
+  font-family: var(--font-body-base, Inter);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.ticketsSection {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sectionLabel {
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 1rem;
+}
+
+.ticketList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.perforatedTicket {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: color-mix(in srgb, var(--color-surface-container) 80%, transparent);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  mask-image: radial-gradient(circle at 10px 50%, transparent 10px, black 11px);
+  mask-size: 100% 100%;
+  -webkit-mask-image: radial-gradient(circle at -5px 50%, transparent 10px, black 11px), radial-gradient(circle at calc(100% + 5px) 50%, transparent 10px, black 11px);
+  -webkit-mask-size: 51% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: left, right;
+}
+
+.ticketLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ticketIcon {
+  color: var(--color-primary-container);
+}
+
+.ticketSeatNumber {
+  font-family: var(--font-body-base, Inter);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.ticketType {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+}
+
+.ticketPrice {
+  font-family: var(--font-body-base, Inter);
+  font-size: 1rem;
+  color: var(--color-on-surface);
+}
+
+.totalsSection {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-body-sm, Inter);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+.finalTotalRow {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-title-lg, Inter);
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  padding-top: 0.5rem;
+  font-weight: 600;
+}
+
+.btnPurchase {
+  width: 100%;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  font-weight: 700;
+  padding: 1rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btnPurchase:hover {
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
+  transform: scale(1.02);
+}
+
+.securityText {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.securityIcon {
+  font-size: 14px;
+}

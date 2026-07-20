@@ -151,7 +151,7 @@ export const movieService = {
   },
   viewMovieById: async (id: number): Promise<MovieDto> => {
     const response = await apiClient.get<ApiResponse<MovieDto>>(
-      `/kite-cine/movies/${id}`,
+      `/kite-cine/movies/${id}/detail`,
     );
     return response.data.result;
   },

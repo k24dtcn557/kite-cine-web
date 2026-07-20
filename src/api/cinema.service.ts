@@ -127,6 +127,12 @@ export const cinemaService = {
     // Handle both cases: wrapped in ApiResponse or direct array
     return (data as ApiResponse<SeatRowDto[]>).result;
   },
+  getPublicAuditoriumSeats: async (auditoriumId: number): Promise<SeatRowDto[]> => {
+    const response = await apiClient.get<ApiResponse<SeatRowDto[]>>(
+      `/kite-cine/auditoriums/${auditoriumId}/seats`
+    );
+    return response.data.result;
+  },
   addRow: async (payload: AddRowPayload): Promise<any> => {
     const response = await apiClient.post<ApiResponse<any>>(
       "/kite-cine/management/cinemas/auditoriums/seats/add-row",
