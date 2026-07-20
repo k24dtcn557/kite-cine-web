@@ -9,7 +9,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--gutter);
-  padding: 3rem var(--margin-desktop);
+  padding: 3rem var(--layout-margin);
   max-width: var(--container-max);
   margin: 0 auto;
 }
@@ -101,7 +101,7 @@
 
 /* ---- Copyright ---- */
 .copyright {
-  padding: 1.5rem var(--margin-desktop);
+  padding: 1.5rem var(--layout-margin);
   border-top: 1px solid rgba(94, 63, 59, 0.1);
   text-align: center;
 }

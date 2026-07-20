@@ -7,7 +7,7 @@
 
 @media (min-width: 768px) {
   .section {
-    padding: 5rem var(--margin-desktop);
+    padding: 5rem var(--layout-margin);
   }
 }
 

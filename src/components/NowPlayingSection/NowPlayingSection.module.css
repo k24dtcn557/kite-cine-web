@@ -1,5 +1,5 @@
 .section {
-  padding: 3rem var(--margin-desktop) 1.5rem;
+  padding: 3rem var(--layout-margin) 1.5rem;
   max-width: var(--container-max);
   margin: 0 auto;
   scroll-margin-top: 70px;

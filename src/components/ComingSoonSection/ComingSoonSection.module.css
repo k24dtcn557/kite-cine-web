@@ -5,7 +5,7 @@
 }
 
 .inner {
-  padding: 0 var(--margin-desktop);
+  padding: 0 var(--layout-margin);
   max-width: var(--container-max);
   margin: 0 auto;
 }
