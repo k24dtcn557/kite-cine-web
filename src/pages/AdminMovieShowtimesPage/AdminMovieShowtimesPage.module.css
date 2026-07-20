@@ -3,6 +3,8 @@
   flex-direction: column;
   gap: 2rem;
   animation: fadeIn 0.3s ease-out;
+  height: 100%;
+  overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -117,68 +119,50 @@
 }
 
 /* Movie Summary */
-.movieSummary {
+.movieCard {
   display: flex;
   gap: 1rem;
-}
-
-.posterWrapper {
-  width: 6rem;
-  height: 9rem;
-  flex-shrink: 0;
-  border-radius: var(--radius-lg, 0.5rem);
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.posterImg {
+  background-color: var(--color-surface-container-low);
+  padding: 1rem;
+  border-radius: 16px;
   width: 100%;
   height: 100%;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.moviePoster {
+  width: 80px;
+  height: 120px;
+  border-radius: 8px;
   object-fit: cover;
 }
 
 .movieInfo {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 0;
 }
 
-.movieTitle {
-  font-family: var(--font-headline-md, Montserrat);
-  font-size: 1.5rem;
-  font-weight: 700;
+.movieInfo h3 {
+  margin: 0 0 0.5rem 0;
   color: var(--color-on-surface);
-  margin-bottom: 0.25rem;
-}
-
-.movieMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: var(--color-on-surface-variant);
-  font-family: var(--font-body-sm, Inter);
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-}
-
-.ratingBadge {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 0.125rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.625rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
-.movieDesc {
-  font-family: var(--font-body-sm, Inter);
-  font-size: 0.875rem;
-  color: var(--color-on-surface-variant);
+  font-family: var(--font-headline);
+  font-size: 1rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movieInfo p {
+  margin: 0;
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
 }
 
 /* Config Controls */
@@ -486,4 +470,181 @@
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Date Selector Section */
+.dateSection {
+  background-color: var(--color-surface-container-low);
+  border-radius: 16px;
+  padding: 1.5rem;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.sectionTitle {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  margin: 0 0 1rem 0;
+}
+
+.sectionSubtitle {
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+  margin: -0.5rem 0 1rem 0;
+}
+
+.dateScroller {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.dateScroller::-webkit-scrollbar {
+  height: 6px;
+}
+.dateScroller::-webkit-scrollbar-thumb {
+  background-color: var(--color-surface-container-highest);
+  border-radius: 4px;
+}
+
+.dateItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  height: 90px;
+  border-radius: 12px;
+  background-color: var(--color-surface-container-high);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dateItem:hover {
+  background-color: var(--color-surface-container-highest);
+}
+
+.dateItemSelected,
+.dateItemSelected:hover {
+  background-color: var(--color-primary);
+}
+
+.dateItemSelected .dayName,
+.dateItemSelected .dayNumber {
+  color: var(--color-on-primary);
+}
+
+.dayName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.25rem;
+}
+
+.dayNumber {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  font-family: var(--font-headline);
+}
+
+.monthName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
+/* Nested Showtimes List */
+.cinemaList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.75rem;
+  padding-bottom: 2rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface-container-low);
+  border-radius: 16px;
+  padding: 3rem;
+  color: var(--color-on-surface-variant);
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.cinemaGroup {
+  background-color: var(--color-surface-container-low);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cinemaName {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-surface-variant);
+}
+
+.auditoriumList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auditoriumGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auditoriumName {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+  font-weight: 600;
+}
+
+.showtimeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.timeChip {
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface);
+  border: 1px solid var(--color-outline-variant);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-family: var(--font-headline);
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.timeChip:hover {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border-color: var(--color-primary);
 }

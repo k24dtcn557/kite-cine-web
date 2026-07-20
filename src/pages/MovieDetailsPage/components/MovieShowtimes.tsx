@@ -1,17 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./MovieShowtimes.module.css";
+import {
+  showTimeService,
+  CinemaShowtimesDto,
+} from "../../../api/show-time.service";
+import { MovieDto } from "../../../api/movie.service";
 
-const MOCK_DATES = [
-  { day: "Today", date: "24", month: "OCT" },
-  { day: "Fri", date: "25", month: "OCT" },
-  { day: "Sat", date: "26", month: "OCT" },
-  { day: "Sun", date: "27", month: "OCT" },
-  { day: "Mon", date: "28", month: "OCT" },
-  { day: "Tue", date: "29", month: "OCT" },
-];
+interface Props {
+  movieId: number;
+  movie: MovieDto;
+}
 
-const MovieShowtimes: React.FC = () => {
-  const [activeDate, setActiveDate] = useState("24");
+const MovieShowtimes: React.FC<Props> = ({ movieId, movie }) => {
+  const navigate = useNavigate();
+  // Generate 14 days for the date picker
+  const dates = Array.from({ length: 14 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+
+  const getDayName = (date: Date, index: number) => {
+    if (index === 0) return "Hôm nay";
+    const days = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+    return days[date.getDay()];
+  };
+
+  const [activeDate, setActiveDate] = useState<Date>(dates[0]);
+  const [cinemaShowtimes, setCinemaShowtimes] = useState<CinemaShowtimesDto[]>(
+    [],
+  );
+
+  useEffect(() => {
+    const fetchShowtimes = async () => {
+      try {
+        const yyyy = activeDate.getFullYear();
+        const mm = String(activeDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(activeDate.getDate()).padStart(2, "0");
+        const dateString = `${yyyy}-${mm}-${dd}`;
+
+        const data = await showTimeService.getPublicShowTimesByMovieAndDate(
+          movieId,
+          dateString,
+        );
+        setCinemaShowtimes(data || []);
+      } catch (error) {
+        console.error("Failed to fetch showtimes", error);
+      }
+    };
+    fetchShowtimes();
+  }, [movieId, activeDate]);
+
+  const handleDateSelect = (date: Date) => {
+    setActiveDate(date);
+  };
 
   return (
     <section id="showtimes" className={styles.section}>
@@ -19,71 +62,102 @@ const MovieShowtimes: React.FC = () => {
 
       {/* Date Picker */}
       <div className={styles.datePicker}>
-        {MOCK_DATES.map((d) => (
-          <button
-            key={d.date}
-            className={`${styles.dateBtn} ${
-              activeDate === d.date ? styles.dateBtnActive : ""
-            }`}
-            onClick={() => setActiveDate(d.date)}
-            aria-pressed={activeDate === d.date}
-          >
-            <span className={styles.dayLabel}>{d.day}</span>
-            <span className={styles.dateLabel}>{d.date}</span>
-            <span className={styles.monthLabel}>{d.month}</span>
-          </button>
-        ))}
+        {dates.map((date, idx) => {
+          const isSelected =
+            activeDate.getDate() === date.getDate() &&
+            activeDate.getMonth() === date.getMonth();
+          return (
+            <button
+              key={idx}
+              className={`${styles.dateBtn} ${
+                isSelected ? styles.dateBtnActive : ""
+              }`}
+              onClick={() => handleDateSelect(date)}
+              aria-pressed={isSelected}
+            >
+              <span className={styles.dayLabel}>{getDayName(date, idx)}</span>
+              <span className={styles.dateLabel}>{date.getDate()}</span>
+              <span className={styles.monthLabel}>Th{date.getMonth() + 1}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Theater Groups */}
       <div>
-        <div className={styles.theaterCard}>
-          <div className={styles.theaterHeader}>
-            <div>
-              <h3 className={styles.theaterName}>
-                Cineplex Grand Emporium
-                <span className={styles.luxuryBadge}>Luxury</span>
-              </h3>
-              <div className={styles.theaterLocation}>
-                <span
-                  className={`material-symbols-outlined ${styles.locationIcon}`}
+        {cinemaShowtimes.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "2rem",
+              color: "var(--color-on-surface-variant)",
+            }}
+          >
+            <p>Không có suất chiếu nào vào ngày này.</p>
+          </div>
+        ) : (
+          cinemaShowtimes.map((cinema) => (
+            <div key={cinema.id} className={styles.theaterCard}>
+              <div className={styles.theaterHeader}>
+                <div>
+                  <h3 className={styles.theaterName}>{cinema.name}</h3>
+                  <div className={styles.theaterLocation}>
+                    <span
+                      className={`material-symbols-outlined ${styles.locationIcon}`}
+                    >
+                      location_on
+                    </span>
+                    {cinema.address}
+                  </div>
+                </div>
+                <button
+                  className={styles.infoBtn}
+                  aria-label="Theater Information"
                 >
-                  location_on
-                </span>
-                5.2 miles away • Hollywood Blvd
+                  <span className="material-symbols-outlined">info</span>
+                </button>
               </div>
-            </div>
-            <button className={styles.infoBtn} aria-label="Theater Information">
-              <span className="material-symbols-outlined">info</span>
-            </button>
-          </div>
 
-          <div className={styles.showtimeRow}>
-            <div className={styles.formatLabel}>IMAX 3D</div>
-            <div className={styles.timesGrid}>
-              <button className={`${styles.timeBtn} ${styles.timeBtnImax}`}>
-                14:20
-              </button>
-              <button className={`${styles.timeBtn} ${styles.timeBtnImax}`}>
-                17:45
-              </button>
-              <button className={`${styles.timeBtn} ${styles.timeBtnImax}`}>
-                21:00
-              </button>
+              {cinema.auditoriums.map((auditorium, idx) => (
+                <React.Fragment key={auditorium.id}>
+                  {idx > 0 && <div className={styles.divider} />}
+                  <div className={styles.showtimeRow}>
+                    <div className={styles.formatLabel}>
+                      {auditorium.type || auditorium.name}
+                    </div>
+                    <div className={styles.timesGrid}>
+                      {auditorium.showTimes.map((st) => (
+                        <button
+                          key={st.id}
+                          className={styles.timeBtn}
+                          onClick={() =>
+                            navigate(
+                              `/booking/${st.id}?auditoriumId=${auditorium.id}`,
+                              {
+                                state: {
+                                  movie,
+                                  cinemaName: cinema.name,
+                                  showtime: {
+                                    ...st,
+                                    date: st.date,
+                                  },
+                                },
+                              },
+                            )
+                          }
+                        >
+                          {st.startTime
+                            ? st.startTime.substring(0, 5)
+                            : "00:00"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </React.Fragment>
+              ))}
             </div>
-          </div>
-
-          <div className={styles.divider} />
-
-          <div className={styles.showtimeRow}>
-            <div className={styles.formatLabel}>Standard</div>
-            <div className={styles.timesGrid}>
-              <button className={styles.timeBtn}>10:30</button>
-              <button className={styles.timeBtn}>13:15</button>
-              <button className={styles.timeBtn}>16:40</button>
-            </div>
-          </div>
-        </div>
+          ))
+        )}
       </div>
     </section>
   );

@@ -118,7 +118,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onRefresh }) => {
                     navigate(`/admin/movies/${movie.id}/showtimes`);
                   }}
                 >
-                  <span className="material-symbols-outlined">calendar_month</span> Lịch chiếu
+                  <span className="material-symbols-outlined">
+                    calendar_month
+                  </span>{" "}
+                  Lịch chiếu
                 </button>
                 <button
                   className={`${styles.dropdownItem} ${styles.danger}`}
@@ -157,7 +160,12 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onRefresh }) => {
         </div>
 
         <div className={styles.cardActions}>
-          <button className={styles.manageBtn}>Manage Showtimes</button>
+          <button
+            className={styles.manageBtn}
+            onClick={() => navigate(`/admin/movies/${movie.id}/showtimes`)}
+          >
+            Lịch chiếu
+          </button>
           <button className={styles.analyticsBtn}>
             <span className="material-symbols-outlined">bar_chart</span>
           </button>

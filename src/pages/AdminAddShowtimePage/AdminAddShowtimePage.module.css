@@ -1,0 +1,487 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 0.75rem;
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.breadcrumbLink {
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: var(--color-primary);
+}
+
+.breadcrumbIcon {
+  color: var(--color-on-surface-variant);
+  font-size: 1rem !important;
+}
+
+.breadcrumbCurrent {
+  color: var(--color-on-surface);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+/* Top Section: Context */
+.topSection {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.movieCard {
+  display: flex;
+  gap: 1rem;
+  background-color: var(--color-surface-container-low);
+  padding: 1rem;
+  border-radius: 16px;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.moviePoster {
+  width: 80px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.movieInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.movieInfo h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-on-surface);
+  font-family: var(--font-headline);
+  font-size: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.movieInfo p {
+  margin: 0;
+  color: var(--color-on-surface-variant);
+  font-size: 0.875rem;
+}
+
+.rightCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.selectorsCard {
+  display: flex;
+  gap: 2rem;
+  background-color: var(--color-surface-container-low);
+  padding: 1.5rem;
+  border-radius: 16px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+}
+
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.selectField {
+  width: 100%;
+  appearance: none;
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-on-surface);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.priceList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.priceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.priceType {
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+}
+
+.priceValue {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.selectField:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.selectField:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.selectIcon {
+  position: absolute;
+  right: 1rem;
+  color: var(--color-on-surface-variant);
+  pointer-events: none;
+}
+
+/* Date Selector Section */
+.dateSection {
+  background-color: var(--color-surface-container-low);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  margin: 0 0 1rem 0;
+}
+
+.sectionSubtitle {
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+  margin: -0.5rem 0 1rem 0;
+}
+
+.dateScroller {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.dateScroller::-webkit-scrollbar {
+  height: 6px;
+}
+.dateScroller::-webkit-scrollbar-thumb {
+  background-color: var(--color-surface-container-highest);
+  border-radius: 4px;
+}
+
+.dateItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+  height: 90px;
+  border-radius: 12px;
+  background-color: var(--color-surface-container-high);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dateItem:hover {
+  background-color: var(--color-surface-container-highest);
+}
+
+.dateItemSelected,
+.dateItemSelected:hover {
+  background-color: var(--color-primary);
+}
+
+.dateItemSelected .dayName,
+.dateItemSelected .dayNumber {
+  color: var(--color-on-primary);
+}
+
+.dayName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.25rem;
+}
+
+.dayNumber {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  font-family: var(--font-headline);
+}
+
+.monthText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
+/* Gantt Chart Section */
+.ganttSection {
+  background-color: var(--color-surface-container-low);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.ganttContainer {
+  margin-top: 2rem;
+  position: relative;
+}
+
+.ganttHeader {
+  position: relative;
+  height: 40px;
+  border-bottom: 1px solid var(--color-outline-variant);
+  margin-bottom: 0.5rem;
+}
+
+.timeTick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--color-outline-variant);
+}
+
+.timeTickMajor {
+  height: 12px;
+  background-color: var(--color-outline);
+}
+
+.timeTickMinor {
+  height: 6px;
+}
+
+.timeMarkerText {
+  position: absolute;
+  bottom: 16px;
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  font-weight: 500;
+  transform: translateX(-50%);
+}
+
+.ganttRow {
+  position: relative;
+  height: 60px;
+  background-color: var(--color-surface-container-high);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ganttRow:hover {
+  background-color: var(--color-surface-container-highest);
+}
+
+.occupiedSlot {
+  position: absolute;
+  top: 4px;
+  height: 52px;
+  background-color: var(--color-primary-container);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slotContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.slotTitleText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-on-primary-container);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slotTimeText {
+  font-size: 0.65rem;
+  color: var(--color-on-primary-container);
+  opacity: 0.8;
+}
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-on-surface-variant);
+}
+
+.spinner {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background-color: var(--color-surface);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.confirmDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  color: var(--color-on-surface);
+}
+
+.confirmDetails p {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--color-outline-variant);
+  padding-bottom: 0.25rem;
+}
+
+.confirmDetails strong {
+  color: var(--color-on-surface-variant);
+  font-weight: 600;
+}
+
+.modalActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btnCancel {
+  background-color: var(--color-surface-container);
+  color: var(--color-on-surface);
+}
+
+.btnCancel:hover:not(:disabled) {
+  background-color: var(--color-surface-container-highest);
+}
+
+.btnPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.btnPrimary:hover:not(:disabled) {
+  opacity: 0.9;
+}

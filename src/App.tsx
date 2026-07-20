@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
@@ -11,8 +11,11 @@ import AdminCinemasPage from "./pages/AdminCinemasPage";
 import AdminMoviesPage from "./pages/AdminMoviesPage";
 import AdminMovieFormPage from "./pages/AdminMovieFormPage";
 import AdminMovieShowtimesPage from "./pages/AdminMovieShowtimesPage";
+import AdminAddShowtimePage from "./pages/AdminAddShowtimePage";
+import AdminPriceModelPage from "./pages/AdminPriceModelPage";
 import DashboardPage from "./pages/DashboardPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
+import BookingPage from "./pages/BookingPage";
 import { ProtectedRoute } from "./components";
 import { AuthProvider } from "./contexts";
 import { Toaster } from "react-hot-toast";
@@ -38,16 +41,25 @@ const App: React.FC = () => (
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/movies/:id" element={<MovieDetailsPage />} />
+          <Route path="/booking/:showtimeId" element={<BookingPage />} />
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<ProtectedRoute />}>
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
               <Route path="cinemas" element={<AdminCinemasPage />} />
+              <Route path="price-models" element={<AdminPriceModelPage />} />
               <Route path="movies" element={<AdminMoviesPage />} />
               <Route path="movies/new" element={<AdminMovieFormPage />} />
               <Route path="movies/:id/edit" element={<AdminMovieFormPage />} />
-              <Route path="movies/:id/showtimes" element={<AdminMovieShowtimesPage />} />
+              <Route
+                path="movies/:id/showtimes"
+                element={<AdminMovieShowtimesPage />}
+              />
+              <Route
+                path="movies/:id/showtimes/add"
+                element={<AdminAddShowtimePage />}
+              />
             </Route>
           </Route>
 

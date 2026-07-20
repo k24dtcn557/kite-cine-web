@@ -147,7 +147,10 @@ export const cinemaService = {
       payload,
     );
   },
-  changeSeatType: async (payload: { ids: number[]; seatType: SeatType }): Promise<void> => {
+  changeSeatType: async (payload: {
+    ids: number[];
+    seatType: SeatType;
+  }): Promise<void> => {
     await apiClient.post(
       "/kite-cine/management/cinemas/auditoriums/seats/change-type",
       payload,

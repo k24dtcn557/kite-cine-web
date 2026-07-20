@@ -11,5 +11,6 @@ export { default as ForgotPasswordForm } from "./ForgotPasswordForm";
 export { default as UserSidebar } from "./UserSidebar/UserSidebar";
 export { default as UserTopbar } from "./UserTopbar/UserTopbar";
 export { default as AdminSidebar } from "./AdminSidebar";
+export { default as PriceModelComponent } from "./PriceModelComponent";
 export { default as AdminTopbar } from "./AdminTopbar";
 export { default as ProtectedRoute } from "./ProtectedRoute";

@@ -37,24 +37,35 @@ export class CommonUtils {
    */
   static getYouTubeEmbedUrl(url: string | undefined): string {
     if (!url) return "";
-    
+
     // Check if it's already an embed URL
     if (url.includes("youtube.com/embed/")) {
       return url;
     }
-    
+
     // Match watch?v= format
     const watchMatch = url.match(/[?&]v=([^&]+)/);
     if (watchMatch && watchMatch[1]) {
       return `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1`;
     }
-    
+
     // Match youtu.be/ format
     const shortMatch = url.match(/youtu\.be\/([^?]+)/);
     if (shortMatch && shortMatch[1]) {
       return `https://www.youtube.com/embed/${shortMatch[1]}?autoplay=1`;
     }
-    
+
     return url;
+  }
+
+  /**
+   * Formats a number to 0 decimal places in Vietnamese format (e.g., 10000 -> 10.000)
+   */
+  static formatNumberVietnamese(amount: number | undefined | null): string {
+    if (amount === undefined || amount === null || isNaN(amount)) return "";
+    return new Intl.NumberFormat("vi-VN", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   }
 }

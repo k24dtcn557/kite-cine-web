@@ -4,28 +4,37 @@ import styles from "./AdminMovieShowtimesPage.module.css";
 import { movieService, MovieDto } from "../../api/movie.service";
 import toast from "react-hot-toast";
 
-// Mock Data Types for Showtimes (Since API isn't built yet)
-interface ShowtimeSlot {
-  id: string;
-  time: string;
-  isImax: boolean;
-  is3d: boolean;
-  isRecurring: boolean;
-  price: number;
-}
-
-const MOCK_SLOTS: ShowtimeSlot[] = [
-  { id: "1", time: "14:30", isImax: true, is3d: true, isRecurring: true, price: 18.5 },
-  { id: "2", time: "18:00", isImax: false, is3d: false, isRecurring: false, price: 12.0 },
-  { id: "3", time: "21:15", isImax: true, is3d: false, isRecurring: true, price: 15.0 },
-];
+import {
+  showTimeService,
+  CinemaShowtimesDto,
+} from "../../api/show-time.service";
 
 const AdminMovieShowtimesPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [movie, setMovie] = useState<MovieDto | null>(null);
   const [loading, setLoading] = useState(true);
-  const [slots, setSlots] = useState<ShowtimeSlot[]>(MOCK_SLOTS);
+  const [cinemaShowtimes, setCinemaShowtimes] = useState<CinemaShowtimesDto[]>(
+    [],
+  );
+
+  // Generate 14 days for the weekly preview
+  const dates = Array.from({ length: 14 }).map((_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date);
+  };
+
+  const getDayName = (date: Date) => {
+    const days = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+    return days[date.getDay()];
+  };
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -44,18 +53,34 @@ const AdminMovieShowtimesPage: React.FC = () => {
     fetchMovie();
   }, [id, navigate]);
 
-  const handleSave = () => {
-    toast.success("Đã lưu cấu hình lịch chiếu (Mock)!");
-  };
+  useEffect(() => {
+    const fetchShowtimes = async () => {
+      try {
+        if (!id) return;
+        const yyyy = selectedDate.getFullYear();
+        const mm = String(selectedDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(selectedDate.getDate()).padStart(2, "0");
+        const dateString = `${yyyy}-${mm}-${dd}`;
 
-  const toggleRecurring = (slotId: string) => {
-    setSlots(slots.map(s => s.id === slotId ? { ...s, isRecurring: !s.isRecurring } : s));
-  };
+        const data = await showTimeService.getShowTimesByMovieAndDate(
+          parseInt(id),
+          dateString,
+        );
+        setCinemaShowtimes(data || []);
+      } catch (error) {
+        console.error("Failed to fetch showtimes", error);
+        toast.error("Không thể tải lịch chiếu");
+      }
+    };
+    fetchShowtimes();
+  }, [id, selectedDate]);
 
   if (loading) {
     return (
       <div className={styles.loadingState}>
-        <span className={`material-symbols-outlined ${styles.spinner}`}>sync</span>
+        <span className={`material-symbols-outlined ${styles.spinner}`}>
+          sync
+        </span>
         <p>Đang tải dữ liệu...</p>
       </div>
     );
@@ -69,147 +94,112 @@ const AdminMovieShowtimesPage: React.FC = () => {
       <div className={styles.header}>
         <div>
           <nav className={styles.breadcrumb}>
-            <span className={styles.breadcrumbLink} onClick={() => navigate("/admin")}>Admin</span>
-            <span className={`material-symbols-outlined ${styles.breadcrumbIcon}`}>chevron_right</span>
-            <span className={styles.breadcrumbLink} onClick={() => navigate("/admin/movies")}>Movies</span>
-            <span className={`material-symbols-outlined ${styles.breadcrumbIcon}`}>chevron_right</span>
-            <span className={styles.breadcrumbCurrent}>Showtimes</span>
+            <span
+              className={styles.breadcrumbLink}
+              onClick={() => navigate("/admin/movies")}
+            >
+              Danh sách Phim
+            </span>
+            <span
+              className={`material-symbols-outlined ${styles.breadcrumbIcon}`}
+            >
+              chevron_right
+            </span>
+            <span className={styles.breadcrumbCurrent}>Lịch chiếu</span>
           </nav>
-          <h1 className={styles.title}>Showtime Configuration</h1>
+          <h1 className={styles.title}>Quản lý Lịch chiếu</h1>
         </div>
-        <button className={styles.saveBtn} onClick={handleSave}>
-          Save Schedule
+        <button
+          className={styles.saveBtn}
+          onClick={() => navigate(`/admin/movies/${id}/showtimes/add`)}
+        >
+          Thêm Lịch chiếu
         </button>
       </div>
 
       <div className={styles.grid}>
         {/* Left Column: Context & Config */}
         <div className={styles.leftCol}>
-          
-          {/* Movie Summary Card */}
-          <div className={styles.glassCard}>
-            <div className={styles.movieSummary}>
-              <div className={styles.posterWrapper}>
-                <img
-                  src={movie.poster || "https://placehold.co/400x600/1E1B1B/FFFFFF?text=No+Poster"}
-                  alt={movie.title}
-                  className={styles.posterImg}
-                />
-              </div>
-              <div className={styles.movieInfo}>
-                <h2 className={styles.movieTitle}>{movie.title}</h2>
-                <div className={styles.movieMeta}>
-                  <span className={styles.ratingBadge}>PG-13</span>
-                  <span>{movie.runtime} Mins</span>
-                </div>
-                <p className={styles.movieDesc}>{movie.description}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Configuration Controls */}
-          <div className={styles.glassCard}>
-            <div className={styles.configGroup}>
-              <div className={styles.configGroup}>
-                <label className={styles.configLabel}>Date Range</label>
-                <div className={styles.dateRange}>
-                  <div className={styles.inputGroup}>
-                    <span className={styles.inputLabel}>Start Date</span>
-                    <input className={styles.inputField} type="date" defaultValue="2024-05-20" />
-                  </div>
-                  <div className={styles.inputGroup}>
-                    <span className={styles.inputLabel}>End Date</span>
-                    <input className={styles.inputField} type="date" defaultValue="2024-06-20" />
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.configGroup}>
-                <label className={styles.configLabel}>Theater Location</label>
-                <div className={styles.selectWrapper}>
-                  <select className={styles.selectField}>
-                    <option>Grand Cineplex - Hall 4</option>
-                    <option>Galaxy Cinemas - Screen 1</option>
-                    <option>Metro Theater - Auditorium A</option>
-                  </select>
-                  <span className={`material-symbols-outlined ${styles.selectIcon}`}>expand_more</span>
-                </div>
-              </div>
-
-              <button className={styles.addTheaterBtn}>
-                <span className="material-symbols-outlined">add</span>
-                Add Theater
-              </button>
+          {/* Movie Context */}
+          <div className={styles.movieCard}>
+            <img
+              src={
+                movie.poster ||
+                "https://placehold.co/400x600/1E1B1B/FFFFFF?text=No+Poster"
+              }
+              alt={movie.title}
+              className={styles.moviePoster}
+            />
+            <div className={styles.movieInfo}>
+              <h3>{movie.title}</h3>
+              <p>{movie.runtime} phút</p>
             </div>
           </div>
         </div>
 
         {/* Right Column: Slot Manager */}
         <div className={styles.rightCol}>
-          <div className={styles.glassCard}>
-            <div className={styles.slotHeader}>
-              <h3 className={styles.slotTitle}>Time Slots</h3>
-              <button className={styles.addSlotBtn}>
-                <span className="material-symbols-outlined">add_circle</span>
-                Add Showtime
-              </button>
-            </div>
-
-            <div className={styles.slotList}>
-              {slots.map((slot) => (
-                <div key={slot.id} className={styles.slotItem}>
-                  
-                  <div className={styles.slotTime}>
-                    <label className={styles.inputLabel}>Time</label>
-                    <input className={styles.inputField} type="time" defaultValue={slot.time} style={{ fontSize: "1.25rem", fontWeight: "bold" }} />
+          {/* Date Selector Section */}
+          <div className={styles.dateSection}>
+            <h2 className={styles.sectionTitle}>Chọn ngày</h2>
+            <div className={styles.dateScroller}>
+              {dates.map((date, idx) => {
+                const isSelected =
+                  selectedDate.getDate() === date.getDate() &&
+                  selectedDate.getMonth() === date.getMonth();
+                return (
+                  <div
+                    key={idx}
+                    className={`${styles.dateItem} ${isSelected ? styles.dateItemSelected : ""}`}
+                    onClick={() => handleDateSelect(date)}
+                  >
+                    <span className={styles.dayName}>{getDayName(date)}</span>
+                    <span className={styles.dayNumber}>
+                      {date.getDate()}
+                      <span className={styles.monthName}>
+                        /{date.getMonth() + 1}
+                      </span>
+                    </span>
                   </div>
-
-                  <div className={styles.slotFormat}>
-                    <label className={styles.inputLabel}>Format</label>
-                    <div className={styles.formatTags}>
-                      {slot.isImax && <span className={styles.formatTag}>IMAX</span>}
-                      {slot.is3d && <span className={styles.formatTagNormal}>3D</span>}
-                      {!slot.isImax && !slot.is3d && <span className={styles.formatTagNormal}>2D</span>}
-                    </div>
-                  </div>
-
-                  <div className={styles.slotActions}>
-                    <div>
-                      <label className={styles.inputLabel}>Recurring</label>
-                      <div className={styles.recurringToggle}>
-                        <div 
-                          className={`${styles.checkboxWrap} ${slot.isRecurring ? styles.checkboxWrapChecked : ""}`}
-                          onClick={() => toggleRecurring(slot.id)}
-                        >
-                          <input type="checkbox" className={styles.checkboxInput} checked={slot.isRecurring} readOnly />
-                          <div className={styles.checkboxKnob} />
-                        </div>
-                        <span style={{ fontSize: "0.875rem" }}>Daily</span>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className={styles.inputLabel}>Price</label>
-                      <div className={styles.priceInputWrap}>
-                        <span className={styles.priceSymbol}>$</span>
-                        <input className={styles.priceInput} type="number" defaultValue={slot.price.toFixed(2)} />
-                      </div>
-                    </div>
-
-                    <div className={styles.actionBtns}>
-                      <button className={styles.iconBtn}>
-                        <span className="material-symbols-outlined">content_copy</span>
-                      </button>
-                      <button className={`${styles.iconBtn} ${styles.iconBtnDanger}`}>
-                        <span className="material-symbols-outlined">delete</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Cinema Showtimes List - Full Width */}
+      <div className={styles.cinemaList}>
+        {cinemaShowtimes.length === 0 ? (
+          <div className={styles.emptyState}>
+            <span className={`material-symbols-outlined ${styles.emptyIcon}`}>
+              event_busy
+            </span>
+            <p>Không có suất chiếu nào vào ngày này.</p>
+          </div>
+        ) : (
+          cinemaShowtimes.map((cinema) => (
+            <div key={cinema.id} className={styles.cinemaGroup}>
+              <h3 className={styles.cinemaName}>{cinema.name}</h3>
+              <div className={styles.auditoriumList}>
+                {cinema.auditoriums.map((auditorium) => (
+                  <div key={auditorium.id} className={styles.auditoriumGroup}>
+                    <h4 className={styles.auditoriumName}>{auditorium.name}</h4>
+                    <div className={styles.showtimeChips}>
+                      {auditorium.showTimes.map((st) => (
+                        <div key={st.id} className={styles.timeChip}>
+                          {st.startTime
+                            ? st.startTime.substring(0, 5)
+                            : "00:00"}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

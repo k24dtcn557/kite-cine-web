@@ -3,12 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import styles from './AdminSidebar.module.css';
 
 const NAV_ITEMS = [
-  { label: 'Overview', icon: 'dashboard', path: '/admin' },
-  { label: 'Cinemas', icon: 'theater_comedy', path: '/admin/cinemas' },
-  { label: 'Movies', icon: 'movie', path: '/admin/movies' },
-  { label: 'Bookings', icon: 'confirmation_number', path: '/admin/bookings' },
-  { label: 'Analytics', icon: 'insights', path: '/admin/analytics' },
-  { label: 'Settings', icon: 'settings', path: '/admin/settings' },
+  { label: 'Tổng quan', icon: 'dashboard', path: '/admin' },
+  { label: 'Rạp chiếu', icon: 'theater_comedy', path: '/admin/cinemas' },
+  { label: 'Bảng giá', icon: 'request_quote', path: '/admin/price-models' },
+  { label: 'Phim', icon: 'movie', path: '/admin/movies' },
+  { label: 'Đặt vé', icon: 'confirmation_number', path: '/admin/bookings' },
+  { label: 'Thống kê', icon: 'insights', path: '/admin/analytics' },
+  { label: 'Cài đặt', icon: 'settings', path: '/admin/settings' },
 ];
 
 interface AdminSidebarProps {

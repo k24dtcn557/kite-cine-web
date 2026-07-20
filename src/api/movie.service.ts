@@ -149,6 +149,12 @@ export const movieService = {
     );
     return response.data.result;
   },
+  viewMovieById: async (id: number): Promise<MovieDto> => {
+    const response = await apiClient.get<ApiResponse<MovieDto>>(
+      `/kite-cine/movies/${id}`,
+    );
+    return response.data.result;
+  },
   updateMovie: async (
     id: number,
     payload: UpdateMoviePayload,
@@ -185,6 +191,12 @@ export const movieService = {
     );
     return response.data.result;
   },
+  viewMovieCrewMembers: async (movieId: number): Promise<CrewMemberDto[]> => {
+    const response = await apiClient.get<ApiResponse<CrewMemberDto[]>>(
+      `/kite-cine/movies/${movieId}/crew-members`,
+    );
+    return response.data.result;
+  },
   deleteCrewMember: async (id: number): Promise<void> => {
     await apiClient.delete(`/kite-cine/management/movies/crew-members/${id}`);
   },
@@ -201,7 +213,7 @@ export const movieService = {
     const params = genre ? { genre } : undefined;
     const response = await apiClient.get<ApiResponse<MovieDto[]>>(
       "/kite-cine/movies/now-showing",
-      { params }
+      { params },
     );
     return response.data.result;
   },

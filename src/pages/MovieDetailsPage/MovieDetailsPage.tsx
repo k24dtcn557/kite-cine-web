@@ -30,8 +30,8 @@ const MovieDetailsPage: React.FC = () => {
         }
 
         const [movieData, crewData] = await Promise.all([
-          movieService.getMovieById(movieId),
-          movieService.getMovieCrewMembers(movieId).catch(() => []), // Fallback to empty if fails
+          movieService.viewMovieById(movieId),
+          movieService.viewMovieCrewMembers(movieId).catch(() => []),
         ]);
 
         setMovie(movieData);
@@ -86,7 +86,7 @@ const MovieDetailsPage: React.FC = () => {
       <Navbar />
       <main>
         <MovieSynopsis movie={movie} crew={crew} />
-        <MovieShowtimes />
+        <MovieShowtimes movieId={movie.id} movie={movie} />
       </main>
       <Footer />
     </div>
