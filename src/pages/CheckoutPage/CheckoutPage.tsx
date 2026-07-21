@@ -4,8 +4,8 @@ import styles from "./CheckoutPage.module.css";
 import { Navbar } from "../../components";
 import { MovieDto } from "../../api/movie.service";
 import { ShowTimeBriefDto } from "../../api/show-time.service";
-import { SeatDto } from "../../api/cinema.service";
-import { TicketDto } from "../../api/ticket.service";
+import { ticketService, TicketDto } from "../../api/ticket.service";
+import { PurchaseDto, bookingService } from "../../api/booking.service";
 import { toast } from "react-hot-toast";
 import { CommonUtils } from "../../utils/CommonUtils";
 import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
@@ -20,29 +20,53 @@ const CheckoutPage: React.FC = () => {
 
   const movie = location.state?.movie as MovieDto | undefined;
   const cinemaName = location.state?.cinemaName as string | undefined;
+  const cinemaAddress = location.state?.cinemaAddress as string | undefined;
+  const auditoriumName = location.state?.auditoriumName as string | undefined;
   const showtime = location.state?.showtime as ShowTimeBriefDto | undefined;
-  const selectedTickets = (location.state?.selectedTickets as TicketDto[]) || [];
+  const selectedTickets =
+    (location.state?.selectedTickets as TicketDto[]) || [];
+  const bookingData = location.state?.bookingData as PurchaseDto | undefined;
 
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [isPaying, setIsPaying] = useState(false);
+
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [cardholderName, setCardholderName] = useState("");
 
   useEffect(() => {
-    if (selectedTickets.length === 0) {
-      toast.error("Không có vé nào được chọn. Đang quay lại.");
+    if (selectedTickets.length === 0 || !bookingData) {
+      toast.error("Không có thông tin vé hoặc giao dịch. Đang quay lại.");
       navigate("/");
     }
-  }, [selectedTickets, navigate]);
+  }, [selectedTickets, bookingData, navigate]);
 
   useEffect(() => {
-    if (timeLeft <= 0) {
-      toast.error("Hết thời gian giữ ghế. Đang quay lại.");
-      navigate(-1);
-      return;
-    }
+    if (!bookingData?.expirationTime) return;
+
+    const expirationDate = new Date(bookingData.expirationTime).getTime();
+
+    const calculateRemaining = () => {
+      const now = new Date().getTime();
+      return Math.max(0, Math.floor((expirationDate - now) / 1000));
+    };
+
+    setTimeLeft(calculateRemaining());
+
     const timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1);
+      const remaining = calculateRemaining();
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        clearInterval(timer);
+        toast.error("Hết thời gian giữ ghế. Đang quay lại.");
+        navigate(-1);
+      }
     }, 1000);
+
     return () => clearInterval(timer);
-  }, [timeLeft, navigate]);
+  }, [bookingData, navigate]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -50,41 +74,89 @@ const CheckoutPage: React.FC = () => {
     return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
   };
 
-  const formatDateVN = (dateStr?: string) => {
-    if (!dateStr) return "Ngày chiếu";
-    try {
-      const d = new Date(
-        dateStr.includes("T") ? dateStr : `${dateStr}T00:00:00`,
-      );
-      const days = [
-        "Chủ Nhật",
-        "Thứ Hai",
-        "Thứ Ba",
-        "Thứ Tư",
-        "Thứ Năm",
-        "Thứ Sáu",
-        "Thứ Bảy",
-      ];
-      const dd = d.getDate().toString().padStart(2, "0");
-      const mm = (d.getMonth() + 1).toString().padStart(2, "0");
-      const yyyy = d.getFullYear();
-      return `${days[d.getDay()]}, ${dd}/${mm}/${yyyy}`;
-    } catch {
-      return dateStr;
-    }
-  };
-
   const calculateSubtotal = () => {
-    return selectedTickets.reduce((acc, ticket) => acc + ticket.purchasePrice, 0);
+    return selectedTickets.reduce(
+      (acc, ticket) => acc + ticket.purchasePrice,
+      0,
+    );
   };
 
   const subtotal = calculateSubtotal();
   const taxes = 0; // Hardcoded for demo
   const total = subtotal + taxes;
 
-  const handlePurchase = () => {
-    toast.success("Thanh toán thành công! Vé đã được gửi vào email.");
-    navigate("/my-cine");
+  const handlePurchase = async () => {
+    if (!bookingData?.code) {
+      toast.error("Không tìm thấy mã giao dịch.");
+      return;
+    }
+
+    if (!cardNumber || !expiryDate || !cvv || !cardholderName) {
+      toast.error("Vui lòng nhập đầy đủ thông tin thẻ.");
+      return;
+    }
+
+    const cleanCardNumber = cardNumber.replace(/\s+/g, "");
+    if (!/^\d{16}$/.test(cleanCardNumber)) {
+      toast.error("Số thẻ không hợp lệ. Vui lòng nhập đúng 16 chữ số.");
+      return;
+    }
+
+    if (!/^\d{2}\/\d{2}$/.test(expiryDate)) {
+      toast.error("Ngày hết hạn phải có định dạng MM/YY.");
+      return;
+    }
+
+    const [monthStr, yearStr] = expiryDate.split("/");
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
+
+    if (month < 1 || month > 12) {
+      toast.error("Tháng hết hạn không hợp lệ.");
+      return;
+    }
+
+    const now = new Date();
+    const currentYear = now.getFullYear() % 100;
+    const currentMonth = now.getMonth() + 1;
+
+    if (year < currentYear || (year === currentYear && month < currentMonth)) {
+      toast.error("Thẻ đã hết hạn.");
+      return;
+    }
+
+    if (!/^\d{3}$/.test(cvv)) {
+      toast.error("CVV phải có đúng 3 chữ số.");
+      return;
+    }
+
+    if (cardholderName.trim().length < 2) {
+      toast.error("Tên chủ thẻ không hợp lệ.");
+      return;
+    }
+
+    try {
+      setIsPaying(true);
+      await bookingService.payBooking(bookingData.code);
+      toast.success("Thanh toán thành công!");
+      navigate("/order-confirmation", {
+        state: {
+          movie,
+          cinemaName,
+          cinemaAddress,
+          auditoriumName,
+          showtime,
+          selectedTickets,
+          bookingData,
+          maskedCard: cardNumber.replace(/\s/g, "").slice(-4),
+        },
+      });
+    } catch (error) {
+      toast.error("Thanh toán thất bại. Vui lòng thử lại.");
+      console.error(error);
+    } finally {
+      setIsPaying(false);
+    }
   };
 
   return (
@@ -93,44 +165,24 @@ const CheckoutPage: React.FC = () => {
       <main className={styles.mainContent}>
         <div className={styles.leftColumn}>
           <div className={styles.headerRow}>
-            <h1 className={styles.title}>Secure Checkout</h1>
+            <h1 className={styles.title}>Thanh toán</h1>
             <div className={styles.timerPill}>
               <span className={`material-symbols-outlined ${styles.timerIcon}`}>
                 schedule
               </span>
               <span className={styles.timerText}>
-                Seats reserved for{" "}
-                <span className={styles.timerTime}>{formatTime(timeLeft)}</span>
+                Thời gian giữ ghế còn lại{" "}
+                <span className={styles.timerTime}>
+                  {timeLeft !== null ? formatTime(timeLeft) : "--:--"}
+                </span>
               </span>
             </div>
           </div>
 
           <section className={styles.glassPanel}>
-            <h2 className={styles.panelTitle}>Express Checkout</h2>
-            <div className={styles.expressButtons}>
-              <button className={styles.btnApplePay}>
-                <span className="material-symbols-outlined">
-                  account_balance_wallet
-                </span>{" "}
-                Apple Pay
-              </button>
-              <button className={styles.btnGooglePay}>
-                <span className="material-symbols-outlined">payments</span>{" "}
-                Google Pay
-              </button>
-            </div>
-          </section>
-
-          <div className={styles.divider}>
-            <div className={styles.dividerLine}></div>
-            <span className={styles.dividerText}>Or pay with card</span>
-            <div className={styles.dividerLine}></div>
-          </div>
-
-          <section className={styles.glassPanel}>
             <div className={styles.panelHeader}>
               <h2 className={styles.panelTitle} style={{ marginBottom: 0 }}>
-                Payment Method
+                Phương thức thanh toán
               </h2>
               <div className={styles.panelIcons}>
                 <span className="material-symbols-outlined">credit_card</span>
@@ -139,12 +191,22 @@ const CheckoutPage: React.FC = () => {
             </div>
             <form onSubmit={(e) => e.preventDefault()}>
               <div className={styles.formGroup}>
-                <label className={styles.label}>Card Number</label>
+                <label className={styles.label}>Số thẻ</label>
                 <div className={styles.inputWrapper}>
                   <input
                     className={styles.inputField}
                     placeholder="0000 0000 0000 0000"
                     type="text"
+                    inputMode="numeric"
+                    maxLength={19}
+                    value={cardNumber}
+                    onChange={(e) => {
+                      const digits = e.target.value
+                        .replace(/\D/g, "")
+                        .substring(0, 16);
+                      const formatted = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+                      setCardNumber(formatted);
+                    }}
                   />
                   <span
                     className={`material-symbols-outlined ${styles.inputIcon}`}
@@ -155,11 +217,31 @@ const CheckoutPage: React.FC = () => {
               </div>
               <div className={styles.formRow}>
                 <div>
-                  <label className={styles.label}>Expiry Date</label>
+                  <label className={styles.label}>Ngày hết hạn</label>
                   <input
                     className={styles.inputField}
                     placeholder="MM/YY"
                     type="text"
+                    inputMode="numeric"
+                    maxLength={5}
+                    value={expiryDate}
+                    onChange={(e) => {
+                      const digits = e.target.value
+                        .replace(/\D/g, "")
+                        .substring(0, 4);
+                      if (digits.length >= 3) {
+                        setExpiryDate(
+                          `${digits.substring(0, 2)}/${digits.substring(2)}`,
+                        );
+                      } else if (
+                        e.target.value.endsWith("/") &&
+                        digits.length === 2
+                      ) {
+                        setExpiryDate(`${digits}/`);
+                      } else {
+                        setExpiryDate(digits);
+                      }
+                    }}
                   />
                 </div>
                 <div>
@@ -168,85 +250,114 @@ const CheckoutPage: React.FC = () => {
                     className={styles.inputField}
                     placeholder="123"
                     type="text"
+                    inputMode="numeric"
+                    maxLength={3}
+                    value={cvv}
+                    onChange={(e) => {
+                      const digits = e.target.value
+                        .replace(/\D/g, "")
+                        .substring(0, 3);
+                      setCvv(digits);
+                    }}
                   />
                 </div>
               </div>
               <div>
-                <label className={styles.label}>Cardholder Name</label>
+                <label className={styles.label}>Tên chủ thẻ</label>
                 <input
                   className={styles.inputField}
-                  placeholder="Name on card"
+                  placeholder="Tên in trên thẻ"
                   type="text"
+                  value={cardholderName}
+                  onChange={(e) => setCardholderName(e.target.value)}
                 />
               </div>
             </form>
-          </section>
-
-          <section className={styles.glassPanel}>
-            <h2 className={styles.panelTitle}>Gift Card or Promo Code</h2>
-            <div className={styles.promoContainer}>
-              <input
-                className={styles.inputField}
-                placeholder="Enter code"
-                type="text"
-              />
-              <button className={styles.btnApply}>Apply</button>
-            </div>
           </section>
         </div>
 
         <div className={styles.rightColumn}>
           <div className={`${styles.glassPanel} ${styles.stickyPanel}`}>
-            <div
-              className={styles.movieBanner}
-              style={{
-                backgroundImage: `url('${movie?.poster || "https://placehold.co/800x400/1E1B1B/FFFFFF?text=Poster"}')`,
-              }}
-            >
-              <div className={styles.movieBannerOverlay}></div>
-              <div className={styles.movieBannerContent}>
-                <span className={styles.movieTag}>
-                  {movie?.genres || "MOVIE"}
-                </span>
-                <h3 className={styles.movieBannerTitle}>
-                  {movie?.title || "Phim đang chọn"}
-                </h3>
+            <div className={styles.movieInfoBox}>
+              <div
+                className={styles.moviePoster}
+                style={{
+                  backgroundImage: `url('${movie?.poster || "https://placehold.co/400x600/1E1B1B/FFFFFF?text=Poster"}')`,
+                }}
+              ></div>
+              <div className={styles.movieDetails}>
+                <h2 className={styles.movieTitle}>
+                  {movie?.title || "Đang tải phim..."}
+                </h2>
+                <div
+                  className={styles.movieDetailText}
+                  style={{ alignItems: "flex-start" }}
+                >
+                  <span
+                    className={`material-symbols-outlined ${styles.movieDetailIcon}`}
+                    style={{ marginTop: "2px" }}
+                  >
+                    location_on
+                  </span>
+                  <div>
+                    <div>{cinemaName || "Cineplex"}</div>
+                    {cinemaAddress && (
+                      <div
+                        style={{
+                          fontSize: "0.85em",
+                          opacity: 0.8,
+                          marginTop: "2px",
+                        }}
+                      >
+                        {cinemaAddress}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {auditoriumName && (
+                  <p className={styles.movieDetailText}>
+                    <span
+                      className={`material-symbols-outlined ${styles.movieDetailIcon}`}
+                    >
+                      meeting_room
+                    </span>
+                    Phòng {auditoriumName}
+                  </p>
+                )}
+                <p className={styles.movieDetailText}>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "1.1rem" }}
+                  >
+                    calendar_today
+                  </span>
+                  {CommonUtils.formatDateVN(showtime?.date)}
+                </p>
+                <p className={styles.movieDetailText}>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: "1.1rem" }}
+                  >
+                    schedule
+                  </span>
+                  Suất{" "}
+                  {showtime?.startTime
+                    ? showtime.startTime.substring(0, 5)
+                    : ""}
+                </p>
               </div>
             </div>
 
             <div className={styles.summaryBody}>
-              <div className={styles.sessionInfo}>
-                <div>
-                  <span className={styles.infoLabel}>Date &amp; Time</span>
-                  <span className={styles.infoValue}>
-                    {formatDateVN(showtime?.date)} •{" "}
-                    {showtime?.startTime
-                      ? showtime.startTime.substring(0, 5)
-                      : "Giờ chiếu"}
-                  </span>
-                </div>
-                <div>
-                  <span className={styles.infoLabel}>Location</span>
-                  <span className={styles.infoValue}>
-                    {cinemaName || "Cineplex"}
-                  </span>
-                </div>
-              </div>
-
               <div className={styles.ticketsSection}>
-                <h4 className={styles.sectionLabel}>Tickets</h4>
+                <h4 className={styles.sectionLabel}>Vé đang chọn</h4>
                 <div className={styles.ticketList}>
                   {selectedTickets.map((ticket) => (
                     <div key={ticket.id} className={styles.perforatedTicket}>
                       <div className={styles.ticketLeft}>
-                        <span
-                          className={`material-symbols-outlined ${styles.ticketIcon}`}
-                        >
-                          chair
-                        </span>
                         <div>
                           <div className={styles.ticketSeatNumber}>
-                            Seat {ticket.rowLetter}
+                            Ghế {ticket.rowLetter}
                             {ticket.seatNumber}
                           </div>
                           <div className={styles.ticketType}>
@@ -255,7 +366,9 @@ const CheckoutPage: React.FC = () => {
                         </div>
                       </div>
                       <div className={styles.ticketPrice}>
-                        {CommonUtils.formatNumberVietnamese(ticket.purchasePrice)} đ
+                        {CommonUtils.formatNumberVietnamese(
+                          ticket.purchasePrice,
+                        )}
                       </div>
                     </div>
                   ))}
@@ -263,32 +376,20 @@ const CheckoutPage: React.FC = () => {
               </div>
 
               <div className={styles.totalsSection}>
-                <div className={styles.totalRow}>
-                  <span>Subtotal</span>
-                  <span>{CommonUtils.formatNumberVietnamese(subtotal)} đ</span>
-                </div>
-                <div className={styles.totalRow}>
-                  <span>Taxes &amp; Fees</span>
-                  <span>{CommonUtils.formatNumberVietnamese(taxes)} đ</span>
-                </div>
                 <div className={styles.finalTotalRow}>
-                  <span>Total</span>
+                  <span>Tổng cộng</span>
                   <span>{CommonUtils.formatNumberVietnamese(total)} đ</span>
                 </div>
               </div>
 
-              <button className={styles.btnPurchase} onClick={handlePurchase}>
-                <span className="material-symbols-outlined">lock</span> Complete
-                Purchase
+              <button
+                className={styles.btnPurchase}
+                onClick={handlePurchase}
+                disabled={isPaying || timeLeft === null || timeLeft <= 0}
+              >
+                <span className="material-symbols-outlined">lock</span>{" "}
+                {isPaying ? "Đang xử lý..." : "Hoàn tất thanh toán"}
               </button>
-              <p className={styles.securityText}>
-                <span
-                  className={`material-symbols-outlined ${styles.securityIcon}`}
-                >
-                  shield
-                </span>{" "}
-                Secure 256-bit SSL Encryption
-              </p>
             </div>
           </div>
         </div>

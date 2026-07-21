@@ -1,0 +1,345 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 3rem;
+}
+
+.breadcrumb {
+  width: 100%;
+  max-width: 56rem; /* 4xl */
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.btnBack {
+  display: flex;
+  align-items: center;
+  color: var(--color-on-surface-variant);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  padding: 0;
+}
+
+.btnBack:hover {
+  color: var(--color-primary);
+}
+
+.ticketContainer {
+  width: 100%;
+  max-width: 56rem; /* 4xl */
+  background: color-mix(in srgb, var(--color-surface-container-high) 85%, transparent);
+  backdrop-filter: blur(20px);
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--color-outline-variant);
+}
+
+.ticketHeader {
+  background-color: var(--color-surface-container-low);
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+@media (min-width: 768px) {
+  .ticketHeader {
+    padding: 2rem;
+  }
+}
+
+.movieTitle {
+  font-family: var(--font-display-lg, Montserrat);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .movieTitle {
+    font-size: 2rem;
+  }
+}
+
+.formatBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background-color: color-mix(in srgb, var(--color-on-surface) 10%, transparent);
+  border-radius: 9999px;
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--color-on-surface-variant);
+  border: 1px solid color-mix(in srgb, var(--color-on-surface) 20%, transparent);
+}
+
+.bookingIdSection {
+  display: none;
+  text-align: right;
+}
+
+@media (min-width: 768px) {
+  .bookingIdSection {
+    display: block;
+  }
+}
+
+.label {
+  font-family: var(--font-label-uppercase, Inter);
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin: 0 0 0.25rem 0;
+  font-size: 0.75rem;
+}
+
+.bookingIdValue {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.ticketBody {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .ticketBody {
+    flex-direction: row;
+  }
+}
+
+/* Left Column - Poster */
+.posterColumn {
+  padding: 1.5rem;
+  border-bottom: 1px dashed var(--color-outline-variant);
+}
+
+@media (min-width: 768px) {
+  .posterColumn {
+    width: 33.333%;
+    padding: 2rem;
+    border-bottom: none;
+    border-right: 1px dashed var(--color-outline-variant);
+  }
+}
+
+.posterWrapper {
+  aspect-ratio: 2 / 3;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--color-outline-variant);
+}
+
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Perforation Mobile */
+.perforationMobile {
+  width: 100%;
+  height: 1rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -0.5rem 0;
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .perforationMobile {
+    display: none;
+  }
+}
+
+.perforationCutoutLeft {
+  width: 1rem;
+  height: 2rem;
+  background-color: var(--color-background);
+  border-radius: 9999px;
+  position: absolute;
+  left: -0.5rem;
+}
+
+.perforationCutoutRight {
+  width: 1rem;
+  height: 2rem;
+  background-color: var(--color-background);
+  border-radius: 9999px;
+  position: absolute;
+  right: -0.5rem;
+}
+
+/* Right Column - Details */
+.detailsColumn {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  background: linear-gradient(to bottom right, transparent, rgba(0,0,0,0.2));
+}
+
+@media (min-width: 768px) {
+  .detailsColumn {
+    width: 66.666%;
+    padding: 2rem;
+  }
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 2rem;
+  column-gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.infoValue {
+  font-family: var(--font-title-lg, Inter);
+  font-size: 1.25rem;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.colSpan2 {
+  grid-column: span 2;
+}
+
+.theaterSub {
+  font-family: var(--font-body-sm, Inter);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+  margin: 0.25rem 0 0 0;
+}
+
+.seatsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.seatBadge {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 1.25rem;
+  color: var(--color-primary-container);
+  padding: 0.5rem 1rem;
+  background-color: color-mix(in srgb, var(--color-primary-container) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary-container) 30%, transparent);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary-container) 20%, transparent);
+}
+
+.seatType {
+  font-family: var(--font-body-sm, Inter);
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+  background-color: color-mix(in srgb, var(--color-on-surface) 5%, transparent);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.bookingIdMobile {
+  grid-column: span 2;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+@media (min-width: 768px) {
+  .bookingIdMobile {
+    display: none;
+  }
+}
+
+.qrSection {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: color-mix(in srgb, var(--color-on-surface) 5%, transparent);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-outline-variant);
+  position: relative;
+  overflow: hidden;
+}
+
+.qrLabel {
+  font-family: var(--font-label-uppercase, Inter);
+  color: var(--color-on-surface-variant);
+  margin: 0 0 1rem 0;
+  text-align: center;
+  letter-spacing: 0.1em;
+  z-index: 10;
+}
+
+.qrFrame {
+  position: relative;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  z-index: 10;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+.qrImage {
+  width: 10rem;
+  height: 10rem;
+}
+
+/* Actions Footer */
+.actionFooter {
+  width: 100%;
+  max-width: 56rem; /* 4xl */
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .actionFooter {
+    justify-content: flex-end;
+  }
+}
+
+.btnAction {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: color-mix(in srgb, var(--color-on-surface) 5%, transparent);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 9999px;
+  font-family: var(--font-title-lg, Inter);
+  font-size: 0.875rem;
+  color: var(--color-on-surface);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btnAction:hover {
+  background-color: color-mix(in srgb, var(--color-on-surface) 10%, transparent);
+}

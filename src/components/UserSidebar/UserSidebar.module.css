@@ -70,44 +70,7 @@
 }
 
 /* ── User Profile Block ── */
-.profileBlock {
-  padding: 1.5rem; /* p-6 */
-}
 
-.profileInner {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem; /* gap-3 */
-  padding: 0.75rem; /* p-3 */
-  background-color: var(--color-surface-container);
-  border-radius: var(--radius-xl);
-}
-
-.profileAvatar {
-  color: var(--color-primary);
-  font-size: 2.25rem; /* text-4xl */
-  font-variation-settings: 'FILL' 1;
-}
-
-.profileInfo {
-  overflow: hidden;
-}
-
-.profileName {
-  font-weight: 700;
-  color: var(--color-on-surface);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.profileRole {
-  font-size: 0.75rem; /* text-xs */
-  color: var(--color-on-surface-variant);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 /* ── Mobile ── */
 @media (max-width: 768px) {

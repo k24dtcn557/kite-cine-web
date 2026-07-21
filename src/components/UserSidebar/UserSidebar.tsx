@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import styles from './UserSidebar.module.css';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import styles from "./UserSidebar.module.css";
 
 interface UserSidebarProps {
   isOpen?: boolean;
@@ -8,12 +8,13 @@ interface UserSidebarProps {
 }
 
 const NAV_ITEMS = [
-  { label: 'Overview', icon: 'dashboard', path: '/my-cine' },
-  { label: 'My Tickets', icon: 'confirmation_number', path: '/my-cine/tickets' },
-  { label: 'Watchlist', icon: 'bookmark', path: '/my-cine/watchlist' },
-  { label: 'History', icon: 'history', path: '/my-cine/history' },
-  { label: 'Rewards', icon: 'redeem', path: '/my-cine/rewards' },
-  { label: 'Settings', icon: 'settings', path: '/my-cine/settings' },
+  { label: "Thành viên", icon: "dashboard", path: "/my-cine" },
+  {
+    label: "Vé của tôi",
+    icon: "confirmation_number",
+    path: "/my-cine/tickets",
+  },
+  { label: "Cài đặt", icon: "settings", path: "/my-cine/settings" },
 ];
 
 const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
@@ -22,18 +23,22 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Mobile Overlay */}
-      <div 
-        className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ''}`} 
-        onClick={onClose} 
-        aria-hidden="true" 
+      <div
+        className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ""}`}
+        onClick={onClose}
+        aria-hidden="true"
       />
 
-      <aside className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ''}`}>
+      <aside
+        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}
+      >
         {/* Brand */}
-        <div className={styles.brandContainer}>
-          <h1 className={styles.brandTitle}>CINEPLEX</h1>
-          <p className={styles.brandSubtitle}>Member Dashboard</p>
-        </div>
+        <Link to="/" style={{ textDecoration: "none" }}>
+          <div className={styles.brandContainer}>
+            <h1 className={styles.brandTitle}>KITE CINE</h1>
+            <p className={styles.brandSubtitle}>Thành viên</p>
+          </div>
+        </Link>
 
         {/* Navigation */}
         <nav className={styles.nav}>
@@ -43,7 +48,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+                className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
               >
                 <span className={`material-symbols-outlined ${styles.navIcon}`}>
                   {item.icon}
@@ -53,21 +58,6 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
             );
           })}
         </nav>
-
-        {/* User Profile Block */}
-        <div className={styles.profileBlock}>
-          <div className={styles.profileInner}>
-            <span 
-              className={`material-symbols-outlined ${styles.profileAvatar}`}
-            >
-              account_circle
-            </span>
-            <div className={styles.profileInfo}>
-              <p className={styles.profileName}>Alex Rivera</p>
-              <p className={styles.profileRole}>Gold Member</p>
-            </div>
-          </div>
-        </div>
       </aside>
     </>
   );

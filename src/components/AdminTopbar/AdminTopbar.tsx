@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "../../components";
 import styles from "./AdminTopbar.module.css";
+import { useAuth } from "../../contexts/AuthContext";
+import { authService, UserDto } from "../../api/auth.service";
 
 interface AdminTopbarProps {
   onMenuClick?: () => void;
@@ -8,7 +11,10 @@ interface AdminTopbarProps {
 
 const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserDto | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -19,6 +25,20 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      authService
+        .getMyInfo()
+        .then((user) => setUserInfo(user))
+        .catch((err) => console.error("Failed to fetch user info", err));
+    }
+  }, [isAuthenticated]);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
 
   return (
     <header className={styles.header}>
@@ -44,14 +64,34 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
             className={styles.profileWidget}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <img
-              src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"
-              alt="Admin Avatar"
-              className={styles.profileImage}
-            />
+            {userInfo?.avatar ? (
+              <img
+                src={userInfo.avatar}
+                alt={userInfo.fullName}
+                className={styles.profileImage}
+              />
+            ) : (
+              <div
+                className={styles.profileImage}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "var(--color-surface-container-highest)",
+                  color: "var(--color-on-surface)",
+                }}
+              >
+                <span
+                  className="material-symbols-outlined"
+                  style={{ fontSize: "1.5rem" }}
+                >
+                  account_circle
+                </span>
+              </div>
+            )}
             <div className={styles.profileInfo}>
-              <p className={styles.profileName}>Admin Profile</p>
-              <p className={styles.profileRole}>Executive Access</p>
+              <p className={styles.profileName}>{userInfo?.fullName}</p>
+              <p className={styles.profileRole}>Quản trị</p>
             </div>
             <span
               className="material-symbols-outlined"
@@ -67,15 +107,35 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
 
           {isMenuOpen && (
             <div className={styles.profileMenu}>
-              <button className={styles.menuItem}>
+              <button
+                className={styles.menuItem}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate("/admin");
+                }}
+              >
                 <span
                   className={`material-symbols-outlined ${styles.menuItemIcon}`}
                 >
-                  person
+                  dashboard
                 </span>
-                Hồ sơ
+                Tổng quan
               </button>
-              <button className={styles.menuItem}>
+              <button
+                className={styles.menuItem}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate("/admin/theaters");
+                }}
+              >
+                <span
+                  className={`material-symbols-outlined ${styles.menuItemIcon}`}
+                >
+                  movie
+                </span>
+                Rạp chiếu
+              </button>
+              <button className={styles.menuItem} onClick={handleLogout}>
                 <span
                   className={`material-symbols-outlined ${styles.menuItemIcon}`}
                 >

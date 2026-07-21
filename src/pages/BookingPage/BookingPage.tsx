@@ -6,11 +6,13 @@ import {
   useLocation,
 } from "react-router-dom";
 import styles from "./BookingPage.module.css";
-import { Navbar } from "../../components";
+import { Navbar, LoginForm, SignUpForm } from "../../components";
+import { useAuth } from "../../contexts/AuthContext";
 import { cinemaService, SeatRowDto, SeatDto } from "../../api/cinema.service";
 import { MovieDto } from "../../api/movie.service";
 import { ShowTimeBriefDto } from "../../api/show-time.service";
 import { ticketService, TicketDto } from "../../api/ticket.service";
+import { bookingService } from "../../api/booking.service";
 import { toast } from "react-hot-toast";
 import { CommonUtils } from "../../utils/CommonUtils";
 import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
@@ -24,6 +26,15 @@ const BookingPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authMode, setAuthMode] = useState<"login" | "signup">("login");
+
+  useEffect(() => {
+    if (!isAuthLoading && !isAuthenticated) {
+      setShowAuthModal(true);
+    }
+  }, [isAuthLoading, isAuthenticated]);
 
   const movie = location.state?.movie as MovieDto | undefined;
   const cinemaName = location.state?.cinemaName as string | undefined;
@@ -32,32 +43,9 @@ const BookingPage: React.FC = () => {
   const auditoriumName = location.state?.auditoriumName as string | undefined;
   const showtime = location.state?.showtime as ShowTimeBriefDto | undefined;
 
-  const formatDateVN = (dateStr?: string) => {
-    if (!dateStr) return "Ngày chiếu";
-    try {
-      const d = new Date(
-        dateStr.includes("T") ? dateStr : `${dateStr}T00:00:00`,
-      );
-      const days = [
-        "Chủ Nhật",
-        "Thứ Hai",
-        "Thứ Ba",
-        "Thứ Tư",
-        "Thứ Năm",
-        "Thứ Sáu",
-        "Thứ Bảy",
-      ];
-      const dd = d.getDate().toString().padStart(2, "0");
-      const mm = (d.getMonth() + 1).toString().padStart(2, "0");
-      const yyyy = d.getFullYear();
-      return `${days[d.getDay()]}, ${dd}/${mm}/${yyyy}`;
-    } catch {
-      return dateStr;
-    }
-  };
-
   const [seatRows, setSeatRows] = useState<SeatRowDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(false);
   const [selectedTickets, setSelectedTickets] = useState<TicketDto[]>([]);
   const [bookedTickets, setBookedTickets] = useState<TicketDto[]>([]);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
@@ -482,7 +470,7 @@ const BookingPage: React.FC = () => {
                   >
                     calendar_today
                   </span>
-                  {formatDateVN(showtime?.date)}
+                  {CommonUtils.formatDateVN(showtime?.date)}
                 </p>
                 <p className={styles.movieDetailText}>
                   <span
@@ -595,14 +583,40 @@ const BookingPage: React.FC = () => {
               </div>
               <button
                 className={styles.proceedBtn}
-                disabled={selectedTickets.length === 0}
-                onClick={() =>
-                  navigate("/checkout", {
-                    state: { movie, cinemaName, showtime, selectedTickets },
-                  })
-                }
+                disabled={selectedTickets.length === 0 || isInitializing}
+                onClick={async () => {
+                  if (!isAuthenticated) {
+                    setAuthMode("login");
+                    setShowAuthModal(true);
+                  } else {
+                    try {
+                      setIsInitializing(true);
+                      const ticketIds = selectedTickets.map((t) => t.id);
+                      const bookingData =
+                        await bookingService.initializeBooking({ ticketIds });
+                      navigate("/checkout", {
+                        state: {
+                          movie,
+                          cinemaName,
+                          cinemaAddress,
+                          auditoriumName,
+                          showtime,
+                          selectedTickets,
+                          bookingData,
+                        },
+                      });
+                    } catch (error) {
+                      toast.error(
+                        "Không thể khởi tạo giao dịch. Vui lòng thử lại sau.",
+                      );
+                      console.error(error);
+                    } finally {
+                      setIsInitializing(false);
+                    }
+                  }
+                }}
               >
-                Thanh toán
+                {isInitializing ? "Đang xử lý..." : "Thanh toán"}
                 <span className="material-symbols-outlined">arrow_forward</span>
               </button>
               <p className={styles.reservedTimeText}>
@@ -612,6 +626,37 @@ const BookingPage: React.FC = () => {
           </div>
         </aside>
       </main>
+
+      {showAuthModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backdropFilter: "blur(4px)",
+            padding: "1rem",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ position: "relative", width: "100%", maxWidth: "30rem" }}
+          >
+            {authMode === "login" ? (
+              <LoginForm
+                onLoginSuccess={() => setShowAuthModal(false)}
+                onSignUp={() => setAuthMode("signup")}
+                onForgotPassword={() => navigate("/forgot-password")}
+              />
+            ) : (
+              <SignUpForm onLogIn={() => setAuthMode("login")} />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

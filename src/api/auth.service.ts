@@ -10,6 +10,21 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface RegisterPayload {
+  username: string;
+  password?: string;
+  fullName: string;
+}
+
+export interface UserDto {
+  id: string;
+  username: string;
+  fullName: string;
+  email: string;
+  avatar: string;
+  roles?: { name: string }[] | string[];
+}
+
 class AuthService {
   /**
    * Submits user credentials to the authentication endpoint.
@@ -42,6 +57,21 @@ class AuthService {
   }
 
   /**
+   * Registers a new user.
+   */
+  async register(payload: RegisterPayload): Promise<UserDto> {
+    try {
+      const response = await apiClient.post<ApiResponse<UserDto>>(
+        "/kite-cine/users/register",
+        payload,
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Logs out the user by removing their token from local storage.
    */
   logout(): void {
@@ -54,6 +84,20 @@ class AuthService {
    */
   isAuthenticated(): boolean {
     return !!localStorage.getItem("access_token");
+  }
+
+  /**
+   * Fetches the current authenticated user's information.
+   */
+  async getMyInfo(): Promise<UserDto> {
+    try {
+      const response = await apiClient.get<ApiResponse<UserDto>>(
+        "/kite-cine/users/my-info",
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

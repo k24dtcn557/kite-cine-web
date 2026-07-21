@@ -17,6 +17,10 @@ import DashboardPage from "./pages/DashboardPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
 import BookingPage from "./pages/BookingPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage/OrderConfirmationPage";
+import MyTicketsPage from "./pages/MyTicketsPage";
+import TicketDetailPage from "./pages/TicketDetailPage";
+import UserSettingsPage from "./pages/UserSettingsPage";
 import { ProtectedRoute } from "./components";
 import { AuthProvider } from "./contexts";
 import { Toaster } from "react-hot-toast";
@@ -44,6 +48,20 @@ const App: React.FC = () => (
           <Route path="/movies/:id" element={<MovieDetailsPage />} />
           <Route path="/booking/:showtimeId" element={<BookingPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route
+            path="/order-confirmation"
+            element={<OrderConfirmationPage />}
+          />
+
+          {/* User Dashboard Routes */}
+          <Route path="/my-cine" element={<ProtectedRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route index element={<DashboardPage />} />
+              <Route path="tickets" element={<MyTicketsPage />} />
+              <Route path="tickets/:id" element={<TicketDetailPage />} />
+              <Route path="settings" element={<UserSettingsPage />} />
+            </Route>
+          </Route>
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<ProtectedRoute />}>

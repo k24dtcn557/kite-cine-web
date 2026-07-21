@@ -20,7 +20,7 @@ const apiClient = axios.create({
 
 const NO_AUTH_ENDPOINTS: RegExp[] = [
   /^\/kite-cine\/auth\/token$/,
-  /^\/kite-cine\/users\/registration$/,
+  /^\/kite-cine\/users\/register$/,
   /^\/kite-cine\/movies\/highlighted$/,
   /^\/kite-cine\/movies\/now-showing$/,
   /^\/kite-cine\/movies\/coming-soon$/,

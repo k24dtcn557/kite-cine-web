@@ -1,15 +1,24 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Navbar, Footer } from '../../components';
-import SignUpForm from '../../components/SignUpForm';
-import styles from './SignUpPage.module.css';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Navbar, Footer } from "../../components";
+import SignUpForm from "../../components/SignUpForm";
+import { useAuth } from "../../contexts/AuthContext";
+import styles from "./SignUpPage.module.css";
 
 /* Same luxury theater backdrop used on the Login page */
-const THEATER_BG =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuDwQ6zV1EEzrZ6IKOzZAfFnmdbYb0n-mFL8n7ULo7w2282RHnOIrpxkz4iWO50MEUqx52k3ziEFEw56xB2IDdJdCKC8iR4ZIDd2ofdvrViSoq4GQSHyt3EBYhHIv__f9T2GgAAhqT1O6MHhqo3RntyVqgdb0p7IXvqU3OnYFVl1zX1AQlXKxpF7DVH4O2nCopLcfTCbL6_dGAAcEqHF8EalXLeB06cUHYkXPrBEL6_fCLRTbQU0bagc';
+const THEATER_BG = "/theater-bg.jpg";
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <>
@@ -29,11 +38,9 @@ const SignUpPage: React.FC = () => {
 
         {/* Registration card */}
         <div className={styles.cardWrapper}>
-          <SignUpForm onLogIn={() => navigate('/login')} />
+          <SignUpForm onLogIn={() => navigate("/login")} />
         </div>
       </main>
-
-      <Footer />
     </>
   );
 };

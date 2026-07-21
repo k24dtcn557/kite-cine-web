@@ -15,6 +15,33 @@ export class CommonUtils {
   }
 
   /**
+   * Formats a date string to include the day of the week (e.g. "Thứ Năm, 21/07/2026")
+   */
+  static formatDateVN(dateStr?: string): string {
+    if (!dateStr) return "Ngày chiếu";
+    try {
+      const d = new Date(
+        dateStr.includes("T") ? dateStr : `${dateStr}T00:00:00`,
+      );
+      const days = [
+        "Chủ Nhật",
+        "Thứ Hai",
+        "Thứ Ba",
+        "Thứ Tư",
+        "Thứ Năm",
+        "Thứ Sáu",
+        "Thứ Bảy",
+      ];
+      const dd = d.getDate().toString().padStart(2, "0");
+      const mm = (d.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${days[d.getDay()]}, ${dd}/${mm}/${yyyy}`;
+    } catch {
+      return dateStr;
+    }
+  }
+
+  /**
    * Formats runtime in minutes to a Vietnamese string (e.g., "2 giờ 15 phút").
    */
   static formatRuntimeVietnamese(runtimeMinutes: number | undefined): string {

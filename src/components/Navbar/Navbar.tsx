@@ -1,13 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import ThemeToggle from "../ThemeToggle";
+import { useAuth } from "../../contexts/AuthContext";
+import { authService, UserDto } from "../../api/auth.service";
 
-const NAV_LINKS = ["Phim Đang Chiếu", "Sắp Chiếu", "Thành Viên"];
+const NAV_LINKS = ["Phim Đang Chiếu", "Sắp Chiếu"];
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
+  const [userInfo, setUserInfo] = useState<UserDto | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const isAdmin =
+    userInfo?.roles?.some(
+      (role: any) => (typeof role === "string" ? role : role.name) === "ADMIN",
+    ) || false;
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      authService
+        .getMyInfo()
+        .then((user) => setUserInfo(user))
+        .catch((err) => console.error("Failed to fetch user info", err));
+    } else {
+      setUserInfo(null);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -61,15 +96,108 @@ const Navbar: React.FC = () => {
         <div className={styles.right}>
           <div className={styles.actions}>
             <ThemeToggle />
-            <button
-              className={styles.signInBtn}
-              onClick={() => navigate("/login")}
-              aria-label="Sign in"
-            >
-              <span className="material-symbols-outlined">person</span>
-              Đăng nhập
-            </button>
-            {/* Theme toggle */}
+            {isAuthenticated ? (
+              <div className={styles.userInfoWrapper} ref={dropdownRef}>
+                <div
+                  className={styles.userInfo}
+                  onClick={() => setShowDropdown(!showDropdown)}
+                >
+                  {userInfo?.avatar ? (
+                    <img
+                      src={userInfo.avatar}
+                      alt="Avatar"
+                      className={styles.avatar}
+                    />
+                  ) : (
+                    <span
+                      className="material-symbols-outlined"
+                      style={{
+                        fontSize: "2rem",
+                        color: "var(--color-on-surface-variant)",
+                      }}
+                    >
+                      account_circle
+                    </span>
+                  )}
+                  <span className={styles.userName}>
+                    {userInfo?.fullName || "User"}
+                  </span>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "20px",
+                      color: "var(--color-on-surface-variant)",
+                    }}
+                  >
+                    expand_more
+                  </span>
+                </div>
+                {showDropdown && (
+                  <div className={styles.dropdownMenu}>
+                    {isAdmin ? (
+                      <button
+                        className={styles.dropdownItem}
+                        onClick={() => {
+                          setShowDropdown(false);
+                          navigate("/admin");
+                        }}
+                      >
+                        <span className="material-symbols-outlined">
+                          dashboard
+                        </span>
+                        Trang quản lý
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          className={styles.dropdownItem}
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate("/my-cine");
+                          }}
+                        >
+                          <span className="material-symbols-outlined">
+                            movie
+                          </span>
+                          Thành viên
+                        </button>
+                        <button
+                          className={styles.dropdownItem}
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate("/my-tickets");
+                          }}
+                        >
+                          <span className="material-symbols-outlined">
+                            confirmation_number
+                          </span>
+                          Vé của tôi
+                        </button>
+                      </>
+                    )}
+                    <button
+                      className={`${styles.dropdownItem} ${styles.logout}`}
+                      onClick={() => {
+                        setShowDropdown(false);
+                        logout();
+                      }}
+                    >
+                      <span className="material-symbols-outlined">logout</span>
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                className={styles.signInBtn}
+                onClick={() => navigate("/login")}
+                aria-label="Sign in"
+              >
+                <span className="material-symbols-outlined">person</span>
+                Đăng nhập
+              </button>
+            )}
           </div>
         </div>
       </div>

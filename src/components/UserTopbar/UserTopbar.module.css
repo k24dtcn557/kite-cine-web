@@ -130,17 +130,108 @@
   background-color: var(--color-outline-variant);
 }
 
-.brandLabel {
+.profileInner {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* gap-2 */
+  gap: 0.75rem; /* gap-3 */
 }
 
-.brandText {
-  font-family: var(--font-title);
+.profileAvatar {
   color: var(--color-primary);
-  font-size: 0.875rem; /* text-sm */
-  text-transform: uppercase;
-  font-weight: 700; /* font-bold */
-  letter-spacing: 0.1em; /* tracking-widest */
+  font-size: 2.25rem; /* text-4xl */
+  font-variation-settings: 'FILL' 1;
+}
+
+.profileInfo {
+  overflow: hidden;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .profileInfo {
+    display: block;
+  }
+}
+
+.profileName {
+  font-weight: 700;
+  color: var(--color-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.profileRole {
+  font-size: 0.75rem; /* text-xs */
+  color: var(--color-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.userInfoWrapper {
+  position: relative;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+}
+
+.userInfo:hover {
+  background-color: var(--color-surface-container-high);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  background-color: var(--color-surface-container-low);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 12rem;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: var(--color-surface-container-high);
+}
+
+.dropdownItem.logout {
+  color: var(--color-error);
+  border-top: 1px solid var(--color-outline-variant);
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+}
+
+.dropdownItem.logout:hover {
+  background-color: rgba(229, 9, 20, 0.1);
 }

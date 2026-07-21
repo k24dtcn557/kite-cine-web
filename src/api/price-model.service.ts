@@ -3,9 +3,9 @@ import { PageResponse } from "./types";
 import { SeatType } from "./cinema.service";
 
 export const PRICE_MODEL_SEAT_TYPES: { type: SeatType; label: string }[] = [
-  { type: "STANDARD", label: "Tiêu chuẩn" },
+  { type: "STANDARD", label: "TIÊU CHUẨN" },
   { type: "VIP", label: "VIP" },
-  { type: "COUPLE", label: "Ghế đôi" },
+  { type: "COUPLE", label: "GHẾ ĐÔI" },
 ];
 
 export interface PriceModelDto {
@@ -44,7 +44,7 @@ export const priceModelService = {
 
   deletePriceModel: async (id: string) => {
     const response = await apiClient.delete(
-      `/kite-cine/management/price-models/${id}`
+      `/kite-cine/management/price-models/${id}`,
     );
     return response.data;
   },

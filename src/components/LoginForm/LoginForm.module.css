@@ -105,26 +105,31 @@
   color: var(--color-secondary);
 }
 
-.input {
+input.input {
   width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--color-outline-variant);
-  padding: 0.625rem 0;
+  background-color: var(--color-surface-container-low) !important;
+  border: 1px solid var(--color-outline-variant) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 0.75rem 1rem !important;
   font-size: 1rem;
   font-family: var(--font-body);
   color: var(--color-on-surface);
-  outline: none;
-  transition: border-color 0.25s ease;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.input::placeholder {
+input.input::placeholder {
   color: var(--color-on-surface-variant);
   opacity: 0.5;
 }
 
-.input:focus {
-  border-bottom-color: var(--color-secondary);
+input.input:focus,
+input.input:focus-visible {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 1px rgba(229, 9, 20, 0.2) !important;
+  outline: none !important;
 }
 
 /* ── Password row ── */
@@ -154,19 +159,25 @@
 }
 
 .passwordWrapper .input {
-  padding-right: 2.5rem;
+  padding-right: 2.75rem !important;
 }
 
 .eyeBtn {
   position: absolute;
-  right: 0;
-  bottom: 0.5rem;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
   color: var(--color-on-surface-variant);
   padding: 0;
   transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
 }
 
 .eyeBtn .material-symbols-outlined {
@@ -298,10 +309,11 @@
   text-align: center;
   font-size: 0.875rem;
   color: var(--color-on-surface-variant);
+  margin-top: 1.5rem;
 }
 
 .signupLink {
-  color: var(--color-secondary);
+ color: var(--color-primary);
   font-weight: 700;
   background: none;
   border: none;
