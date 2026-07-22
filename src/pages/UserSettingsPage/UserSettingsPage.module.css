@@ -198,6 +198,14 @@
   transition: all 0.3s ease;
 }
 
+.glassInput:-webkit-autofill,
+.glassInput:-webkit-autofill:hover,
+.glassInput:-webkit-autofill:focus,
+.glassInput:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-on-surface) !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
 .glassInput:focus {
   outline: none;
   border-color: var(--color-primary);
@@ -221,9 +229,29 @@
   transition: all 0.3s ease;
 }
 
-.btnPrimary:hover {
+.btnPrimary:hover:not(:disabled) {
   box-shadow: 0 0 15px color-mix(in srgb, var(--color-primary) 40%, transparent);
   transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-on-surface-variant);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .btnSecondary {

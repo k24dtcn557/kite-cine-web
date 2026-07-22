@@ -22,7 +22,22 @@ export interface UserDto {
   fullName: string;
   email: string;
   avatar: string;
+  phoneNumber: string;
+  dob?: string;
   roles?: { name: string }[] | string[];
+}
+
+export interface UpdateMyInfoPayload {
+  fullName: string;
+  email?: string;
+  phoneNumber?: string;
+  dob?: string;
+}
+
+export interface ChangePasswordPayload {
+  oldPassword?: string;
+  newPassword?: string;
+  confirmNewPassword?: string;
 }
 
 class AuthService {
@@ -95,6 +110,35 @@ class AuthService {
         "/kite-cine/users/my-info",
       );
       return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Updates the current authenticated user's information.
+   */
+  async updateMyInfo(payload: UpdateMyInfoPayload): Promise<UserDto> {
+    try {
+      // User requested /kite-cine/my-info, but my-info get is /kite-cine/users/my-info
+      // We will use /kite-cine/users/my-info as it is most likely correct,
+      // but if the endpoint is strictly /kite-cine/my-info, change this.
+      const response = await apiClient.put<ApiResponse<UserDto>>(
+        "/kite-cine/users/my-info",
+        payload,
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Changes the current authenticated user's password.
+   */
+  async changePassword(payload: ChangePasswordPayload): Promise<void> {
+    try {
+      await apiClient.post("/kite-cine/users/change-password", payload);
     } catch (error) {
       throw error;
     }
