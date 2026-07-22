@@ -13,14 +13,13 @@ import AdminMovieFormPage from "./pages/AdminMovieFormPage";
 import AdminMovieShowtimesPage from "./pages/AdminMovieShowtimesPage";
 import AdminAddShowtimePage from "./pages/AdminAddShowtimePage";
 import AdminPriceModelPage from "./pages/AdminPriceModelPage";
-import DashboardPage from "./pages/DashboardPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
 import BookingPage from "./pages/BookingPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage/OrderConfirmationPage";
 import MyTicketsPage from "./pages/MyTicketsPage";
 import TicketDetailPage from "./pages/TicketDetailPage";
-import UserSettingsPage from "./pages/UserSettingsPage";
+import UserProfilePage from "./pages/UserProfilePage";
 import { ProtectedRoute } from "./components";
 import { AuthProvider } from "./contexts";
 import { Toaster } from "react-hot-toast";
@@ -56,10 +55,9 @@ const App: React.FC = () => (
           {/* User Dashboard Routes */}
           <Route path="/my-cine" element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
-              <Route index element={<DashboardPage />} />
               <Route path="tickets" element={<MyTicketsPage />} />
               <Route path="tickets/:id" element={<TicketDetailPage />} />
-              <Route path="settings" element={<UserSettingsPage />} />
+              <Route path="profile" element={<UserProfilePage />} />
             </Route>
           </Route>
 
@@ -80,13 +78,6 @@ const App: React.FC = () => (
                 path="movies/:id/showtimes/add"
                 element={<AdminAddShowtimePage />}
               />
-            </Route>
-          </Route>
-
-          {/* User Routes - Protected */}
-          <Route path="/my-cine" element={<ProtectedRoute />}>
-            <Route element={<DashboardLayout />}>
-              <Route index element={<DashboardPage />} />
             </Route>
           </Route>
         </Routes>

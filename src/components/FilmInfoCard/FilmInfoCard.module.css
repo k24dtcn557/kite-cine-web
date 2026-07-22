@@ -1,0 +1,223 @@
+/* The full card wrapper — used as the .ticketContainer in TicketDetailPage */
+.filmInfoCard {
+  background: color-mix(in srgb, var(--color-surface-container-high) 85%, transparent);
+  backdrop-filter: blur(20px);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--color-outline-variant);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ---- Header ---- */
+.cardHeader {
+  background-color: var(--color-surface-container-low);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+@media (min-width: 768px) {
+  .cardHeader {
+    padding: 1.5rem 2rem;
+  }
+}
+
+.movieTitle {
+  font-family: var(--font-display-lg, Montserrat);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-on-surface);
+  margin: 0;
+  text-transform: uppercase;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+@media (min-width: 768px) {
+  .movieTitle {
+    font-size: 1.75rem;
+  }
+}
+
+/* ---- Card Body — Bento grid ---- */
+.cardBody {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "poster"
+    "details";
+}
+
+@media (min-width: 768px) {
+  .cardBody {
+    grid-template-columns: 200px 1fr;
+    grid-template-areas: "poster details";
+  }
+}
+
+/* ---- Poster Column ---- */
+.posterColumn {
+  grid-area: poster;
+  padding: 1.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  border-bottom: 1px dashed var(--color-outline-variant);
+}
+
+@media (min-width: 768px) {
+  .posterColumn {
+    border-bottom: none;
+    border-right: 1px dashed var(--color-outline-variant);
+    display: block;
+    padding: 1.5rem;
+  }
+}
+
+.posterWrapper {
+  width: 140px;
+  aspect-ratio: 2 / 3;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--color-outline-variant);
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .posterWrapper {
+    width: 100%;
+  }
+}
+
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---- Details Column ---- */
+.detailsColumn {
+  grid-area: details;
+  padding: 1.25rem;
+  background: linear-gradient(to bottom right, transparent, rgba(0, 0, 0, 0.12));
+}
+
+@media (min-width: 768px) {
+  .detailsColumn {
+    padding: 1.5rem 2rem;
+  }
+}
+
+/* ---- Info Grid ---- */
+.label {
+  font-family: var(--font-label-uppercase, Inter);
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin: 0 0 0.2rem 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.infoValue {
+  font-family: var(--font-title-lg, Inter);
+  font-size: 0.95rem;
+  color: var(--color-on-surface);
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .infoValue {
+    font-size: 1.1rem;
+  }
+}
+
+.colSpan2 {
+  grid-column: span 2;
+}
+
+.theaterSub {
+  font-family: var(--font-body-sm, Inter);
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+  margin: 0.15rem 0 0 0;
+  overflow-wrap: break-word;
+}
+
+.seatsWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.seatBadge {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 0.9rem;
+  color: var(--color-primary-container);
+  padding: 0.3rem 0.65rem;
+  background-color: color-mix(in srgb, var(--color-primary-container) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary-container) 30%, transparent);
+  border-radius: 0.4rem;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--color-primary-container) 15%, transparent);
+}
+
+.bookingIdDetail {
+  grid-column: span 2;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+.bookingIdValue {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 0.95rem;
+  color: var(--color-on-surface);
+  letter-spacing: 0.04em;
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+/* ---- Booking code + Price on same row ---- */
+.bookingPriceRow {
+  grid-column: span 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+.priceBlock {
+  text-align: right;
+}
+
+.totalAmount {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary-container);
+  margin: 0.1rem 0 0;
+}
+
+.cardInfo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  font-family: var(--font-body-sm, Inter);
+  font-size: 0.8rem;
+  color: var(--color-on-surface-variant);
+  margin-top: 0.25rem;
+}

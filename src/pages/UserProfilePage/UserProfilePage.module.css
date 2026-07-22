@@ -52,10 +52,6 @@
   }
 }
 
-.sideColumn {
-  /* Spans 1 column implicitly */
-}
-
 /* Glass Panels */
 .glassPanel {
   background-color: var(--color-surface-container);

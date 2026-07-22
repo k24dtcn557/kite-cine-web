@@ -1,54 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MyTicketsPage.module.css";
-
-const MOCK_TICKETS = [
-  {
-    id: "1",
-    title: "Neon Horizon",
-    format: "IMAX",
-    date: "Oct 24, 2024",
-    time: "8:30 PM",
-    theater: "Cinema 1",
-    seats: "G12, G13",
-    posterUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuBQfOkUVWOc2UP5E-ZRJY_Su7-7e21ocBftcfWJxSi4iqDIElG6yjyNRrGksckYXkcZAuHdyKc78AOaLvKR-JIbClLxda6jSIox6y3RUfuhCeqvwTj7pviQ6GnMIoKRrB5Te7jj8qNAxaU_oUVX3c07k4vCRHUue6XZcfevTqSizGUvJIbNHb3sV-Ep9EbbeY7i-yYIUolmvBWYS0ZVadIRHoq-tCQAFgPfheACLOm4MFun7xvRj_Yc",
-  },
-  {
-    id: "2",
-    title: "Cyber City",
-    format: "2D",
-    date: "Oct 28, 2024",
-    time: "7:00 PM",
-    theater: "Cinema 4",
-    seats: "D4, D5",
-    posterUrl: "https://placehold.co/400x600/1E1B1B/FFFFFF?text=Cyber+City",
-  }
-];
+import { bookingService } from "../../api/booking.service";
+import { getApiErrorMessage, PurchaseDetailDto } from "../../api/types";
+import { TicketCard } from "./components/TicketCard/TicketCard";
 
 const MyTicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [upcomingTickets, setUpcomingTickets] = useState<PurchaseDetailDto[]>(
+    [],
+  );
+  const [pastTickets, setPastTickets] = useState<PurchaseDetailDto[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchTickets = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        if (activeTab === "upcoming") {
+          const tickets = await bookingService.getUpcomings();
+          setUpcomingTickets(tickets);
+        } else {
+          const tickets = await bookingService.getPast();
+          setPastTickets(tickets);
+        }
+      } catch (err) {
+        setError(getApiErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTickets();
+  }, [activeTab]);
 
   return (
     <div className={styles.page}>
       {/* Header & Search */}
       <div className={styles.header}>
-        <div>
-          <h2 className={styles.title}>My Tickets</h2>
-          <p className={styles.subtitle}>
-            Manage your upcoming cinematic journeys.
-          </p>
-        </div>
-        <div className={styles.searchContainer}>
-          <span className={`material-symbols-outlined ${styles.searchIcon}`}>
-            search
-          </span>
-          <input
-            className={styles.searchInput}
-            placeholder="Search bookings..."
-            type="text"
-          />
-        </div>
+        <h2 className={styles.title}>Vé của tôi</h2>
       </div>
 
       {/* Tabs */}
@@ -57,78 +49,76 @@ const MyTicketsPage: React.FC = () => {
           className={`${styles.tab} ${activeTab === "upcoming" ? styles.tabActive : styles.tabInactive}`}
           onClick={() => setActiveTab("upcoming")}
         >
-          Upcoming
+          Sắp chiếu
         </button>
         <button
           className={`${styles.tab} ${activeTab === "past" ? styles.tabActive : styles.tabInactive}`}
           onClick={() => setActiveTab("past")}
         >
-          Past
+          Đã qua
         </button>
       </div>
 
       {/* Ticket Grid */}
       {activeTab === "upcoming" ? (
         <div className={styles.ticketGrid}>
-          {MOCK_TICKETS.map((ticket) => (
-            <div key={ticket.id} className={`${styles.ticketCard} ${styles.ticketMask}`}>
-              {/* Abstract Glow */}
-              <div className={styles.glow}></div>
-
-              {/* Poster */}
-              <div className={styles.posterWrapper}>
-                <img
-                  alt={ticket.title}
-                  className={styles.posterImage}
-                  src={ticket.posterUrl}
-                />
-                <div className={styles.posterOverlay}></div>
-              </div>
-
-              {/* Details */}
-              <div className={styles.details}>
-                <div>
-                  <div className={styles.ticketHeader}>
-                    <h3 className={styles.movieTitle}>{ticket.title}</h3>
-                    <span className={styles.formatBadge}>{ticket.format}</span>
-                  </div>
-                  <div className={styles.infoGrid}>
-                    <div>
-                      <span className={styles.infoLabel}>Date</span>
-                      <span className={styles.infoValue}>{ticket.date}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Time</span>
-                      <span className={styles.infoValue}>{ticket.time}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Theater</span>
-                      <span className={styles.infoValue}>{ticket.theater}</span>
-                    </div>
-                    <div>
-                      <span className={styles.infoLabel}>Seats</span>
-                      <span className={styles.infoValue}>{ticket.seats}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.ticketFooter}>
-                  <button 
-                    className={styles.btnViewTicket}
-                    onClick={() => navigate(`/my-cine/tickets/${ticket.id}`)}
-                  >
-                    <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>
-                      qr_code
-                    </span>
-                    View Ticket
-                  </button>
-                </div>
-              </div>
+          {isLoading ? (
+            <div className={styles.loadingState}>
+              <div className={styles.spinner}></div>
+              <p className={styles.loadingText}>Đang tải dữ liệu...</p>
             </div>
-          ))}
+          ) : error ? (
+            <div style={{ padding: "2rem 0", color: "var(--color-error)" }}>
+              {error}
+            </div>
+          ) : upcomingTickets.length === 0 ? (
+            <div className={styles.emptyState}>
+              <span className={`material-symbols-outlined ${styles.emptyIcon}`}>
+                local_activity
+              </span>
+              <p className={styles.emptyText}>Bạn chưa có vé nào sắp tới.</p>
+              <button
+                className={styles.emptyButton}
+                onClick={() => navigate("/")}
+              >
+                Đặt vé ngay
+              </button>
+            </div>
+          ) : (
+            upcomingTickets.map((ticket) => (
+              <TicketCard key={ticket.code} ticket={ticket} />
+            ))
+          )}
         </div>
       ) : (
-        <div style={{ padding: "2rem 0", color: "var(--color-on-surface-variant)" }}>
-          No past tickets found.
+        <div className={styles.ticketGrid}>
+          {isLoading ? (
+            <div className={styles.loadingState}>
+              <div className={styles.spinner}></div>
+              <p className={styles.loadingText}>Đang tải dữ liệu...</p>
+            </div>
+          ) : error ? (
+            <div style={{ padding: "2rem 0", color: "var(--color-error)" }}>
+              {error}
+            </div>
+          ) : pastTickets.length === 0 ? (
+            <div className={styles.emptyState}>
+              <span className={`material-symbols-outlined ${styles.emptyIcon}`}>
+                local_activity
+              </span>
+              <p className={styles.emptyText}>Không tìm thấy vé nào cả.</p>
+              <button
+                className={styles.emptyButton}
+                onClick={() => navigate("/")}
+              >
+                Đặt vé ngay
+              </button>
+            </div>
+          ) : (
+            pastTickets.map((ticket) => (
+              <TicketCard key={ticket.code} ticket={ticket} />
+            ))
+          )}
         </div>
       )}
     </div>

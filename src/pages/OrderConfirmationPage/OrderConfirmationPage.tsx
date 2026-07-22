@@ -7,11 +7,7 @@ import { ShowTimeBriefDto } from "../../api/show-time.service";
 import { TicketDto } from "../../api/ticket.service";
 import { PurchaseDto } from "../../api/booking.service";
 import { CommonUtils } from "../../utils/CommonUtils";
-import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
-import { QRCodeSVG } from "qrcode.react";
-
-const getSeatTypeLabel = (type: string) =>
-  PRICE_MODEL_SEAT_TYPES.find((t) => t.type === type)?.label || type;
+import { TicketQRList, FilmInfoCard } from "../../components";
 
 const OrderConfirmationPage: React.FC = () => {
   const location = useLocation();
@@ -52,126 +48,27 @@ const OrderConfirmationPage: React.FC = () => {
           <h1 className={styles.successTitle}>Đặt vé thành công!</h1>
         </div>
 
-        {/* Main bento grid */}
-        <div className={styles.bentoGrid}>
-          {/* Movie Poster */}
-          <div className={styles.posterCard}>
-            <img
-              src={movie?.poster}
-              alt={movie?.title}
-              className={styles.posterImage}
-            />
-            <div className={styles.posterOverlay}>
-              <h2 className={styles.posterTitle}>{movie?.title}</h2>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className={styles.detailsColumn}>
-            {/* Showtime Details */}
-            <div className={styles.glassCard}>
-              <h3 className={styles.cardTitle}>Chi tiết suất chiếu</h3>
-              <div className={styles.showtimeGrid}>
-                <div>
-                  <p className={styles.infoLabel}>Ngày chiếu</p>
-                  <p className={styles.infoValue}>
-                    {CommonUtils.formatDateVN(showtime?.date)}
-                  </p>
-                </div>
-                <div>
-                  <p className={styles.infoLabel}>Giờ chiếu</p>
-                  <p className={styles.infoValue}>
-                    {showtime?.startTime
-                      ? showtime.startTime.substring(0, 5)
-                      : "--:--"}
-                  </p>
-                </div>
-                <div className={styles.colSpan2}>
-                  <p className={styles.infoLabel}>Rạp chiếu</p>
-                  <p className={styles.infoValue}>{cinemaName}</p>
-                  <p className={styles.infoSubValue}>
-                    {cinemaAddress && ` • ${cinemaAddress}`}
-                  </p>
-                  <p className={styles.infoSubValue}>
-                    {auditoriumName && `${auditoriumName}`}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Transaction Info */}
-            <div className={styles.transactionCard}>
-              <div>
-                <p className={styles.infoLabel}>Mã đặt vé</p>
-                <p className={styles.bookingCode}>
-                  {bookingData?.code || "---"}
-                </p>
-              </div>
-              <div className={styles.transactionRight}>
-                <p className={styles.infoLabel}>Tổng thanh toán</p>
-                <p className={styles.totalAmount}>
-                  {CommonUtils.formatNumberVietnamese(
-                    bookingData?.grandTotal ?? total,
-                  )}{" "}
-                  đ
-                </p>
-                {maskedCard && (
-                  <p className={styles.cardInfo}>
-                    <span
-                      className="material-symbols-outlined"
-                      style={{ fontSize: "14px" }}
-                    >
-                      credit_card
-                    </span>{" "}
-                    **** {maskedCard}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Film Info Card */}
+        <FilmInfoCard
+          movieTitle={movie?.title}
+          moviePoster={movie?.poster}
+          date={showtime?.date}
+          startTime={showtime?.startTime}
+          cinemaName={cinemaName}
+          cinemaAddress={cinemaAddress}
+          auditoriumName={auditoriumName}
+          bookingCode={bookingData?.code}
+          tickets={tickets}
+          totalPrice={bookingData?.grandTotal ?? total}
+          maskedCard={maskedCard}
+        />
 
         {/* Tickets Section */}
-        <div className={styles.ticketsSection}>
-          <div className={styles.ticketsSectionHeader}>
-            <h3 className={styles.ticketsSectionTitle}>Vé của bạn</h3>
-            <p className={styles.ticketsSectionSubtitle}>Quét tại cửa vào</p>
-          </div>
-          <div className={styles.ticketsList}>
-            {tickets.map((ticket) => (
-              <div key={ticket.id} className={styles.ticketCard}>
-                <div className={styles.ticketTop}>
-                  <div className={styles.ticketSeatNumber}>
-                    {ticket.rowLetter}
-                    {ticket.seatNumber}
-                  </div>
-                  <p className={styles.ticketSeatType}>
-                    {getSeatTypeLabel(ticket.seatType)}
-                  </p>
-                </div>
-                <div className={styles.ticketDivider}></div>
-                <div className={styles.ticketBottom}>
-                  {ticket.qrCode ? (
-                    <div className={styles.qrWrapper}>
-                      <QRCodeSVG
-                        value={ticket.qrCode}
-                        size={108}
-                        bgColor="#ffffff"
-                        fgColor="#000000"
-                        level="M"
-                      />
-                    </div>
-                  ) : (
-                    <div className={styles.qrCode}>
-                      <div className={styles.qrInner}></div>
-                    </div>
-                  )}
-                  <p className={styles.ticketCode}>{ticket.qrCode}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <TicketQRList
+          tickets={tickets}
+          title="Vé của bạn"
+          subtitle="Quét tại cửa vào"
+        />
 
         {/* Action Footer */}
         <div className={styles.actionFooter}>

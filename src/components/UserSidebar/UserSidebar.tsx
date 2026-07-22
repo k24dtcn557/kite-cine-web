@@ -8,13 +8,12 @@ interface UserSidebarProps {
 }
 
 const NAV_ITEMS = [
-  { label: "Thành viên", icon: "dashboard", path: "/my-cine" },
   {
     label: "Vé của tôi",
     icon: "confirmation_number",
     path: "/my-cine/tickets",
   },
-  { label: "Cài đặt", icon: "settings", path: "/my-cine/settings" },
+  { label: "Hồ sơ", icon: "person", path: "/my-cine/profile" },
 ];
 
 const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {

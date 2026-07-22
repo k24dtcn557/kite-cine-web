@@ -153,25 +153,25 @@ const Navbar: React.FC = () => {
                           className={styles.dropdownItem}
                           onClick={() => {
                             setShowDropdown(false);
-                            navigate("/my-cine");
-                          }}
-                        >
-                          <span className="material-symbols-outlined">
-                            movie
-                          </span>
-                          Thành viên
-                        </button>
-                        <button
-                          className={styles.dropdownItem}
-                          onClick={() => {
-                            setShowDropdown(false);
-                            navigate("/my-tickets");
+                            navigate("/my-cine/tickets");
                           }}
                         >
                           <span className="material-symbols-outlined">
                             confirmation_number
                           </span>
                           Vé của tôi
+                        </button>
+                        <button
+                          className={styles.dropdownItem}
+                          onClick={() => {
+                            setShowDropdown(false);
+                            navigate("/my-cine/profile");
+                          }}
+                        >
+                          <span className="material-symbols-outlined">
+                            person
+                          </span>
+                          Hồ sơ
                         </button>
                       </>
                     )}

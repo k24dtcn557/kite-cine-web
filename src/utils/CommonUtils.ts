@@ -41,6 +41,10 @@ export class CommonUtils {
     }
   }
 
+  static formatTimeVN(timeStr?: string): string {
+    return timeStr?.substring(0, 5) || "";
+  }
+
   /**
    * Formats runtime in minutes to a Vietnamese string (e.g., "2 giờ 15 phút").
    */

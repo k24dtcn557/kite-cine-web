@@ -34,6 +34,7 @@ export interface AuditoriumDto {
   type: AuditoriumType;
   createdAt: string;
   updatedAt: string;
+  cinema: CinemaDto;
   status: string;
 }
 
@@ -127,9 +128,11 @@ export const cinemaService = {
     // Handle both cases: wrapped in ApiResponse or direct array
     return (data as ApiResponse<SeatRowDto[]>).result;
   },
-  getPublicAuditoriumSeats: async (auditoriumId: number): Promise<SeatRowDto[]> => {
+  getPublicAuditoriumSeats: async (
+    auditoriumId: number,
+  ): Promise<SeatRowDto[]> => {
     const response = await apiClient.get<ApiResponse<SeatRowDto[]>>(
-      `/kite-cine/auditoriums/${auditoriumId}/seats`
+      `/kite-cine/auditoriums/${auditoriumId}/seats`,
     );
     return response.data.result;
   },

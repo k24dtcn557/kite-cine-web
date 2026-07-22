@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "./UserSettingsPage.module.css";
+import styles from "./UserProfilePage.module.css";
 import { useAuth } from "../../contexts/AuthContext";
 import { authService, UserDto } from "../../api/auth.service";
 import { getApiErrorMessage } from "../../api/types";
@@ -13,7 +13,7 @@ const formatDOB = (value: string) => {
   return `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4)}`;
 };
 
-const UserSettingsPage: React.FC = () => {
+const UserProfilePage: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const [userInfo, setUserInfo] = useState<UserDto | null>(null);
 
@@ -157,7 +157,7 @@ const UserSettingsPage: React.FC = () => {
   return (
     <div className={styles.pageContainer}>
       <header className={styles.pageHeader}>
-        <h2 className={styles.pageTitle}>Cài đặt tài khoản</h2>
+        <h2 className={styles.pageTitle}>Hồ sơ của tôi</h2>
         <p className={styles.pageSubtitle}>Quản lý hồ sơ và bảo mật</p>
       </header>
 
@@ -438,4 +438,4 @@ const UserSettingsPage: React.FC = () => {
   );
 };
 
-export default UserSettingsPage;
+export default UserProfilePage;

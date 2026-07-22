@@ -14,3 +14,5 @@ export { default as AdminSidebar } from "./AdminSidebar";
 export { default as PriceModelComponent } from "./PriceModelComponent";
 export { default as AdminTopbar } from "./AdminTopbar";
 export { default as ProtectedRoute } from "./ProtectedRoute";
+export { default as TicketQRList } from "./TicketQRList";
+export { default as FilmInfoCard } from "./FilmInfoCard";

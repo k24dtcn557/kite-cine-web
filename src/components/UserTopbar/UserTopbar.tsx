@@ -120,16 +120,6 @@ const UserTopbar: React.FC<UserTopbarProps> = ({ onMenuClick }) => {
                 className={styles.dropdownItem}
                 onClick={() => {
                   setShowDropdown(false);
-                  navigate("/my-cine");
-                }}
-              >
-                <span className="material-symbols-outlined">movie</span>
-                Thành viên
-              </button>
-              <button
-                className={styles.dropdownItem}
-                onClick={() => {
-                  setShowDropdown(false);
                   navigate("/my-cine/tickets");
                 }}
               >
@@ -138,6 +128,17 @@ const UserTopbar: React.FC<UserTopbarProps> = ({ onMenuClick }) => {
                 </span>
                 Vé của tôi
               </button>
+              <button
+                className={styles.dropdownItem}
+                onClick={() => {
+                  setShowDropdown(false);
+                  navigate("/my-cine/profile");
+                }}
+              >
+                <span className="material-symbols-outlined">person</span>
+                Hồ sơ cá nhân
+              </button>
+
               <button
                 className={`${styles.dropdownItem} ${styles.logout}`}
                 onClick={() => {
