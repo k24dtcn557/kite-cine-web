@@ -7,7 +7,7 @@ import { ShowTimeBriefDto } from "../../api/show-time.service";
 import { TicketDto } from "../../api/ticket.service";
 import { PurchaseDto } from "../../api/booking.service";
 import { CommonUtils } from "../../utils/CommonUtils";
-import { TicketQRList, FilmInfoCard } from "../../components";
+import { FilmInfoCard } from "../../components";
 
 const OrderConfirmationPage: React.FC = () => {
   const location = useLocation();
@@ -61,13 +61,6 @@ const OrderConfirmationPage: React.FC = () => {
           tickets={tickets}
           totalPrice={bookingData?.grandTotal ?? total}
           maskedCard={maskedCard}
-        />
-
-        {/* Tickets Section */}
-        <TicketQRList
-          tickets={tickets}
-          title="Vé của bạn"
-          subtitle="Quét tại cửa vào"
         />
 
         {/* Action Footer */}

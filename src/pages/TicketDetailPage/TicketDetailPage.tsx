@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import styles from "./TicketDetailPage.module.css";
 import { bookingService } from "../../api/booking.service";
 import { PurchaseDetailDto } from "../../api/types";
-import { FilmInfoCard, TicketQRList } from "../../components";
+import { FilmInfoCard } from "../../components";
 
 const TicketDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -67,10 +67,6 @@ const TicketDetailPage: React.FC = () => {
       {/* Film Info Card */}
       <FilmInfoCard purchase={ticket} totalPrice={ticket.grandTotal} />
 
-      {/* QR Tickets Section */}
-      <div className={styles.ticketsSection}>
-        <TicketQRList tickets={ticket.tickets} />
-      </div>
     </div>
   );
 };
