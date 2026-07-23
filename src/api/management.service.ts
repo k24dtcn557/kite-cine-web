@@ -1,10 +1,26 @@
 import apiClient from "./client";
-import { ApiResponse, PageResponse } from "./types";
+import { ApiResponse, PageResponse, PurchaseDetailDto } from "./types";
 import { UserDto } from "./auth.service";
 
 export interface SearchUserPayload {
   keyword?: string;
-  role?: string;
+  status?: string;
+  page?: number;
+  size?: number;
+}
+
+export interface CreateUserPayload {
+  username: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  role: string;
+  password?: string;
+}
+
+export interface SearchBookingPayload {
+  keyword?: string;
+  status?: string;
   page?: number;
   size?: number;
 }
@@ -13,13 +29,109 @@ class ManagementService {
   /**
    * Search users for admin management.
    */
-  async searchUsers(payload: SearchUserPayload): Promise<PageResponse<UserDto>> {
+  async searchUsers(
+    payload: SearchUserPayload,
+  ): Promise<PageResponse<UserDto>> {
     try {
       const response = await apiClient.post<ApiResponse<PageResponse<UserDto>>>(
         "/kite-cine/management/users/search",
         payload,
       );
       return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createUser(payload: CreateUserPayload): Promise<UserDto> {
+    try {
+      const response = await apiClient.post<ApiResponse<UserDto>>(
+        `/kite-cine/management/users`,
+        payload,
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getUser(id: string): Promise<UserDto> {
+    try {
+      const response = await apiClient.get<ApiResponse<UserDto>>(
+        `/kite-cine/management/users/${id}`,
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateUser(id: string, payload: any): Promise<UserDto> {
+    try {
+      const response = await apiClient.put<ApiResponse<UserDto>>(
+        `/kite-cine/management/users/${id}`,
+        payload,
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async lockUser(id: string): Promise<void> {
+    try {
+      await apiClient.post(`/kite-cine/management/users/${id}/lock`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async activateUser(id: string): Promise<void> {
+    try {
+      await apiClient.post(`/kite-cine/management/users/${id}/activate`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    try {
+      await apiClient.delete(`/kite-cine/management/users/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async resetPassword(id: string): Promise<void> {
+    try {
+      await apiClient.post(`/kite-cine/management/users/${id}/reset-password`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Search bookings/tickets for admin management.
+   */
+  async searchBookings(
+    payload: SearchBookingPayload,
+  ): Promise<PageResponse<PurchaseDetailDto>> {
+    try {
+      const response = await apiClient.post<
+        ApiResponse<PageResponse<PurchaseDetailDto>>
+      >("/kite-cine/management/bookings/search", payload);
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Cancel a booking by code.
+   */
+  async cancelBooking(code: string): Promise<void> {
+    try {
+      await apiClient.post(`/kite-cine/management/bookings/${code}/cancel`);
     } catch (error) {
       throw error;
     }

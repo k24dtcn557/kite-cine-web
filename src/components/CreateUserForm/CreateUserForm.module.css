@@ -1,0 +1,219 @@
+.glassPanel {
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.decorativeGlow {
+  position: absolute;
+  top: -2.5rem;
+  right: -2.5rem;
+  width: 8rem;
+  height: 8rem;
+  background-color: color-mix(in srgb, var(--color-primary-container) 20%, transparent);
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-on-surface) 5%, transparent);
+  padding-bottom: 1rem;
+}
+
+.headerIcon {
+  color: var(--color-primary);
+}
+
+.sectionTitle {
+  font-family: var(--font-headline-md, Montserrat);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.profileForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .profileForm {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.avatarWrapper {
+  position: relative;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-surface-container-high);
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.avatarWrapper:hover {
+  border-color: var(--color-primary);
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  backdrop-filter: blur(2px);
+  transition: opacity 0.3s ease;
+}
+
+.avatarWrapper:hover .avatarOverlay {
+  opacity: 1;
+}
+
+.btnUpload {
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.btnUpload:hover {
+  color: color-mix(in srgb, var(--color-primary) 80%, white);
+}
+
+.formFields {
+  flex: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .formFields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputLabel {
+  font-family: var(--font-label-uppercase, Inter);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+  margin-bottom: 0.5rem;
+  margin-left: 0.25rem;
+}
+
+.glassInput {
+  width: 100%;
+  background-color: color-mix(in srgb, var(--color-surface-container-highest) 50%, transparent);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-on-surface);
+  font-family: var(--font-body-base, Inter);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.glassInput:-webkit-autofill,
+.glassInput:-webkit-autofill:hover,
+.glassInput:-webkit-autofill:focus,
+.glassInput:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-on-surface) !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+.glassInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+.actionRow {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+}
+
+.btnPrimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-family: var(--font-title-lg, Inter);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  box-shadow: 0 0 15px color-mix(in srgb, var(--color-primary) 40%, transparent);
+  transform: translateY(-1px);
+}
+
+.btnPrimary:disabled {
+  background-color: var(--color-surface-container-highest);
+  color: var(--color-on-surface-variant);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

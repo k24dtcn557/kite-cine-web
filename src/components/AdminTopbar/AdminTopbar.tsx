@@ -135,6 +135,20 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
                 </span>
                 Rạp chiếu
               </button>
+              <button
+                className={styles.menuItem}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate("/admin/profile");
+                }}
+              >
+                <span
+                  className={`material-symbols-outlined ${styles.menuItemIcon}`}
+                >
+                  person
+                </span>
+                Hồ sơ cá nhân
+              </button>
               <button className={styles.menuItem} onClick={handleLogout}>
                 <span
                   className={`material-symbols-outlined ${styles.menuItemIcon}`}

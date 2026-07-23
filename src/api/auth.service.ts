@@ -16,6 +16,18 @@ export interface RegisterPayload {
   fullName: string;
 }
 
+export enum UserStatus {
+  ACTIVE = "ACTIVE",
+  LOCKED = "LOCKED",
+  DELETED = "DELETED",
+}
+
+export const UserStatusText: Record<string, string> = {
+  ACTIVE: "Hoạt động",
+  LOCKED: "Khóa",
+  DELETED: "Đã xóa",
+};
+
 export interface UserDto {
   id: string;
   username: string;
@@ -25,6 +37,7 @@ export interface UserDto {
   phoneNumber: string;
   dob?: string;
   roles?: { name: string }[] | string[];
+  status?: UserStatus | string | number;
 }
 
 export interface UpdateMyInfoPayload {

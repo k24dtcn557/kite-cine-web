@@ -38,10 +38,22 @@ export function getApiErrorMessage(
   return fallback;
 }
 
+export enum BookingStatus {
+  PENDING = "PENDING",
+  PAID = "PAID",
+  CANCELLED = "CANCELLED",
+}
+
+export const BookingStatusText: Record<BookingStatus | string, string> = {
+  [BookingStatus.PENDING]: "Đang xử lý",
+  [BookingStatus.PAID]: "Đã thanh toán",
+  [BookingStatus.CANCELLED]: "Đã hủy",
+};
+
 export interface PurchaseDetailDto {
   code: string;
   showtime: ShowTimeDetailDto;
-  status?: string;
+  status?: BookingStatus;
   grandTotal?: number;
   tickets: TicketDto[];
 }

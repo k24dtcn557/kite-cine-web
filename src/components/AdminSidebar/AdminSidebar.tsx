@@ -4,13 +4,12 @@ import styles from "./AdminSidebar.module.css";
 
 const NAV_ITEMS = [
   { label: "Tổng quan", icon: "dashboard", path: "/admin" },
-  { label: "Người dùng", icon: "group", path: "/admin/users" },
   { label: "Rạp chiếu", icon: "theater_comedy", path: "/admin/cinemas" },
   { label: "Bảng giá", icon: "request_quote", path: "/admin/price-models" },
   { label: "Phim", icon: "movie", path: "/admin/movies" },
-  { label: "Đặt vé", icon: "confirmation_number", path: "/admin/bookings" },
-  { label: "Thống kê", icon: "insights", path: "/admin/analytics" },
-  { label: "Cài đặt", icon: "settings", path: "/admin/settings" },
+  { label: "Quản lý vé", icon: "confirmation_number", path: "/admin/bookings" },
+  { label: "Người dùng", icon: "group", path: "/admin/users" },
+  { label: "Hồ sơ cá nhân", icon: "person", path: "/admin/profile" },
 ];
 
 interface AdminSidebarProps {

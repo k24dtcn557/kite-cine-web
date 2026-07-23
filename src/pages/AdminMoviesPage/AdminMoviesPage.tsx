@@ -77,39 +77,6 @@ const AdminMoviesPage: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* Quick Stats Placeholder */}
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <span>Phim đang chiếu</span>
-            <span className="material-symbols-outlined">theaters</span>
-          </div>
-          <p className={styles.statValue}>24</p>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <span>Doanh thu vé</span>
-            <span className="material-symbols-outlined">payments</span>
-          </div>
-          <p className={styles.statValue}>$142.8k</p>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <span>Đánh giá TB</span>
-            <span className="material-symbols-outlined">star</span>
-          </div>
-          <p className={styles.statValue}>4.8</p>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statHeader}>
-            <span>Sắp ra mắt</span>
-            <span className="material-symbols-outlined">upcoming</span>
-          </div>
-          <p className={styles.statValue}>12</p>
-        </div>
-      </div>
-
       {/* Filters Row */}
       <div className={styles.filtersRow}>
         <div className={styles.filterTabs}>

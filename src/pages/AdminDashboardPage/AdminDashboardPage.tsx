@@ -1,26 +1,23 @@
-import React from 'react';
-import {
-  MetricCard,
-  RevenueChart,
-  ActivityFeed,
-  PerformanceTable,
-} from './components';
-import styles from './AdminDashboardPage.module.css';
+import React from "react";
+import { MetricCard, RevenueChart, PerformanceTable } from "./components";
+import styles from "./AdminDashboardPage.module.css";
 
 const AdminDashboardPage: React.FC = () => {
   return (
     <div className={styles.container}>
       {/* Dashboard Header */}
       <div className={styles.header}>
-        <h2 className={styles.title}>Global Network Overview</h2>
-        <p className={styles.subtitle}>Real-time performance across 12 active cinema locations.</p>
+        <h2 className={styles.title}>Tổng quan Hệ thống</h2>
+        <p className={styles.subtitle}>
+          Hiệu suất hoạt động theo thời gian thực của các rạp chiếu.
+        </p>
       </div>
 
       {/* Key Metrics Row */}
       <div className={styles.metricsGrid}>
         <MetricCard
-          title="Total Revenue"
-          value="$248,590.00"
+          title="Tổng doanh thu"
+          value="248.590.000 ₫"
           icon="payments"
           iconBgColor="primary"
           iconColor="primary"
@@ -31,45 +28,40 @@ const AdminDashboardPage: React.FC = () => {
           progressValue={75}
         />
         <MetricCard
-          title="Active Cinemas"
-          value="12 Locations"
+          title="Rạp đang hoạt động"
+          value="12 Rạp"
           icon="location_on"
           iconBgColor="tertiary"
           iconColor="tertiary"
-          badgeText="Global Hub"
-          subtext="All locations online"
+          badgeText="Toàn quốc"
+          subtext="Hoạt động bình thường"
         />
         <MetricCard
-          title="Total Bookings (Today)"
-          value="4,219"
+          title="Tổng số vé (Hôm nay)"
+          value="4.219"
           icon="confirmation_number"
           iconBgColor="secondary"
           iconColor="secondary"
           badgeIcon="bolt"
-          badgeText="High Demand"
+          badgeText="Nhu cầu cao"
           badgeColor="primary"
-          subtext="Peak: 19:00 - 21:00"
+          subtext="Cao điểm: 19:00 - 21:00"
         />
         <MetricCard
-          title="Average Occupancy"
-          value="78.4%"
+          title="Tỷ lệ lấp đầy TB"
+          value="78,4%"
           icon="event_seat"
           iconBgColor="surface"
           iconColor="surface"
-          badgeText="Avg. Daily"
+          badgeText="TB Hàng ngày"
           progressMode="segmented"
           progressValue={75}
         />
       </div>
 
-      {/* Middle Section: Chart & Feed */}
-      <div className={styles.middleSection}>
-        <div className={styles.chartWrapper}>
-          <RevenueChart />
-        </div>
-        <div className={styles.feedWrapper}>
-          <ActivityFeed />
-        </div>
+      {/* Middle Section: Chart */}
+      <div style={{ marginBottom: "2.5rem" }}>
+        <RevenueChart />
       </div>
 
       {/* Bottom Section: Table */}

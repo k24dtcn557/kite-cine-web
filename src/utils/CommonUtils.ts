@@ -41,6 +41,24 @@ export class CommonUtils {
     }
   }
 
+  /**
+   * Formats a date string to include the day of the week (e.g. "Thứ Năm, 21/07/2026")
+   */
+  static formatShortDateVN(dateStr?: string): string {
+    if (!dateStr) return "Ngày chiếu";
+    try {
+      const d = new Date(
+        dateStr.includes("T") ? dateStr : `${dateStr}T00:00:00`,
+      );
+      const dd = d.getDate().toString().padStart(2, "0");
+      const mm = (d.getMonth() + 1).toString().padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    } catch {
+      return dateStr;
+    }
+  }
+
   static formatTimeVN(timeStr?: string): string {
     return timeStr?.substring(0, 5) || "";
   }
