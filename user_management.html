@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Management - CineAdmin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Montserrat:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#5e3f3b",
+                        "on-tertiary": "#003061",
+                        "surface-container-low": "#2a1614",
+                        "surface-container": "#2e1a18",
+                        "tertiary-container": "#0072d7",
+                        "outline": "#af8782",
+                        "surface-container-highest": "#462f2c",
+                        "on-tertiary-fixed": "#001b3c",
+                        "surface-dim": "#200e0c",
+                        "primary-fixed": "#ffdad5",
+                        "background": "#200e0c",
+                        "tertiary-fixed": "#d5e3ff",
+                        "surface-bright": "#4a3330",
+                        "on-primary-fixed-variant": "#930007",
+                        "inverse-on-surface": "#412b28",
+                        "primary-container": "#e50914",
+                        "primary": "#ffb4aa",
+                        "on-surface-variant": "#e9bcb6",
+                        "surface-container-high": "#3a2522",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "on-primary": "#690003",
+                        "secondary": "#92f5ff",
+                        "error": "#ffb4ab",
+                        "surface": "#200e0c",
+                        "surface-variant": "#462f2c",
+                        "on-primary-fixed": "#410001",
+                        "on-secondary-fixed-variant": "#004f55",
+                        "on-secondary": "#00363b",
+                        "secondary-container": "#00deed",
+                        "tertiary-fixed-dim": "#a7c8ff",
+                        "on-error": "#690005",
+                        "tertiary": "#a7c8ff",
+                        "on-tertiary-container": "#f8f9ff",
+                        "on-primary-container": "#fff7f6",
+                        "surface-tint": "#ffb4aa",
+                        "on-surface": "#ffdad5",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#00dbea",
+                        "secondary-fixed": "#81f4ff",
+                        "on-secondary-container": "#005e65",
+                        "on-tertiary-fixed-variant": "#004689",
+                        "on-background": "#ffdad5",
+                        "surface-container-lowest": "#1a0908",
+                        "inverse-primary": "#c0000c",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#002022",
+                        "inverse-surface": "#ffdad5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px",
+                        "unit": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Montserrat"],
+                        "display-lg-mobile": ["Montserrat"],
+                        "body-base": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "display-lg": ["Montserrat"],
+                        "label-uppercase": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-lg": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-uppercase": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #200e0c; /* surface */
+            color: #ffdad5; /* on-surface */
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-glow-primary:hover {
+            box-shadow: 0 0 15px rgba(229, 9, 20, 0.5); /* Action Red glow */
+        }
+        
+        .neon-glow-secondary:hover {
+            box-shadow: 0 0 15px rgba(0, 222, 237, 0.5); /* Electric Blue glow */
+        }
+
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a0908;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #462f2c;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5e3f3b;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex font-body-base text-body-base overflow-x-hidden">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/20 flex flex-col h-full py-gutter px-4 z-40 hidden md:flex">
+<div class="mb-8 flex flex-col items-center justify-center pt-4">
+<img alt="CineAdmin Logo" class="w-16 h-16 rounded-full mb-3 object-cover shadow-lg border border-outline-variant/20" data-alt="A high-fidelity minimalist cinema icon acting as a logo for CineAdmin. White and red color scheme against a deep charcoal background, exuding premium theater management quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKr2AhyHND7ujtiTyZr_OxKpM8zhZZanb8T3GJmq6SdpC7Q0TW-2gxhvjMtUroyplveCZ2qj_FgIUYvtRy9vUExXBWHySSKxGC129gR7RN8YBePP-hPZad4-Pz3gIInLGnVUkb07ccqq37qDE3wldbcTUE5v9S6CIiWhpehCVN3SYV_CujUPFtrvu_gzfQdooKAsMSWHTEgsYObt44OylllhzjkBLjT5rmQ42Zam_7JM9DQ1twZapo"/>
+<h1 class="font-headline-md text-headline-md text-primary-container text-center">CineAdmin</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center opacity-80">Premium Management</p>
+</div>
+<ul class="flex-1 space-y-2 mt-4">
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all active:translate-x-1 cursor-pointer" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-base text-body-base">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-secondary-container dark:text-secondary-container font-bold border-r-2 border-secondary-container bg-white/5 active:translate-x-1 cursor-pointer" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-body-base text-body-base">Users</span>
+</a>
+</li>
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all active:translate-x-1 cursor-pointer" href="#">
+<span class="material-symbols-outlined">movie</span>
+<span class="font-body-base text-body-base">Movies</span>
+</a>
+</li>
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all active:translate-x-1 cursor-pointer" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-body-base text-body-base">Bookings</span>
+</a>
+</li>
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all active:translate-x-1 cursor-pointer" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-body-base text-body-base">Reports</span>
+</a>
+</li>
+</ul>
+<ul class="space-y-2 mt-auto border-t border-outline-variant/20 pt-4">
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all active:translate-x-1 cursor-pointer" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-base text-body-base">Help</span>
+</a>
+</li>
+<li>
+<a class="flex items-center space-x-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-on-surface transition-all active:translate-x-1 cursor-pointer text-error" href="#">
+<span class="material-symbols-outlined text-error">logout</span>
+<span class="font-body-base text-body-base">Logout</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface/80 backdrop-blur-xl border-b border-outline-variant/20 flex justify-between items-center w-full px-gutter h-16 sticky top-0 z-50">
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-on-surface p-2 hover:bg-white/5 rounded-full transition-colors cursor-pointer active:scale-95 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="flex items-center font-headline-md text-headline-md text-primary-container dark:text-primary-container md:hidden">
+                CineAdmin
+            </div>
+<!-- Search Bar (on_left configuration) -->
+<div class="hidden md:flex flex-1 max-w-md items-center relative ml-4">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-full py-2 pl-10 pr-4 text-on-surface focus:outline-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container transition-all glass-panel" placeholder="Global search..." type="text"/>
+</div>
+<!-- Trailing Icon Actions & Profile -->
+<div class="flex items-center space-x-2 md:space-x-4">
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors rounded-full cursor-pointer active:scale-95 transition-transform relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-2 w-2 h-2 bg-primary-container rounded-full animate-pulse"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors rounded-full cursor-pointer active:scale-95 transition-transform hidden sm:block">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="pl-2 border-l border-outline-variant/30">
+<button class="flex items-center space-x-2 hover:bg-white/5 p-1 pr-3 rounded-full transition-colors cursor-pointer active:scale-95 transition-transform">
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of an administrator in a dark, moody cinematic lighting setup, suitable for a premium dashboard avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoe4ulrFriJut-5pWIS9oGEqOJtck31enB-daSDnvqE4PiX0wc_9_2QWakdKglimqBVEjjgLu1OVIB9LfXpj1P_KjHPudsc5E6kwf_1JG9ICVNX_ZTeLouD9xL2wNtD9M56Bp8EzjF_mzF2rlQYDHGGx-0xI07bOgGVaTpp6FY2RsWmoll5uJQStUNxS8bQ4ion_faz4qx9CVSOqEfJ1hrBkLW1OZB0Fe5YrpItWU7rbJHmDKstps3"/>
+<span class="hidden sm:block text-body-sm font-body-sm text-on-surface-variant">Admin</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant hidden sm:block">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 p-gutter md:p-margin-desktop overflow-y-auto w-full max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-4">
+<div>
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-2">User Management</h2>
+<p class="font-body-base text-body-base text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">group</span>
+                        Total Users: 1,248
+                    </p>
+</div>
+<button class="bg-primary-container text-white px-6 py-3 rounded-full font-title-lg text-title-lg flex items-center gap-2 neon-glow-primary transition-all active:scale-95 whitespace-nowrap">
+<span class="material-symbols-outlined">person_add</span>
+                    Add New User
+                </button>
+</div>
+<!-- Filter Bar (Glassmorphism) -->
+<div class="glass-panel rounded-xl p-4 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+<!-- Search Input -->
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 pl-10 pr-4 text-on-surface focus:outline-none focus:border-secondary-container transition-all" placeholder="Search by name, username, or email..." type="text"/>
+</div>
+<!-- Filters -->
+<div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+<div class="flex items-center gap-2 flex-1 sm:flex-none">
+<span class="text-body-sm font-body-sm text-on-surface-variant whitespace-nowrap">Role:</span>
+<div class="relative flex-1 sm:w-48">
+<select class="w-full appearance-none bg-surface-container-low border border-outline-variant/30 rounded-lg py-2.5 pl-4 pr-10 text-on-surface focus:outline-none focus:border-secondary-container transition-all cursor-pointer">
+<option>All Roles</option>
+<option>Admin</option>
+<option>Cinema Manager</option>
+<option>Premium Member</option>
+<option>Standard Member</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<button class="p-2.5 bg-surface-container-low border border-outline-variant/30 rounded-lg text-on-surface hover:bg-white/5 transition-colors cursor-pointer" title="Advanced Filters">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</div>
+<!-- User Table Container (Glassmorphism) -->
+<div class="glass-panel rounded-xl overflow-hidden border border-outline-variant/20">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead>
+<tr class="bg-surface-container-highest/50 border-b border-outline-variant/30">
+<th class="py-4 px-6 font-label-uppercase text-label-uppercase text-on-surface-variant tracking-wider">Name</th>
+<th class="py-4 px-6 font-label-uppercase text-label-uppercase text-on-surface-variant tracking-wider">Username</th>
+<th class="py-4 px-6 font-label-uppercase text-label-uppercase text-on-surface-variant tracking-wider">Email</th>
+<th class="py-4 px-6 font-label-uppercase text-label-uppercase text-on-surface-variant tracking-wider">Join Date</th>
+<th class="py-4 px-6 font-label-uppercase text-label-uppercase text-on-surface-variant tracking-wider">Role</th>
+<th class="py-4 px-6 font-label-uppercase text-label-uppercase text-on-surface-variant tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10 font-body-sm text-body-sm">
+<!-- Row 1 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<img alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" data-alt="A casual portrait of a male user in a dark cinema lobby setting, slightly out of focus background with neon hints." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-VOMIz1d0l_ZgKp83j3lIIdS8u9yzAG8eBZik7_fa9EapLOuPkCfsPAyWQdGjOGmRsX0RXUve6uAWf5bIVwmys5wtZ-Rtj1TArYnVwZMsncibixMYCh2VKAyzDHAPcOz5Z3P2nrZNJPOuOlv5-QBz5uPlO-WcopK7mUczhujloaXxNvuXrbadbwE_Wfkl9wtuyOhAKr4Nrp_VIkRFPTBeP_lxvhW359O6jkzPdVD245RlkB1GfT-I"/>
+<span class="font-title-lg text-title-lg text-on-surface text-base">Marcus Thorne</span>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">@mthorne</td>
+<td class="py-4 px-6 text-on-surface-variant">marcus.t@example.com</td>
+<td class="py-4 px-6 text-on-surface-variant">Oct 12, 2023</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-container/20 text-primary border border-primary-container/30 shadow-[0_0_8px_rgba(229,9,20,0.2)]">
+                                        Admin
+                                    </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary-container transition-colors rounded-md hover:bg-white/10" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface transition-colors rounded-md hover:bg-white/10" title="More">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant/30 text-on-surface font-title-lg">E</div>
+<span class="font-title-lg text-title-lg text-on-surface text-base">Elena Vance</span>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">@elvance</td>
+<td class="py-4 px-6 text-on-surface-variant">elena.vance@cinema.net</td>
+<td class="py-4 px-6 text-on-surface-variant">Nov 05, 2023</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-secondary-container/10 text-secondary border border-secondary-container/30">
+                                        Cinema Manager
+                                    </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary-container transition-colors rounded-md hover:bg-white/10" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface transition-colors rounded-md hover:bg-white/10" title="More">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<img alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" data-alt="A portrait of a female user looking slightly away from camera, dramatically lit with blue and purple neon rim lights, dark background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDz_N9sgq4e4s7FBxBkffu3aXpidgCFfjKgn_sKNZC4CgTFanxPoys8z7YaVAQMNGcLDXLvtDlZOZxJ4hhq2ToeWX05Qn-ko-Ei3l5DiXNWwU572rLW_kZk-3MK_ttXjtqL955yjPL4zp4A4nMiqJdHPK7lk2byos58nLhVc0ZCHuBGUIVyRwPFbGFUWjLNQ9f3axXyyoHXkboevG0PMtq6mEJUoLTxs7GMF5u8FfAlf6PanxBgMMIS"/>
+<span class="font-title-lg text-title-lg text-on-surface text-base">Sarah Jenkins</span>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">@sarahj</td>
+<td class="py-4 px-6 text-on-surface-variant">sarah.j@email.com</td>
+<td class="py-4 px-6 text-on-surface-variant">Jan 22, 2024</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-tertiary-container/20 text-tertiary border border-tertiary-container/30">
+                                        Premium Member
+                                    </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary-container transition-colors rounded-md hover:bg-white/10" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface transition-colors rounded-md hover:bg-white/10" title="More">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center border border-outline-variant/30 text-on-surface font-title-lg">D</div>
+<span class="font-title-lg text-title-lg text-on-surface text-base">David Kim</span>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface-variant">@dkim99</td>
+<td class="py-4 px-6 text-on-surface-variant">davidk@email.com</td>
+<td class="py-4 px-6 text-on-surface-variant">Feb 14, 2024</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-surface-container-high text-on-surface-variant border border-outline-variant/30">
+                                        Standard Member
+                                    </span>
+</td>
+<td class="py-4 px-6 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-on-surface-variant hover:text-secondary-container transition-colors rounded-md hover:bg-white/10" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface transition-colors rounded-md hover:bg-white/10" title="More">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-surface-container-low/50 border-t border-outline-variant/20 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Showing 1 to 10 of 1,248 entries</span>
+<div class="flex items-center space-x-2">
+<button class="p-2 rounded-lg bg-surface-container border border-outline-variant/30 text-on-surface-variant hover:text-on-surface hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled="">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<div class="flex space-x-1">
+<button class="w-8 h-8 rounded-lg bg-secondary-container text-on-secondary-container font-title-lg text-sm flex items-center justify-center neon-glow-secondary">1</button>
+<button class="w-8 h-8 rounded-lg hover:bg-white/10 text-on-surface font-title-lg text-sm flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded-lg hover:bg-white/10 text-on-surface font-title-lg text-sm flex items-center justify-center transition-colors">3</button>
+<span class="w-8 h-8 flex items-center justify-center text-on-surface-variant">...</span>
+<button class="w-8 h-8 rounded-lg hover:bg-white/10 text-on-surface font-title-lg text-sm flex items-center justify-center transition-colors">125</button>
+</div>
+<button class="p-2 rounded-lg bg-surface-container border border-outline-variant/30 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

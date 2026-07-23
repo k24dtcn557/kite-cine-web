@@ -63,7 +63,13 @@ apiClient.interceptors.response.use(
     // Any status codes that falls outside the range of 2xx causes this function to trigger
     console.log("Error", error);
 
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const isUnauthorized =
+      error.response?.status === 401 ||
+      error.response?.status === 403 ||
+      // Fallback for when backend 401 responses lack CORS headers, causing a Network Error
+      (error.message === "Network Error" && !error.response);
+
+    if (isUnauthorized) {
       // Handle unauthorized errors globally (e.g., clear token and redirect to login)
       localStorage.removeItem("access_token");
 

@@ -387,7 +387,15 @@ const CheckoutPage: React.FC = () => {
                 onClick={handlePurchase}
                 disabled={isPaying || timeLeft === null || timeLeft <= 0}
               >
-                <span className="material-symbols-outlined">lock</span>{" "}
+                {isPaying ? (
+                  <span
+                    className={`material-symbols-outlined ${styles.spinIcon}`}
+                  >
+                    progress_activity
+                  </span>
+                ) : (
+                  <span className="material-symbols-outlined">lock</span>
+                )}{" "}
                 {isPaying ? "Đang xử lý..." : "Hoàn tất thanh toán"}
               </button>
             </div>

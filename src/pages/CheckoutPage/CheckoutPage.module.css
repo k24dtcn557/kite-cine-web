@@ -452,9 +452,29 @@
   cursor: pointer;
 }
 
-.btnPurchase:hover {
+.btnPurchase:hover:not(:disabled) {
   box-shadow: 0 0 15px rgba(229, 9, 20, 0.6);
   transform: scale(1.02);
+}
+
+.btnPurchase:disabled {
+  background-color: var(--color-surface-variant);
+  color: var(--color-on-surface-variant);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .securityText {

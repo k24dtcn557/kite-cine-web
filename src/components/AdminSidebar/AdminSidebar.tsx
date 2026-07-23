@@ -4,6 +4,7 @@ import styles from "./AdminSidebar.module.css";
 
 const NAV_ITEMS = [
   { label: "Tổng quan", icon: "dashboard", path: "/admin" },
+  { label: "Người dùng", icon: "group", path: "/admin/users" },
   { label: "Rạp chiếu", icon: "theater_comedy", path: "/admin/cinemas" },
   { label: "Bảng giá", icon: "request_quote", path: "/admin/price-models" },
   { label: "Phim", icon: "movie", path: "/admin/movies" },

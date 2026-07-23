@@ -13,6 +13,7 @@ import AdminMovieFormPage from "./pages/AdminMovieFormPage";
 import AdminMovieShowtimesPage from "./pages/AdminMovieShowtimesPage";
 import AdminAddShowtimePage from "./pages/AdminAddShowtimePage";
 import AdminPriceModelPage from "./pages/AdminPriceModelPage";
+import AdminUsersPage from "./pages/AdminUsersPage";
 import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
 import BookingPage from "./pages/BookingPage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -65,6 +66,7 @@ const App: React.FC = () => (
           <Route path="/admin" element={<ProtectedRoute />}>
             <Route element={<AdminLayout />}>
               <Route index element={<AdminDashboardPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
               <Route path="cinemas" element={<AdminCinemasPage />} />
               <Route path="price-models" element={<AdminPriceModelPage />} />
               <Route path="movies" element={<AdminMoviesPage />} />
