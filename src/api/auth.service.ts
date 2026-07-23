@@ -86,11 +86,16 @@ class AuthService {
     }
   }
 
-  /**
-   * Logs out the user by removing their token from local storage.
-   */
-  logout(): void {
+  async logout(): Promise<void> {
+    const token = localStorage.getItem("access_token");
     localStorage.removeItem("access_token");
+    if (token) {
+      try {
+        await apiClient.post("/kite-cine/auth/logout", { token });
+      } catch (error) {
+        console.error("Logout API failed", error);
+      }
+    }
   }
 
   /**

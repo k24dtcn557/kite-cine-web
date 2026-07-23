@@ -132,6 +132,13 @@ input.input:focus-visible {
   outline: none !important;
 }
 
+input.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--color-surface-container) !important;
+  color: var(--color-on-surface-variant);
+}
+
 /* ── Password row ── */
 .passwordHeader {
   display: flex;
@@ -149,9 +156,14 @@ input.input:focus-visible {
   transition: color 0.2s ease;
 }
 
-.forgotLink:hover {
+.forgotLink:hover:not(:disabled) {
   color: var(--color-primary-fixed-dim);
   text-decoration: underline;
+}
+
+.forgotLink:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .passwordWrapper {
@@ -184,8 +196,13 @@ input.input:focus-visible {
   font-size: 20px;
 }
 
-.eyeBtn:hover {
+.eyeBtn:hover:not(:disabled) {
   color: var(--color-on-surface);
+}
+
+.eyeBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ── Submit button ── */
@@ -217,8 +234,10 @@ input.input:focus-visible {
 }
 
 .submitBtnLoading {
-  opacity: 0.8;
+  opacity: 0.6;
   cursor: not-allowed;
+  pointer-events: none;
+  filter: grayscale(0.4);
 }
 
 /* ── Spinner ── */
@@ -322,8 +341,13 @@ input.input:focus-visible {
   transition: opacity 0.2s ease;
 }
 
-.signupLink:hover {
+.signupLink:hover:not(:disabled) {
   text-decoration: underline;
+}
+
+.signupLink:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* ── Floating particle (injected via JS) ── */

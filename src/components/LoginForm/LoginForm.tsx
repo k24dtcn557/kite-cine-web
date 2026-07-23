@@ -62,6 +62,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
           "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
       })
       .then(() => {
+        setEmail("");
+        setPassword("");
+        setShowPassword(false);
         if (onLoginSuccess) {
           onLoginSuccess();
           return;
@@ -113,6 +116,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
+            disabled={isSubmitting}
           />
         </div>
 
@@ -127,6 +131,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               className={styles.forgotLink}
               onClick={onForgotPassword}
               tabIndex={-1}
+              disabled={isSubmitting}
             >
               Quên mật khẩu?
             </button>
@@ -141,6 +146,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
+              disabled={isSubmitting}
             />
             <button
               type="button"
@@ -148,6 +154,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               aria-label={showPassword ? "Hide password" : "Show password"}
               onClick={() => setShowPassword((v) => !v)}
               tabIndex={-1}
+              disabled={isSubmitting}
             >
               <span className="material-symbols-outlined">
                 {showPassword ? "visibility_off" : "visibility"}
@@ -172,7 +179,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
       {/* Sign-up link */}
       <p className={styles.signupText}>
         Chưa có tài khoản?{" "}
-        <button type="button" className={styles.signupLink} onClick={onSignUp}>
+        <button
+          type="button"
+          className={styles.signupLink}
+          onClick={onSignUp}
+          disabled={isSubmitting}
+        >
           Đăng ký
         </button>
       </p>

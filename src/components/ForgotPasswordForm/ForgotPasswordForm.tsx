@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import apiClient from "../../api/client";
+import { getApiErrorMessage } from "../../api/types";
 import styles from "./ForgotPasswordForm.module.css";
 
 interface ForgotPasswordFormProps {
@@ -67,10 +69,14 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
     }
     setError(null);
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      await apiClient.post("/kite-cine/users/reset-password", { email });
+      setIsSuccess(true);
+    } catch (err) {
+      setError(getApiErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
