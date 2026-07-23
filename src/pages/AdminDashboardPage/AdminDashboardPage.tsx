@@ -58,7 +58,6 @@ const AdminDashboardPage: React.FC = () => {
           progressValue={75}
         />
       </div>
-
       {/* Middle Section: Chart */}
       <div style={{ marginBottom: "2.5rem" }}>
         <RevenueChart />
