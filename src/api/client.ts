@@ -63,8 +63,6 @@ apiClient.interceptors.response.use(
   },
   (error: AxiosError) => {
     // Any status codes that falls outside the range of 2xx causes this function to trigger
-    console.log("Error", error);
-
     const isUnauthorized =
       error.response?.status === 401 ||
       error.response?.status === 403 ||

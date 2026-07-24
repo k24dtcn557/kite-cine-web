@@ -8,15 +8,24 @@
 }
 
 .header {
-  margin-bottom: 2.5rem; /* mb-10 */
+  margin-bottom: 1rem; /* mb-10 */
 }
 
 .title {
-  font-family: var(--font-headline);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-family: var(--font-display-lg-mobile, Montserrat);
+  font-size: 2rem;
+  font-weight: 800;
   color: var(--color-on-surface);
-  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-family: var(--font-display-lg, Montserrat);
+    font-size: 3rem;
+    letter-spacing: -0.02em;
+  }
 }
 
 .subtitle {

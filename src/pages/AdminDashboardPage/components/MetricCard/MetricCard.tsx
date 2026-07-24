@@ -1,16 +1,13 @@
-import React from 'react';
-import styles from './MetricCard.module.css';
+import React from "react";
+import styles from "./MetricCard.module.css";
 
 interface MetricCardProps {
   title: string;
   value: string;
   icon: string;
-  iconBgColor: 'primary' | 'secondary' | 'tertiary' | 'surface';
-  iconColor: 'primary' | 'secondary' | 'tertiary' | 'surface';
-  badgeIcon?: string;
-  badgeText: string;
-  badgeColor?: 'primary' | 'secondary' | 'surface';
-  progressMode?: 'single' | 'segmented';
+  iconBgColor: "primary" | "secondary" | "tertiary" | "surface";
+  iconColor: "primary" | "secondary" | "tertiary" | "surface";
+  progressMode?: "single" | "segmented";
   progressValue?: number; // 0 to 100
   subtext?: string;
 }
@@ -21,9 +18,6 @@ const MetricCard: React.FC<MetricCardProps> = ({
   icon,
   iconBgColor,
   iconColor,
-  badgeIcon,
-  badgeText,
-  badgeColor = 'surface',
   progressMode,
   progressValue = 0,
   subtext,
@@ -31,13 +25,11 @@ const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <div className={`${styles.iconContainer} ${styles[`bg-${iconBgColor}`]} ${styles[`text-${iconColor}`]}`}>
+        <div
+          className={`${styles.iconContainer} ${styles[`bg-${iconBgColor}`]} ${styles[`text-${iconColor}`]}`}
+        >
           <span className="material-symbols-outlined">{icon}</span>
         </div>
-        <span className={`${styles.badge} ${styles[`badge-${badgeColor}`]}`}>
-          {badgeIcon && <span className={`material-symbols-outlined ${styles.badgeIcon}`}>{badgeIcon}</span>}
-          {badgeText}
-        </span>
       </div>
 
       <p className={styles.title}>{title}</p>
@@ -45,13 +37,16 @@ const MetricCard: React.FC<MetricCardProps> = ({
 
       {subtext && <p className={styles.subtext}>{subtext}</p>}
 
-      {progressMode === 'single' && (
+      {progressMode === "single" && (
         <div className={styles.progressSingle}>
-          <div className={styles.progressFill} style={{ width: `${progressValue}%` }}></div>
+          <div
+            className={styles.progressFill}
+            style={{ width: `${progressValue}%` }}
+          ></div>
         </div>
       )}
 
-      {progressMode === 'segmented' && (
+      {progressMode === "segmented" && (
         <div className={styles.progressSegmented}>
           {[1, 2, 3, 4].map((segment) => {
             // Rough logic for segmented fill (25% per segment)

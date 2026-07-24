@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../contexts";
+import { getApiErrorMessage } from "../../api/types";
 import styles from "./LoginForm.module.css";
 
 interface LoginFormProps {
@@ -58,8 +59,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
         loading: "Đang đăng nhập...",
         success: "Chào mừng bạn trở lại!",
         error: (err: any) =>
-          err.response?.data?.message ||
-          "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
+          getApiErrorMessage(
+            err,
+            "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.",
+          ),
       })
       .then(() => {
         setEmail("");
@@ -84,6 +87,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
         } else {
           navigate("/my-cine");
         }
+      })
+      .catch((error) => {
+        // DO NOTHING HERE
       })
       .finally(() => {
         setIsSubmitting(false);

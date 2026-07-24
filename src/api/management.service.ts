@@ -25,6 +25,19 @@ export interface SearchBookingPayload {
   size?: number;
 }
 
+export interface QuickStatsDto {
+  revenue: number;
+  totalCinemas: number;
+  totalAuditoriums: number;
+  totalSoldSeats: number;
+  fillRate: number;
+}
+
+export interface ChartColumnDto {
+  label: string;
+  value: number;
+}
+
 class ManagementService {
   /**
    * Search users for admin management.
@@ -132,6 +145,35 @@ class ManagementService {
   async cancelBooking(code: string): Promise<void> {
     try {
       await apiClient.post(`/kite-cine/management/bookings/${code}/cancel`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get quick stats for dashboard.
+   */
+  async getQuickStats(): Promise<QuickStatsDto> {
+    try {
+      const response = await apiClient.get<ApiResponse<QuickStatsDto>>(
+        `/kite-cine/management/report/quick-stats`
+      );
+      return response.data.result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get revenue chart data.
+   */
+  async getRevenueReport(type: string): Promise<ChartColumnDto[]> {
+    try {
+      const response = await apiClient.post<ApiResponse<ChartColumnDto[]>>(
+        `/kite-cine/management/report/revenue`,
+        { type }
+      );
+      return response.data.result;
     } catch (error) {
       throw error;
     }
