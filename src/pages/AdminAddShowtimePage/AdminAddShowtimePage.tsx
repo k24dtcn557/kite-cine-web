@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./AdminAddShowtimePage.module.css";
-import { movieService, MovieDto } from "../../api/movie.service";
-import {
-  cinemaService,
-  CinemaDto,
-  AuditoriumDto,
-} from "../../api/cinema.service";
-import {
-  priceModelService,
-  PriceModelDto,
-  PRICE_MODEL_SEAT_TYPES,
-} from "../../api/price-model.service";
-import { showTimeService } from "../../api/show-time.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto } from "../../types/movie";
+import { cinemaService } from "../../services/cinema.service";
+import { AuditoriumDto } from "../../types/cinema";
+import { CinemaDto } from "../../types/cinema";
+import { priceModelService } from "../../services/price-model.service";
+import { PriceModelDto, PRICE_MODEL_SEAT_TYPES } from "../../types/showtime";
+import { showTimeService } from "../../services/show-time.service";
 import { CommonUtils } from "../../utils/CommonUtils";
 import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
@@ -273,10 +269,7 @@ const AdminAddShowtimePage: React.FC = () => {
           {/* Movie Context */}
           <div className={styles.movieCard}>
             <img
-              src={
-                movie.poster ||
-                "https://placehold.co/400x600/1E1B1B/FFFFFF?text=No+Poster"
-              }
+              src={movie.poster}
               alt={movie.title}
               className={styles.moviePoster}
             />

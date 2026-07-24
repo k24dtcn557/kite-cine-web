@@ -2,10 +2,10 @@ import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./OrderConfirmationPage.module.css";
 import { Navbar } from "../../components";
-import { MovieDto } from "../../api/movie.service";
-import { ShowTimeBriefDto } from "../../api/show-time.service";
-import { TicketDto } from "../../api/ticket.service";
-import { PurchaseDto } from "../../api/booking.service";
+import { MovieDto } from "../../types/movie";
+import { ShowTimeBriefDto } from "../../types/showtime";
+import { TicketDto } from "../../types/booking";
+import { PurchaseDto } from "../../types/booking";
 import { CommonUtils } from "../../utils/CommonUtils";
 import { FilmInfoCard } from "../../components";
 

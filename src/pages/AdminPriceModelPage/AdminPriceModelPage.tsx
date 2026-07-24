@@ -3,11 +3,8 @@ import { createPortal } from "react-dom";
 import styles from "./AdminPriceModelPage.module.css";
 import { PriceModelComponent } from "../../components";
 import PriceModelModal from "./components/PriceModelModal";
-import {
-  priceModelService,
-  PriceModelDto,
-  PRICE_MODEL_SEAT_TYPES,
-} from "../../api/price-model.service";
+import { priceModelService } from "../../services/price-model.service";
+import { PriceModelDto, PRICE_MODEL_SEAT_TYPES } from "../../types/showtime";
 import toast from "react-hot-toast";
 
 const AdminPriceModelPage: React.FC = () => {
@@ -101,9 +98,6 @@ const AdminPriceModelPage: React.FC = () => {
       <div className={styles.headerContainer}>
         <div className={styles.titleWrapper}>
           <h2 className={styles.title}>Quản lý bảng giá</h2>
-          <p className={styles.subtitle}>
-            Cấu hình các mức giá và loại ghế cho tất cả hệ thống rạp.
-          </p>
         </div>
         <button className={styles.createBtn} onClick={handleCreate}>
           <span className="material-symbols-outlined">add</span>

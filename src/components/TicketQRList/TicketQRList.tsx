@@ -1,7 +1,7 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
-import { TicketDto } from "../../api/ticket.service";
+import { PRICE_MODEL_SEAT_TYPES } from "../../types/showtime";
+import { TicketDto } from "../../types/booking";
 import styles from "./TicketQRList.module.css";
 
 const getSeatTypeLabel = (type: string) =>

@@ -1,26 +1,6 @@
-import apiClient from "./client";
-import { ApiResponse } from "./types";
-
-export interface ReserveSeatRequest {
-  showtimeId: number;
-  seatId: number;
-}
-
-export interface TicketDto {
-  id: number;
-  showtimeId: number;
-  seatId: number;
-  rowLetter: string;
-  seatNumber: string;
-  seatType: string;
-  purchasePrice: number;
-  buyerId: string;
-  expirationTime: string;
-  qrCode: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { ReserveSeatRequest, TicketDto } from "../types/booking";
+import apiClient from "../api/client";
+import { ApiResponse } from "../api/types";
 
 export const ticketService = {
   reserveSeat: async (data: ReserveSeatRequest): Promise<TicketDto> => {

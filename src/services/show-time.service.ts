@@ -1,47 +1,10 @@
-import apiClient from "./client";
-import { ApiResponse } from "./types";
-
-export interface CreateShowTimePayload {
-  date: string;
-  startTime: string;
-  movieId: number;
-  auditoriumId: number;
-  priceModelId: number;
-}
-
-export interface ShowTimeDto {
-  id: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-  movieId: number;
-  movieTitle: string;
-  auditoriumId: number;
-  priceModelId: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ShowTimeBriefDto {
-  id: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-}
-
-export interface AuditoriumShowtimesDto {
-  id: number;
-  name: string;
-  type: string;
-  showTimes: ShowTimeBriefDto[];
-}
-
-export interface CinemaShowtimesDto {
-  id: number;
-  name: string;
-  address: string;
-  auditoriums: AuditoriumShowtimesDto[];
-}
+import {
+  CreateShowTimePayload,
+  ShowTimeDto,
+  CinemaShowtimesDto,
+} from "../types/showtime";
+import apiClient from "../api/client";
+import { ApiResponse } from "../api/types";
 
 export const showTimeService = {
   createShowTime: async (payload: CreateShowTimePayload) => {

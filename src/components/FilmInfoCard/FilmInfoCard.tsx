@@ -1,7 +1,7 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { PurchaseDetailDto } from "../../api/types";
-import { TicketDto } from "../../api/ticket.service";
+import { PurchaseDetailDto } from "../../types/booking";
+import { TicketDto } from "../../types/booking";
 import { CommonUtils } from "../../utils/CommonUtils";
 import styles from "./FilmInfoCard.module.css";
 
@@ -106,7 +106,16 @@ const FilmInfoCard: React.FC<FilmInfoCardProps> = (props) => {
                 {bookingCode && (
                   <div>
                     <p className={styles.label}>Mã Đặt Vé</p>
-                    <div style={{ marginTop: '0.5rem', marginBottom: '0.5rem', background: '#fff', display: 'inline-block', padding: '8px', borderRadius: '8px' }}>
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        marginBottom: "0.5rem",
+                        background: "#fff",
+                        display: "inline-block",
+                        padding: "8px",
+                        borderRadius: "8px",
+                      }}
+                    >
                       <QRCodeSVG
                         value={bookingCode}
                         size={100}

@@ -7,7 +7,7 @@ import {
   SeatLegend,
   SeatControls,
 } from "./components";
-import { AuditoriumDto } from "../../api/cinema.service";
+import { AuditoriumDto } from "../../types/cinema";
 
 const AdminCinemasPage: React.FC = () => {
   const [selectedCinemaId, setSelectedCinemaId] = useState<
@@ -16,6 +16,7 @@ const AdminCinemasPage: React.FC = () => {
   const [selectedAuditorium, setSelectedAuditorium] = useState<
     AuditoriumDto | undefined
   >();
+  const [auditoriumRefreshTrigger, setAuditoriumRefreshTrigger] = useState(0);
   const [openAddRowModal, setOpenAddRowModal] = useState<(() => void) | null>(
     null,
   );
@@ -60,6 +61,16 @@ const AdminCinemasPage: React.FC = () => {
     [],
   );
 
+  const handleAuditoriumDeleted = useCallback(() => {
+    setSelectedAuditorium(undefined);
+    setAuditoriumRefreshTrigger((prev) => prev + 1);
+  }, []);
+
+  const handleAuditoriumUpdated = useCallback((updated: AuditoriumDto) => {
+    setSelectedAuditorium(updated);
+    setAuditoriumRefreshTrigger((prev) => prev + 1);
+  }, []);
+
   return (
     <div className={styles.pageContainer}>
       <div className={styles.mainGrid}>
@@ -81,11 +92,13 @@ const AdminCinemasPage: React.FC = () => {
             cinemaId={selectedCinemaId}
             selectedAuditorium={selectedAuditorium}
             onSelectAuditorium={setSelectedAuditorium}
+            refreshTrigger={auditoriumRefreshTrigger}
           />
 
           {/* Scrollable area: SeatMap + stats + bulk actions */}
           <div className={styles.seatMapScroll}>
             <SeatMap
+              cinemaId={selectedCinemaId}
               auditorium={selectedAuditorium}
               openAddRowModal={handleOpenAddRowModal}
               openAddSeatModal={handleOpenAddSeatModal}
@@ -93,6 +106,8 @@ const AdminCinemasPage: React.FC = () => {
               openChangeSeatTypeModal={handleOpenChangeSeatTypeModal}
               clearSelectionBridge={handleClearSelectionBridge}
               openSelectRowModal={handleOpenSelectRowModal}
+              onAuditoriumDeleted={handleAuditoriumDeleted}
+              onAuditoriumUpdated={handleAuditoriumUpdated}
             />
 
             <div className={styles.statsGrid}>

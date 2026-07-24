@@ -14,10 +14,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import {
-  managementService,
-  ChartColumnDto,
-} from "../../../../api/management.service";
+import { managementService } from "../../../../services/management.service";
+import { ChartColumnDto } from "../../../../types/booking";
 import { CommonUtils } from "../../../../utils/CommonUtils";
 
 export enum ReportType {
@@ -32,12 +30,17 @@ export const ReportTypeText: Record<ReportType, string> = {
   [ReportType.ONE_YEAR]: "12 tháng gần nhất",
 };
 
-const revenuePerCinema = [
-  { name: "Quận 1", revenue: 124500000 },
-  { name: "Thủ Đức", revenue: 98200000 },
-  { name: "Quận 7", revenue: 85000000 },
-  { name: "Gò Vấp", revenue: 71000000 },
-];
+export enum CinemaReportType {
+  BY_CINEMA_30_DAYS = "BY_CINEMA_30_DAYS",
+  BY_CINEMA_90_DAYS = "BY_CINEMA_90_DAYS",
+  BY_CINEMA_1_YEAR = "BY_CINEMA_1_YEAR",
+}
+
+export const CinemaReportTypeText: Record<CinemaReportType, string> = {
+  [CinemaReportType.BY_CINEMA_30_DAYS]: "30 ngày gần nhất",
+  [CinemaReportType.BY_CINEMA_90_DAYS]: "90 ngày gần nhất",
+  [CinemaReportType.BY_CINEMA_1_YEAR]: "1 năm gần nhất",
+};
 
 const COLORS = ["#e50914", "#0077b6", "#00b4d8", "#90e0ef", "#caf0f8"];
 
@@ -130,8 +133,14 @@ const RevenueChart: React.FC = () => {
   const [reportType, setReportType] = useState<ReportType>(
     ReportType.SEVEN_DAYS,
   );
+  const [cinemaReportType, setCinemaReportType] = useState<CinemaReportType>(
+    CinemaReportType.BY_CINEMA_30_DAYS,
+  );
   const [revenueData, setRevenueData] = useState<ChartColumnDto[]>([]);
   const [revenueMovieData, setRevenueMovieData] = useState<ChartColumnDto[]>(
+    [],
+  );
+  const [revenueCinemaData, setRevenueCinemaData] = useState<ChartColumnDto[]>(
     [],
   );
 
@@ -160,6 +169,18 @@ const RevenueChart: React.FC = () => {
     };
     fetchRevenue();
   }, [reportType]);
+
+  useEffect(() => {
+    const fetchCinemaRevenue = async () => {
+      try {
+        const data = await managementService.getRevenueReport(cinemaReportType);
+        setRevenueCinemaData(data);
+      } catch (error) {
+        console.error("Failed to fetch cinema revenue report:", error);
+      }
+    };
+    fetchCinemaRevenue();
+  }, [cinemaReportType]);
 
   if (!mounted) return <div className={styles.chartContainer}>Loading...</div>;
 
@@ -257,63 +278,82 @@ const RevenueChart: React.FC = () => {
           <div className={styles.header}>
             <div>
               <h4 className={styles.title}>Doanh thu theo rạp</h4>
-              <p className={styles.subtitle}>Top 4 rạp doanh thu cao nhất</p>
+              <p className={styles.subtitle}>
+                {CinemaReportTypeText[cinemaReportType]}
+              </p>
             </div>
+            <select
+              className={styles.select}
+              value={cinemaReportType}
+              onChange={(e) =>
+                setCinemaReportType(e.target.value as CinemaReportType)
+              }
+            >
+              {Object.entries(CinemaReportTypeText).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </div>
-          <div style={{ width: "100%", height: 300 }}>
+          <div style={{ width: "100%", height: 220 }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={revenuePerCinema}
+                  data={revenueCinemaData}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
                   outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="revenue"
+                  paddingAngle={2}
+                  dataKey="value"
+                  nameKey="label"
                 >
-                  {revenuePerCinema.map((entry, index) => (
+                  {revenueCinemaData.map((entry, index) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
+                      style={{ outline: "none" }}
+                      stroke="none"
                     />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                gap: "1rem",
-                marginTop: "1rem",
-              }}
-            >
-              {revenuePerCinema.map((entry, index) => (
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: "1rem",
+              marginTop: "1rem",
+              paddingBottom: "1rem",
+            }}
+          >
+            {revenueCinemaData.map((entry, index) => (
+              <div
+                key={entry.label}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  fontSize: "0.875rem",
+                  color: "var(--color-on-surface)",
+                }}
+              >
                 <div
-                  key={entry.name}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                    fontSize: "0.875rem",
-                    color: "var(--color-on-surface)",
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    backgroundColor: COLORS[index % COLORS.length],
                   }}
-                >
-                  <div
-                    style={{
-                      width: 12,
-                      height: 12,
-                      borderRadius: "50%",
-                      backgroundColor: COLORS[index % COLORS.length],
-                    }}
-                  ></div>
-                  {entry.name}
-                </div>
-              ))}
-            </div>
+                ></div>
+                {entry.label}
+              </div>
+            ))}
           </div>
         </div>
 

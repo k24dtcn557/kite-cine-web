@@ -1,29 +1,10 @@
-import apiClient from "./client";
-import { PageResponse } from "./types";
-import { SeatType } from "./cinema.service";
-
-export const PRICE_MODEL_SEAT_TYPES: { type: SeatType; label: string }[] = [
-  { type: "STANDARD", label: "TIÊU CHUẨN" },
-  { type: "VIP", label: "VIP" },
-  { type: "COUPLE", label: "GHẾ ĐÔI" },
-];
-
-export interface PriceModelDto {
-  id: string;
-  name: string;
-  prices: Record<string, number>;
-}
-
-export interface CreatePriceModelPayload {
-  name: string;
-  prices: Record<string, number>;
-}
-
-export interface SearchPriceModelPayload {
-  keyword?: string;
-  page?: number;
-  size?: number;
-}
+import apiClient from "../api/client";
+import { PageResponse } from "../api/types";
+import {
+  CreatePriceModelPayload,
+  SearchPriceModelPayload,
+  PriceModelDto,
+} from "../types/showtime";
 
 export const priceModelService = {
   createPriceModel: async (payload: CreatePriceModelPayload) => {

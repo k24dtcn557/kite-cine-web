@@ -1,20 +1,7 @@
-import apiClient from "./client";
-import { ApiResponse, PurchaseDetailDto } from "./types";
-import { TicketDto } from "./ticket.service";
-
-export interface InitializeBookingRequest {
-  ticketIds: number[];
-}
-
-export interface PurchaseDto {
-  code: string;
-  grandTotal: number;
-  expirationTime: string;
-  createdAt: string;
-  updatedAt: string;
-  status: string;
-  tickets?: TicketDto[];
-}
+import apiClient from "../api/client";
+import { ApiResponse } from "../api/types";
+import { PurchaseDetailDto } from "../types/booking";
+import { InitializeBookingRequest, PurchaseDto } from "../types/booking";
 
 export const bookingService = {
   initializeBooking: async (
@@ -36,7 +23,7 @@ export const bookingService = {
 
   getBooking: async (code: string): Promise<PurchaseDetailDto> => {
     const { data } = await apiClient.get<ApiResponse<PurchaseDetailDto>>(
-      `/kite-cine/booking/${code}`
+      `/kite-cine/booking/${code}`,
     );
     return data.result;
   },

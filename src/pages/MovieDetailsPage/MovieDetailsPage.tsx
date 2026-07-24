@@ -4,7 +4,8 @@ import styles from "./MovieDetailsPage.module.css";
 import { Navbar, Footer } from "../../components";
 import MovieSynopsis from "./components/MovieSynopsis";
 import MovieShowtimes from "./components/MovieShowtimes";
-import { movieService, MovieDto, CrewMemberDto } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto, CrewMemberDto } from "../../types/movie";
 
 const MovieDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

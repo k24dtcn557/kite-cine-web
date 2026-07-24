@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./AdminUsersPage.module.css";
-import {
-  managementService,
-  CreateUserPayload,
-} from "../../api/management.service";
-import { UserDto, UserStatusText } from "../../api/auth.service";
+import { managementService } from "../../services/management.service";
+import { CreateUserPayload } from "../../types/user";
+import { UserDto, UserStatusText } from "../../types/user";
 import toast from "react-hot-toast";
 import UserInfoForm from "../../components/UserInfoForm";
 import { getApiErrorMessage } from "../../api/types";

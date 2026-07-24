@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./SignUpForm.module.css";
 import toast from "react-hot-toast";
-import { authService, RegisterPayload } from "../../api/auth.service";
+import { authService } from "../../services/auth.service";
+import { RegisterPayload } from "../../types/user";
 
 interface SignUpFormProps {
   onLogIn?: () => void;

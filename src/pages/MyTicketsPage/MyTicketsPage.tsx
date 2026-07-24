@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MyTicketsPage.module.css";
-import { bookingService } from "../../api/booking.service";
-import { getApiErrorMessage, PurchaseDetailDto } from "../../api/types";
+import { bookingService } from "../../services/booking.service";
+import { getApiErrorMessage } from "../../api/types";
+import { PurchaseDetailDto } from "../../types/booking";
 import { TicketCard } from "./components/TicketCard/TicketCard";
 
 const MyTicketsPage: React.FC = () => {

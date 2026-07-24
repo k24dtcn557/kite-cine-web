@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import styles from "./MovieCarousel.module.css";
-import { MovieDto } from "../../api/movie.service";
+import { MovieDto } from "../../types/movie";
 import MovieCard from "../MovieCard";
 
 interface MovieCarouselProps {

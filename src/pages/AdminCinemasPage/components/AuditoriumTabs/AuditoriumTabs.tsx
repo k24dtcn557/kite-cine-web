@@ -2,24 +2,26 @@ import React, { useEffect, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import styles from "./AuditoriumTabs.module.css";
+import { cinemaService } from "../../../../services/cinema.service";
 import {
-  cinemaService,
   AuditoriumDto,
-  AuditoriumType,
   AUDITORIUM_TYPE_LABELS,
-} from "../../../../api/cinema.service";
+} from "../../../../types/cinema";
+import { AuditoriumType } from "../../../../types/cinema";
 import { getApiErrorMessage } from "../../../../api/types";
 
 interface AuditoriumTabsProps {
   cinemaId?: number;
   selectedAuditorium?: AuditoriumDto;
   onSelectAuditorium: (auditorium?: AuditoriumDto) => void;
+  refreshTrigger?: number;
 }
 
 const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({
   cinemaId,
   selectedAuditorium,
   onSelectAuditorium,
+  refreshTrigger,
 }) => {
   const [auditoriums, setAuditoriums] = useState<AuditoriumDto[]>([]);
   const [loading, setLoading] = useState(false);
@@ -63,7 +65,7 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({
 
   useEffect(() => {
     fetchAuditoriums();
-  }, [fetchAuditoriums]);
+  }, [fetchAuditoriums, refreshTrigger]);
 
   const handleCreateAuditorium = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,13 +161,11 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({
               <p
                 className={`${styles.label} ${selectedAuditorium?.id === auditorium.id ? styles.labelActive : ""}`}
               >
-                {auditorium.name}
-              </p>
-              <p className={styles.subLabel}>
                 {auditorium.type
                   ? AUDITORIUM_TYPE_LABELS[auditorium.type]
                   : AUDITORIUM_TYPE_LABELS[AUDITORIUM_TYPES[0]]}
               </p>
+              <p className={styles.subLabel}>{auditorium.name}</p>
             </div>
           </button>
         ))
@@ -191,7 +191,7 @@ const AuditoriumTabs: React.FC<AuditoriumTabsProps> = ({
                     <span
                       className={`${styles.charCount} ${newName.length > 50 ? styles.charCountOver : ""}`}
                     >
-                      {newName.length}/50
+                      {50 - newName.length}
                     </span>
                   </div>
                   <input

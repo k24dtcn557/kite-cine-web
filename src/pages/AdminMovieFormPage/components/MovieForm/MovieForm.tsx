@@ -4,13 +4,13 @@ import { toast } from "react-hot-toast";
 import { getApiErrorMessage } from "../../../../api/types";
 import { CrewMemberItem } from "../CrewMemberItem";
 import styles from "./MovieForm.module.css";
+import { movieService } from "../../../../services/movie.service";
 import {
-  movieService,
   MovieStatus,
   GENRE_LIST,
   MOVIE_STATUS_LABELS,
   CrewMemberDto,
-} from "../../../../api/movie.service";
+} from "../../../../types/movie";
 import { CrewMemberModal } from "../CrewMemberModal";
 
 export interface MovieFormData {

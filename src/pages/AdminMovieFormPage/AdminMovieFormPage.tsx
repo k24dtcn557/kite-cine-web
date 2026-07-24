@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./AdminMovieFormPage.module.css";
 import { MovieForm, MovieFormData } from "./components";
-import { movieService, MovieStatus } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieStatus } from "../../types/movie";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../api/types";
 

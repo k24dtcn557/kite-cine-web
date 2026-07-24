@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./HeroSection.module.css";
-import { movieService } from "../../api/movie.service";
-import { MovieDto } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto } from "../../types/movie";
 
 const HeroSection: React.FC = () => {
   const navigate = useNavigate();

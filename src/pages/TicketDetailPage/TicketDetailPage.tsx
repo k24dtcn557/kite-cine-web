@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./TicketDetailPage.module.css";
-import { bookingService } from "../../api/booking.service";
-import { PurchaseDetailDto } from "../../api/types";
+import { bookingService } from "../../services/booking.service";
+import { PurchaseDetailDto } from "../../types/booking";
 import { FilmInfoCard } from "../../components";
 
 const TicketDetailPage: React.FC = () => {
@@ -66,7 +66,6 @@ const TicketDetailPage: React.FC = () => {
 
       {/* Film Info Card */}
       <FilmInfoCard purchase={ticket} totalPrice={ticket.grandTotal} />
-
     </div>
   );
 };

@@ -1,42 +1,12 @@
-import apiClient from "./client";
-import { ApiResponse, PageResponse, PurchaseDetailDto } from "./types";
-import { UserDto } from "./auth.service";
-
-export interface SearchUserPayload {
-  keyword?: string;
-  status?: string;
-  page?: number;
-  size?: number;
-}
-
-export interface CreateUserPayload {
-  username: string;
-  fullName: string;
-  email: string;
-  phoneNumber: string;
-  role: string;
-  password?: string;
-}
-
-export interface SearchBookingPayload {
-  keyword?: string;
-  status?: string;
-  page?: number;
-  size?: number;
-}
-
-export interface QuickStatsDto {
-  revenue: number;
-  totalCinemas: number;
-  totalAuditoriums: number;
-  totalSoldSeats: number;
-  fillRate: number;
-}
-
-export interface ChartColumnDto {
-  label: string;
-  value: number;
-}
+import apiClient from "../api/client";
+import { ApiResponse, PageResponse } from "../api/types";
+import { PurchaseDetailDto } from "../types/booking";
+import { CreateUserPayload, SearchUserPayload, UserDto } from "../types/user";
+import {
+  SearchBookingPayload,
+  QuickStatsDto,
+  ChartColumnDto,
+} from "../types/booking";
 
 class ManagementService {
   /**
@@ -156,7 +126,7 @@ class ManagementService {
   async getQuickStats(): Promise<QuickStatsDto> {
     try {
       const response = await apiClient.get<ApiResponse<QuickStatsDto>>(
-        `/kite-cine/management/report/quick-stats`
+        `/kite-cine/management/report/quick-stats`,
       );
       return response.data.result;
     } catch (error) {
@@ -171,7 +141,7 @@ class ManagementService {
     try {
       const response = await apiClient.post<ApiResponse<ChartColumnDto[]>>(
         `/kite-cine/management/report/revenue`,
-        { type }
+        { type },
       );
       return response.data.result;
     } catch (error) {

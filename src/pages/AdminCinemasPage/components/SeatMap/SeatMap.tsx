@@ -2,15 +2,18 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import styles from "./SeatMap.module.css";
+import { cinemaService } from "../../../../services/cinema.service";
 import {
-  cinemaService,
   AuditoriumDto,
   SeatRowDto,
   SeatType,
-} from "../../../../api/cinema.service";
+  AUDITORIUM_TYPE_LABELS,
+} from "../../../../types/cinema";
+import { AuditoriumType } from "../../../../types/cinema";
 import { getApiErrorMessage } from "../../../../api/types";
 
 interface SeatMapProps {
+  cinemaId?: number;
   auditorium?: AuditoriumDto;
   openAddRowModal?: (open: () => void) => void;
   openAddSeatModal?: (open: () => void) => void;
@@ -18,9 +21,12 @@ interface SeatMapProps {
   openChangeSeatTypeModal?: (open: () => void) => void;
   clearSelectionBridge?: (clear: () => void) => void;
   openSelectRowModal?: (open: () => void) => void;
+  onAuditoriumUpdated?: (auditorium: AuditoriumDto) => void;
+  onAuditoriumDeleted?: (auditoriumId: number) => void;
 }
 
 const SeatMap: React.FC<SeatMapProps> = ({
+  cinemaId,
   auditorium,
   openAddRowModal,
   openAddSeatModal,
@@ -28,6 +34,8 @@ const SeatMap: React.FC<SeatMapProps> = ({
   openChangeSeatTypeModal,
   clearSelectionBridge,
   openSelectRowModal,
+  onAuditoriumUpdated,
+  onAuditoriumDeleted,
 }) => {
   const [selectedSeats, setSelectedSeats] = useState<Set<number>>(new Set());
   const [seatRows, setSeatRows] = useState<SeatRowDto[]>([]);
@@ -64,6 +72,24 @@ const SeatMap: React.FC<SeatMapProps> = ({
   const [selectedRowLetters, setSelectedRowLetters] = useState<Set<string>>(
     new Set(),
   );
+
+  const [isDeleteAuditoriumModalOpen, setIsDeleteAuditoriumModalOpen] =
+    useState(false);
+  const [isDeleteAuditoriumSubmitting, setIsDeleteAuditoriumSubmitting] =
+    useState(false);
+
+  const [isEditAuditoriumModalOpen, setIsEditAuditoriumModalOpen] =
+    useState(false);
+  const [editAuditoriumName, setEditAuditoriumName] = useState("");
+  const [editAuditoriumType, setEditAuditoriumType] =
+    useState<AuditoriumType>("PREMIUM");
+  const [editAuditoriumNameError, setEditAuditoriumNameError] = useState("");
+  const [isEditAuditoriumSubmitting, setIsEditAuditoriumSubmitting] =
+    useState(false);
+
+  const AUDITORIUM_TYPES = Object.keys(
+    AUDITORIUM_TYPE_LABELS,
+  ) as AuditoriumType[];
 
   const totalSeats = useMemo(() => {
     return seatRows.reduce((acc, row) => acc + row.seats.length, 0);
@@ -301,6 +327,71 @@ const SeatMap: React.FC<SeatMapProps> = ({
     }
   };
 
+  const handleDeleteAuditorium = async () => {
+    if (!auditorium) return;
+    try {
+      setIsDeleteAuditoriumSubmitting(true);
+      await cinemaService.deleteAuditorium(auditorium.id);
+      toast.success(`Phòng chiếu "${auditorium.name}" đã được xóa thành công!`);
+      setIsDeleteAuditoriumModalOpen(false);
+      if (onAuditoriumDeleted) {
+        onAuditoriumDeleted(auditorium.id);
+      }
+    } catch (error) {
+      console.error("Failed to delete auditorium", error);
+      toast.error(
+        getApiErrorMessage(
+          error,
+          "Xóa phòng chiếu thất bại. Vui lòng thử lại.",
+        ),
+      );
+    } finally {
+      setIsDeleteAuditoriumSubmitting(false);
+    }
+  };
+
+  const handleUpdateAuditorium = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!auditorium) return;
+    setEditAuditoriumNameError("");
+
+    if (!editAuditoriumName.trim()) {
+      setEditAuditoriumNameError("Vui lòng nhập tên phòng chiếu");
+      return;
+    }
+    if (editAuditoriumName.trim().length < 2) {
+      setEditAuditoriumNameError("Tên phòng chiếu phải có ít nhất 2 ký tự");
+      return;
+    }
+    if (editAuditoriumName.trim().length > 50) {
+      setEditAuditoriumNameError(
+        "Tên phòng chiếu không được vượt quá 50 ký tự",
+      );
+      return;
+    }
+
+    try {
+      setIsEditAuditoriumSubmitting(true);
+      const updated = await cinemaService.updateAuditorium(auditorium.id, {
+        name: editAuditoriumName,
+        cinemaId: cinemaId || auditorium.cinema?.id || 0,
+        type: editAuditoriumType,
+      });
+      setIsEditAuditoriumModalOpen(false);
+      toast.success(`Phòng chiếu "${editAuditoriumName}" đã được cập nhật!`);
+      if (onAuditoriumUpdated) {
+        onAuditoriumUpdated(updated);
+      }
+    } catch (error) {
+      console.error("Failed to update auditorium", error);
+      toast.error(
+        getApiErrorMessage(error, "Cập nhật thất bại. Vui lòng thử lại."),
+      );
+    } finally {
+      setIsEditAuditoriumSubmitting(false);
+    }
+  };
+
   const handleSelectRow = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedRowLetters.size === 0) {
@@ -365,6 +456,30 @@ const SeatMap: React.FC<SeatMapProps> = ({
             </div>
           )}
         </div>
+
+        {auditorium && (
+          <div className={styles.headerActions}>
+            <button
+              className={styles.iconBtn}
+              onClick={() => {
+                setEditAuditoriumName(auditorium.name);
+                setEditAuditoriumType(auditorium.type || "PREMIUM");
+                setEditAuditoriumNameError("");
+                setIsEditAuditoriumModalOpen(true);
+              }}
+              title="Cập nhật phòng chiếu"
+            >
+              <span className="material-symbols-outlined">edit</span>
+            </button>
+            <button
+              className={`${styles.iconBtn} ${styles.iconBtnDelete}`}
+              onClick={() => setIsDeleteAuditoriumModalOpen(true)}
+              title="Xóa phòng chiếu"
+            >
+              <span className="material-symbols-outlined">delete</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Map Area */}
@@ -449,8 +564,12 @@ const SeatMap: React.FC<SeatMapProps> = ({
                   <input
                     type="text"
                     value={newRowLetter}
+                    maxLength={2}
                     onChange={(e) => {
-                      setNewRowLetter(e.target.value);
+                      const val = e.target.value
+                        .replace(/[^a-zA-Z]/g, "")
+                        .toUpperCase();
+                      setNewRowLetter(val);
                       if (addRowErrors.rowLetter)
                         setAddRowErrors({
                           ...addRowErrors,
@@ -540,8 +659,12 @@ const SeatMap: React.FC<SeatMapProps> = ({
                   <input
                     type="text"
                     value={seatRowLetter}
+                    maxLength={2}
                     onChange={(e) => {
-                      setSeatRowLetter(e.target.value);
+                      const val = e.target.value
+                        .replace(/[^a-zA-Z]/g, "")
+                        .toUpperCase();
+                      setSeatRowLetter(val);
                       if (addSeatErrors.seatRowLetter)
                         setAddSeatErrors({
                           ...addSeatErrors,
@@ -769,6 +892,124 @@ const SeatMap: React.FC<SeatMapProps> = ({
                   </button>
                   <button type="submit" className={styles.submitBtn}>
                     Chọn
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {isDeleteAuditoriumModalOpen &&
+        createPortal(
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h3>Xóa phòng chiếu</h3>
+              <p
+                style={{
+                  color: "var(--color-on-surface)",
+                  marginBottom: "1.5rem",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Bạn có chắc chắn muốn xóa phòng chiếu{" "}
+                <strong>{auditorium?.name}</strong> không? Hành động này không
+                thể hoàn tác.
+              </p>
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  onClick={() => setIsDeleteAuditoriumModalOpen(false)}
+                  disabled={isDeleteAuditoriumSubmitting}
+                  className={styles.cancelBtn}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteAuditorium}
+                  disabled={isDeleteAuditoriumSubmitting}
+                  className={styles.submitBtn}
+                  style={{ backgroundColor: "#e53935", color: "white" }}
+                >
+                  {isDeleteAuditoriumSubmitting ? "Đang xóa..." : "Xóa"}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {isEditAuditoriumModalOpen &&
+        createPortal(
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h3>Cập nhật phòng chiếu</h3>
+              <form onSubmit={handleUpdateAuditorium} className={styles.form}>
+                <div className={styles.formGroup}>
+                  <div className={styles.labelRow}>
+                    <label>Tên (*)</label>
+                    <span
+                      className={`${styles.charCount} ${editAuditoriumName.length > 50 ? styles.charCountOver : ""}`}
+                    >
+                      {50 - editAuditoriumName.length}
+                      {"/50"}
+                    </span>
+                  </div>
+                  <input
+                    type="text"
+                    value={editAuditoriumName}
+                    maxLength={50}
+                    onChange={(e) => {
+                      setEditAuditoriumName(e.target.value);
+                      if (editAuditoriumNameError)
+                        setEditAuditoriumNameError("");
+                    }}
+                    disabled={isEditAuditoriumSubmitting}
+                    className={`${styles.input} ${editAuditoriumNameError ? styles.inputError : ""}`}
+                    placeholder="vd: Phòng chiếu 1"
+                  />
+                  {editAuditoriumNameError && (
+                    <p className={styles.fieldError}>
+                      {editAuditoriumNameError}
+                    </p>
+                  )}
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Loại phòng (*)</label>
+                  <select
+                    value={editAuditoriumType}
+                    onChange={(e) =>
+                      setEditAuditoriumType(e.target.value as AuditoriumType)
+                    }
+                    disabled={isEditAuditoriumSubmitting}
+                    className={styles.select}
+                  >
+                    {AUDITORIUM_TYPES.map((t) => (
+                      <option key={t} value={t}>
+                        {AUDITORIUM_TYPE_LABELS[t]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className={styles.modalActions}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditAuditoriumModalOpen(false);
+                      setEditAuditoriumNameError("");
+                    }}
+                    disabled={isEditAuditoriumSubmitting}
+                    className={styles.cancelBtn}
+                  >
+                    Bỏ qua
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isEditAuditoriumSubmitting}
+                    className={styles.submitBtn}
+                  >
+                    {isEditAuditoriumSubmitting ? "Đang lưu..." : "Cập nhật"}
                   </button>
                 </div>
               </form>

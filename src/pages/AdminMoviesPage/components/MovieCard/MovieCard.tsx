@@ -2,12 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieCard.module.css";
+import { movieService } from "../../../../services/movie.service";
 import {
   MOVIE_STATUS_LABELS,
   MovieStatus,
-  movieService,
   MovieDto,
-} from "../../../../api/movie.service";
+} from "../../../../types/movie";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../../../api/types";
 
@@ -55,10 +55,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onRefresh }) => {
     >
       <div className={styles.posterWrapper}>
         <img
-          src={
-            movie.poster ||
-            "https://placehold.co/400x600/1E1B1B/FFFFFF?text=No+Poster"
-          }
+          src={movie.poster}
           alt={movie.title}
           className={styles.posterImage}
         />
@@ -162,12 +159,18 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onRefresh }) => {
         <div className={styles.cardActions}>
           <button
             className={styles.manageBtn}
-            onClick={() => navigate(`/admin/movies/${movie.id}/showtimes`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/admin/movies/${movie.id}/showtimes`);
+            }}
           >
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "1.25rem" }}
+            >
+              calendar_month
+            </span>
             Lịch chiếu
-          </button>
-          <button className={styles.analyticsBtn}>
-            <span className="material-symbols-outlined">bar_chart</span>
           </button>
         </div>
       </div>

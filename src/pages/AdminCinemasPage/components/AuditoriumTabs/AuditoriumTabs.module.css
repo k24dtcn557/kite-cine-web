@@ -170,14 +170,17 @@
 }
 
 .charCount {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--color-on-surface-variant);
-  opacity: 0.6;
+  background-color: var(--color-surface-variant);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-weight: 500;
 }
 
 .charCountOver {
-  color: #e53935;
-  opacity: 1;
+  color: var(--color-error);
+  background-color: var(--color-error-container);
   font-weight: 600;
 }
 

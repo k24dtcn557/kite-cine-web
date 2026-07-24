@@ -5,7 +5,7 @@ import {
   CrewMemberDto,
   CrewRole,
   CREW_ROLE_LABELS,
-} from "../../../../api/movie.service";
+} from "../../../../types/movie";
 
 interface CrewMemberItemProps {
   member: CrewMemberDto;

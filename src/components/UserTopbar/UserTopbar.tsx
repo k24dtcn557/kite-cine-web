@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "../../components";
 import { useAuth } from "../../contexts/AuthContext";
-import { authService, UserDto } from "../../api/auth.service";
+import { authService } from "../../services/auth.service";
+import { UserDto } from "../../types/user";
 import styles from "./UserTopbar.module.css";
 
 interface UserTopbarProps {

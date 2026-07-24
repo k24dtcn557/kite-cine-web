@@ -5,7 +5,7 @@ import {
   CrewMemberDto,
   CREW_ROLE_LABELS,
   CrewRole,
-} from "../../../api/movie.service";
+} from "../../../types/movie";
 import { CommonUtils } from "../../../utils/CommonUtils";
 
 interface Props {

@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import ThemeToggle from "../ThemeToggle";
 import { useAuth } from "../../contexts/AuthContext";
-import { authService, UserDto } from "../../api/auth.service";
+import { authService } from "../../services/auth.service";
+import { UserDto } from "../../types/user";
 
 const NAV_LINKS = ["Phim Đang Chiếu", "Sắp Chiếu"];
 

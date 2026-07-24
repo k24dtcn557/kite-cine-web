@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { MetricCard, RevenueChart, PerformanceTable } from "./components";
 import styles from "./AdminDashboardPage.module.css";
-import { managementService, QuickStatsDto } from "../../api/management.service";
+import { managementService } from "../../services/management.service";
+import { QuickStatsDto } from "../../types/booking";
 import { CommonUtils } from "../../utils/CommonUtils";
 
 const AdminDashboardPage: React.FC = () => {
@@ -29,15 +30,6 @@ const AdminDashboardPage: React.FC = () => {
       {/* Key Metrics Row */}
       <div className={styles.metricsGrid}>
         <MetricCard
-          title="Doanh thu hôm nay"
-          value={
-            stats ? CommonUtils.formatNumberVietnamese(stats.revenue) : "..."
-          }
-          icon="payments"
-          iconBgColor="primary"
-          iconColor="primary"
-        />
-        <MetricCard
           title="Rạp & Phòng chiếu"
           value={
             stats
@@ -49,6 +41,15 @@ const AdminDashboardPage: React.FC = () => {
           iconColor="tertiary"
         />
         <MetricCard
+          title="Doanh thu hôm nay"
+          value={
+            stats ? CommonUtils.formatNumberVietnamese(stats.revenue) : "..."
+          }
+          icon="payments"
+          iconBgColor="primary"
+          iconColor="primary"
+        />
+        <MetricCard
           title="Tổng số ghế đã bán"
           value={stats ? stats.totalSoldSeats.toLocaleString("vi-VN") : "..."}
           icon="confirmation_number"
@@ -56,7 +57,7 @@ const AdminDashboardPage: React.FC = () => {
           iconColor="secondary"
         />
         <MetricCard
-          title="Tỷ lệ lấp đầy TB"
+          title="Tỷ lệ lấp đầy"
           value={stats ? `${(stats.fillRate * 100).toFixed(1)}%` : "..."}
           icon="event_seat"
           iconBgColor="surface"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./UserInfoForm.module.css";
-import { UserDto, UpdateMyInfoPayload } from "../../api/auth.service";
+import { UserDto, UpdateMyInfoPayload } from "../../types/user";
 
 interface UserInfoFormProps {
   initialData: UserDto | null;

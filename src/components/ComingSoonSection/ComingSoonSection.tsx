@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./ComingSoonSection.module.css";
-import { movieService, MovieDto } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto } from "../../types/movie";
 import MovieCarousel from "../MovieCarousel";
 
 const formatDateVI = (dateStr?: string) => {

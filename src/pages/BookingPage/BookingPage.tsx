@@ -8,14 +8,16 @@ import {
 import styles from "./BookingPage.module.css";
 import { Navbar, LoginForm, SignUpForm } from "../../components";
 import { useAuth } from "../../contexts/AuthContext";
-import { cinemaService, SeatRowDto, SeatDto } from "../../api/cinema.service";
-import { MovieDto } from "../../api/movie.service";
-import { ShowTimeBriefDto } from "../../api/show-time.service";
-import { ticketService, TicketDto } from "../../api/ticket.service";
-import { bookingService } from "../../api/booking.service";
+import { cinemaService } from "../../services/cinema.service";
+import { SeatRowDto, SeatDto } from "../../types/cinema";
+import { MovieDto } from "../../types/movie";
+import { ShowTimeBriefDto } from "../../types/showtime";
+import { ticketService } from "../../services/ticket.service";
+import { TicketDto } from "../../types/booking";
+import { bookingService } from "../../services/booking.service";
 import { toast } from "react-hot-toast";
 import { CommonUtils } from "../../utils/CommonUtils";
-import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
+import { PRICE_MODEL_SEAT_TYPES } from "../../types/showtime";
 
 const getSeatTypeLabel = (type: string) => {
   return PRICE_MODEL_SEAT_TYPES.find((t) => t.type === type)?.label || type;

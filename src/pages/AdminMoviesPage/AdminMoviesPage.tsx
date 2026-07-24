@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./AdminMoviesPage.module.css";
 import { MovieCard } from "./components";
-import { movieService, MovieDto } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto } from "../../types/movie";
 
 const FILTER_TABS = [
   "Tất cả",
@@ -60,22 +61,17 @@ const AdminMoviesPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
+      <div className={styles.headerContainer}>
+        <div className={styles.titleWrapper}>
           <h2 className={styles.title}>Danh sách phim</h2>
-          <p className={styles.subtitle}>
-            Quản lý thông tin phim, lịch chiếu và thống kê doanh thu.
-          </p>
         </div>
-        <div className={styles.actions}>
-          <button
-            className={styles.addBtn}
-            onClick={() => navigate("/admin/movies/new")}
-          >
-            <span className="material-symbols-outlined">add</span>
-            Thêm phim mới
-          </button>
-        </div>
+        <button
+          className={styles.addBtn}
+          onClick={() => navigate("/admin/movies/new")}
+        >
+          <span className="material-symbols-outlined">add</span>
+          Thêm phim mới
+        </button>
       </div>
       {/* Filters Row */}
       <div className={styles.filtersRow}>

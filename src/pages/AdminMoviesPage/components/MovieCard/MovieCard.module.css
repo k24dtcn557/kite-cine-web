@@ -213,21 +213,25 @@
 
 .manageBtn {
   flex-grow: 1;
-  padding: 0.5rem 0;
-  background-color: rgba(70, 47, 44, 0.5); /* surface-variant/50 */
-  color: var(--color-on-surface);
+  padding: 0.625rem 1rem;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
   border: none;
-  border-radius: 0.5rem;
-  font-size: 0.75rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.875rem;
   font-weight: 700;
-  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .manageBtn:hover {
-  background-color: var(--color-primary-container);
-  color: var(--color-on-primary-container);
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.4);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .analyticsBtn {

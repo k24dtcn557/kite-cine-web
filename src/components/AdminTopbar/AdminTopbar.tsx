@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "../../components";
 import styles from "./AdminTopbar.module.css";
 import { useAuth } from "../../contexts/AuthContext";
-import { authService, UserDto } from "../../api/auth.service";
+import { authService } from "../../services/auth.service";
+import { UserDto } from "../../types/user";
 
 interface AdminTopbarProps {
   onMenuClick?: () => void;
@@ -119,21 +120,7 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
                 >
                   dashboard
                 </span>
-                Tổng quan
-              </button>
-              <button
-                className={styles.menuItem}
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  navigate("/admin/theaters");
-                }}
-              >
-                <span
-                  className={`material-symbols-outlined ${styles.menuItemIcon}`}
-                >
-                  movie
-                </span>
-                Rạp chiếu
+                Báo cáo nhanh
               </button>
               <button
                 className={styles.menuItem}

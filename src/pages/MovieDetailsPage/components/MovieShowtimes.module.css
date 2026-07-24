@@ -86,6 +86,12 @@
 }
 
 /* ---- Theaters ---- */
+.theatersList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .theaterCard {
   background-color: var(--glass-bg);
   border: 1px solid var(--glass-border);

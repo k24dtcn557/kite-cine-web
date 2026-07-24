@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./CheckoutPage.module.css";
 import { Navbar } from "../../components";
-import { MovieDto } from "../../api/movie.service";
-import { ShowTimeBriefDto } from "../../api/show-time.service";
-import { ticketService, TicketDto } from "../../api/ticket.service";
-import { PurchaseDto, bookingService } from "../../api/booking.service";
+import { MovieDto } from "../../types/movie";
+import { ShowTimeBriefDto } from "../../types/showtime";
+import { ticketService } from "../../services/ticket.service";
+import { TicketDto } from "../../types/booking";
+import { bookingService } from "../../services/booking.service";
+import { PurchaseDto } from "../../types/booking";
 import { toast } from "react-hot-toast";
 import { CommonUtils } from "../../utils/CommonUtils";
-import { PRICE_MODEL_SEAT_TYPES } from "../../api/price-model.service";
+import { PRICE_MODEL_SEAT_TYPES } from "../../types/showtime";
 
 const getSeatTypeLabel = (type: string) => {
   return PRICE_MODEL_SEAT_TYPES.find((t) => t.type === type)?.label || type;

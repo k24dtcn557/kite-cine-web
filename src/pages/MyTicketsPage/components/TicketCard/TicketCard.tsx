@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./TicketCard.module.css";
-import { PurchaseDetailDto } from "../../../../api/types";
+import { PurchaseDetailDto } from "../../../../types/booking";
 import { CommonUtils } from "../../../../utils/CommonUtils";
 
 interface TicketCardProps {

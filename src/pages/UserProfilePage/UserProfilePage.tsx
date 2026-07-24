@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./UserProfilePage.module.css";
 import { useAuth } from "../../contexts/AuthContext";
-import { authService, UserDto } from "../../api/auth.service";
+import { authService } from "../../services/auth.service";
+import { UserDto } from "../../types/user";
 import { getApiErrorMessage } from "../../api/types";
 import toast from "react-hot-toast";
 import UserInfoForm from "../../components/UserInfoForm";
-
 
 const UserProfilePage: React.FC = () => {
   const { isAuthenticated } = useAuth();

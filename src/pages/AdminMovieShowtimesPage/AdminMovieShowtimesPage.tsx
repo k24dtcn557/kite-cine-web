@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./AdminMovieShowtimesPage.module.css";
-import { movieService, MovieDto } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto } from "../../types/movie";
 import toast from "react-hot-toast";
 
-import {
-  showTimeService,
-  CinemaShowtimesDto,
-} from "../../api/show-time.service";
+import { showTimeService } from "../../services/show-time.service";
+import { CinemaShowtimesDto } from "../../types/showtime";
 
 const AdminMovieShowtimesPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -123,10 +122,7 @@ const AdminMovieShowtimesPage: React.FC = () => {
           {/* Movie Context */}
           <div className={styles.movieCard}>
             <img
-              src={
-                movie.poster ||
-                "https://placehold.co/400x600/1E1B1B/FFFFFF?text=No+Poster"
-              }
+              src={movie.poster}
               alt={movie.title}
               className={styles.moviePoster}
             />

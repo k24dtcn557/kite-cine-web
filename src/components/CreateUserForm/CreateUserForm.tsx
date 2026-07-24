@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./CreateUserForm.module.css";
-import { CreateUserPayload } from "../../api/management.service";
+import { CreateUserPayload } from "../../types/user";
 
 interface CreateUserFormProps {
   onSubmit: (data: CreateUserPayload) => Promise<void>;

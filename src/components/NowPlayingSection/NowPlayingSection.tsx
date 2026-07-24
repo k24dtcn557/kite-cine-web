@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
 import styles from "./NowPlayingSection.module.css";
 import MovieCarousel from "../MovieCarousel";
-import { movieService, MovieDto, GENRE_FILTERS } from "../../api/movie.service";
+import { movieService } from "../../services/movie.service";
+import { MovieDto, GENRE_FILTERS } from "../../types/movie";
 
 const NowPlayingSection: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("Tất Cả");

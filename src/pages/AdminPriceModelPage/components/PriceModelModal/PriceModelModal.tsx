@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./PriceModelModal.module.css";
-import { SeatType } from "../../../../api/cinema.service";
+import { SeatType } from "../../../../types/cinema";
+import { priceModelService } from "../../../../services/price-model.service";
 import {
-  priceModelService,
   PriceModelDto,
   PRICE_MODEL_SEAT_TYPES,
-} from "../../../../api/price-model.service";
+} from "../../../../types/showtime";
 import toast from "react-hot-toast";
 import { CommonUtils } from "../../../../utils/CommonUtils";
 

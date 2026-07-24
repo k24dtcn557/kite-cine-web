@@ -1,57 +1,13 @@
-import apiClient from "./client";
-import { ApiResponse } from "./types";
-
-export interface LoginPayload {
-  username: string;
-  password?: string;
-}
-
-export interface AuthResponse {
-  token: string;
-}
-
-export interface RegisterPayload {
-  username: string;
-  password?: string;
-  fullName: string;
-}
-
-export enum UserStatus {
-  ACTIVE = "ACTIVE",
-  LOCKED = "LOCKED",
-  DELETED = "DELETED",
-}
-
-export const UserStatusText: Record<string, string> = {
-  ACTIVE: "Hoạt động",
-  LOCKED: "Khóa",
-  DELETED: "Đã xóa",
-};
-
-export interface UserDto {
-  id: string;
-  username: string;
-  fullName: string;
-  email: string;
-  avatar: string;
-  phoneNumber: string;
-  dob?: string;
-  roles?: { name: string }[] | string[];
-  status?: UserStatus | string | number;
-}
-
-export interface UpdateMyInfoPayload {
-  fullName: string;
-  email?: string;
-  phoneNumber?: string;
-  dob?: string;
-}
-
-export interface ChangePasswordPayload {
-  oldPassword?: string;
-  newPassword?: string;
-  confirmNewPassword?: string;
-}
+import {
+  LoginPayload,
+  AuthResponse,
+  RegisterPayload,
+  UserDto,
+  UpdateMyInfoPayload,
+  ChangePasswordPayload,
+} from "../types/user";
+import apiClient from "../api/client";
+import { ApiResponse } from "../api/types";
 
 class AuthService {
   /**

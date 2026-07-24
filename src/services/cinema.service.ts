@@ -1,93 +1,18 @@
-import apiClient from "./client";
-import { ApiResponse, PageResponse } from "./types";
+import {
+  AddRowPayload,
+  AddSeatPayload,
+  AuditoriumDto,
+  AuditoriumPayload,
+  CinemaDto,
+  CinemaPayload,
+  SearchAuditoriumsPayload,
+  SeatDto,
+  SeatRowDto,
+  SeatType,
+} from "../types/cinema";
 
-export interface CinemaDto {
-  id: number;
-  name: string;
-  address: string;
-  numberOfAuditoriums: number;
-  createdAt: string;
-  updatedAt: string;
-  status: string;
-}
-
-export type AuditoriumType =
-  | "PREMIUM"
-  | "GOLD_CLASS"
-  | "LAMOUR"
-  | "CINE_SUITE"
-  | "FOURDX"
-  | "IMAX";
-
-export const AUDITORIUM_TYPE_LABELS: Record<AuditoriumType, string> = {
-  PREMIUM: "PREMIUM",
-  GOLD_CLASS: "GOLD CLASS",
-  LAMOUR: "L'AMOUR",
-  CINE_SUITE: "CINE SUITE",
-  FOURDX: "4DX",
-  IMAX: "IMAX",
-};
-
-export interface AuditoriumDto {
-  id: number;
-  name: string;
-  type: AuditoriumType;
-  createdAt: string;
-  updatedAt: string;
-  cinema: CinemaDto;
-  status: string;
-}
-
-export interface SearchCinemasPayload {
-  page: number;
-  size: number;
-}
-
-export interface SearchAuditoriumsPayload {
-  cinemaId: number;
-  page: number;
-  size: number;
-}
-
-export interface CreateCinemaPayload {
-  name: string;
-  address: string;
-}
-
-export interface CreateAuditoriumPayload {
-  name: string;
-  cinemaId: number;
-  type: AuditoriumType;
-}
-
-export type SeatType = "STANDARD" | "VIP" | "COUPLE";
-
-export interface AddRowPayload {
-  auditoriumId: number;
-  rowLetter: string;
-  numberOfSeats: number;
-  seatType: SeatType;
-}
-
-export interface AddSeatPayload {
-  auditoriumId: number;
-  rowLetter: string;
-  seatNumber: number;
-  seatType: SeatType;
-}
-
-export interface SeatDto {
-  id: number;
-  rowLetter: string;
-  seatNumber: number;
-  seatType: string;
-  auditoriumId: number;
-}
-
-export interface SeatRowDto {
-  rowLetter: string;
-  seats: SeatDto[];
-}
+import apiClient from "../api/client";
+import { ApiResponse, PageResponse } from "../api/types";
 
 export const cinemaService = {
   getCinemas: async (): Promise<CinemaDto[]> => {
@@ -96,12 +21,22 @@ export const cinemaService = {
     );
     return response.data.result;
   },
-  create: async (payload: CreateCinemaPayload): Promise<CinemaDto> => {
+  create: async (payload: CinemaPayload): Promise<CinemaDto> => {
     const response = await apiClient.post<ApiResponse<CinemaDto>>(
       "/kite-cine/management/cinemas",
       payload,
     );
     return response.data.result;
+  },
+  update: async (id: number, payload: CinemaPayload): Promise<CinemaDto> => {
+    const response = await apiClient.put<ApiResponse<CinemaDto>>(
+      `/kite-cine/management/cinemas/${id}`,
+      payload,
+    );
+    return response.data.result;
+  },
+  delete: async (id: number): Promise<void> => {
+    await apiClient.delete(`/kite-cine/management/cinemas/${id}`);
   },
   searchAuditoriums: async (
     payload: SearchAuditoriumsPayload,
@@ -112,13 +47,26 @@ export const cinemaService = {
     return response.data.result;
   },
   createAuditorium: async (
-    payload: CreateAuditoriumPayload,
+    payload: AuditoriumPayload,
   ): Promise<AuditoriumDto> => {
     const response = await apiClient.post<ApiResponse<AuditoriumDto>>(
       "/kite-cine/management/cinemas/auditoriums",
       payload,
     );
     return response.data.result;
+  },
+  updateAuditorium: async (
+    id: number,
+    payload: AuditoriumPayload,
+  ): Promise<AuditoriumDto> => {
+    const response = await apiClient.put<ApiResponse<AuditoriumDto>>(
+      `/kite-cine/management/cinemas/auditoriums/${id}`,
+      payload,
+    );
+    return response.data.result;
+  },
+  deleteAuditorium: async (id: number): Promise<void> => {
+    await apiClient.delete(`/kite-cine/management/cinemas/auditoriums/${id}`);
   },
   getAuditoriumSeats: async (auditoriumId: number): Promise<SeatRowDto[]> => {
     const response = await apiClient.get<

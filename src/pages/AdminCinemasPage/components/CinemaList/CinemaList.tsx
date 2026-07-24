@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import styles from "./CinemaList.module.css";
-import { cinemaService } from "../../../../api/cinema.service";
+import { cinemaService } from "../../../../services/cinema.service";
 import { getApiErrorMessage } from "../../../../api/types";
 
 interface CinemaListProps {
@@ -22,6 +22,9 @@ const CinemaList: React.FC<CinemaListProps> = ({
   const [nameError, setNameError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [cinemaToDelete, setCinemaToDelete] = useState<any>(null);
+  const [cinemaToEdit, setCinemaToEdit] = useState<any>(null);
 
   const fetchCinemas = async () => {
     try {
@@ -39,8 +42,15 @@ const CinemaList: React.FC<CinemaListProps> = ({
     fetchCinemas();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = () => setOpenMenuId(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setCinemaToEdit(null);
     setNewName("");
     setNewAddress("");
     setNameError("");
@@ -74,14 +84,45 @@ const CinemaList: React.FC<CinemaListProps> = ({
 
     try {
       setIsSubmitting(true);
-      await cinemaService.create({ name: newName, address: newAddress });
+      if (cinemaToEdit) {
+        await cinemaService.update(cinemaToEdit.id, {
+          name: newName,
+          address: newAddress,
+        });
+        toast.success(`Rạp "${newName}" đã được cập nhật thành công!`);
+      } else {
+        await cinemaService.create({ name: newName, address: newAddress });
+        toast.success(`Rạp "${newName}" đã được tạo thành công!`);
+      }
       handleCloseModal();
       fetchCinemas();
-      toast.success(`Rạp "${newName}" đã được tạo thành công!`);
     } catch (error) {
-      console.error("Failed to create cinema", error);
+      console.error("Failed to save cinema", error);
       toast.error(
-        getApiErrorMessage(error, "Tạo rạp thất bại. Vui lòng thử lại."),
+        getApiErrorMessage(
+          error,
+          cinemaToEdit
+            ? "Cập nhật rạp thất bại. Vui lòng thử lại."
+            : "Tạo rạp thất bại. Vui lòng thử lại.",
+        ),
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteCinema = async () => {
+    if (!cinemaToDelete) return;
+    try {
+      setIsSubmitting(true);
+      await cinemaService.delete(cinemaToDelete.id);
+      toast.success(`Rạp "${cinemaToDelete.name}" đã được xóa thành công!`);
+      setCinemaToDelete(null);
+      fetchCinemas();
+    } catch (error) {
+      console.error("Failed to delete cinema", error);
+      toast.error(
+        getApiErrorMessage(error, "Xóa rạp thất bại. Vui lòng thử lại."),
       );
     } finally {
       setIsSubmitting(false);
@@ -125,11 +166,56 @@ const CinemaList: React.FC<CinemaListProps> = ({
             >
               <div className={styles.cardHeader}>
                 <span className={styles.cardTitle}>{cinema.name}</span>
-                <span
-                  className={`material-symbols-outlined ${styles.moreIcon}`}
-                >
-                  more_vert
-                </span>
+                <div className={styles.menuContainer}>
+                  <span
+                    className={`material-symbols-outlined ${styles.moreIcon}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuId(
+                        openMenuId === cinema.id ? null : cinema.id,
+                      );
+                    }}
+                  >
+                    more_vert
+                  </span>
+                  {openMenuId === cinema.id && (
+                    <div className={styles.dropdownMenu}>
+                      <button
+                        className={styles.menuItem}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCinemaToEdit(cinema);
+                          setNewName(cinema.name);
+                          setNewAddress(cinema.address);
+                          setIsModalOpen(true);
+                          setOpenMenuId(null);
+                        }}
+                      >
+                        <span
+                          className={`material-symbols-outlined ${styles.menuItemIcon}`}
+                        >
+                          edit
+                        </span>
+                        Cập nhật
+                      </button>
+                      <button
+                        className={`${styles.menuItem} ${styles.menuItemDelete}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCinemaToDelete(cinema);
+                          setOpenMenuId(null);
+                        }}
+                      >
+                        <span
+                          className={`material-symbols-outlined ${styles.menuItemIcon}`}
+                        >
+                          delete
+                        </span>
+                        Xóa
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {cinema.address && (
@@ -157,7 +243,7 @@ const CinemaList: React.FC<CinemaListProps> = ({
         createPortal(
           <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
-              <h3>Tạo rạp mới</h3>
+              <h3>{cinemaToEdit ? "Cập nhật rạp" : "Tạo rạp mới"}</h3>
               <form onSubmit={handleCreateCinema} className={styles.form}>
                 <div className={styles.formGroup}>
                   <div className={styles.labelRow}>
@@ -223,10 +309,54 @@ const CinemaList: React.FC<CinemaListProps> = ({
                     disabled={isSubmitting}
                     className={styles.submitBtn}
                   >
-                    {isSubmitting ? "Đang tạo..." : "Tạo"}
+                    {isSubmitting
+                      ? "Đang lưu..."
+                      : cinemaToEdit
+                        ? "Cập nhật"
+                        : "Tạo"}
                   </button>
                 </div>
               </form>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {cinemaToDelete &&
+        createPortal(
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalContent}>
+              <h3>Xóa rạp</h3>
+              <p
+                style={{
+                  color: "var(--color-on-surface)",
+                  marginBottom: "1.5rem",
+                  fontSize: "0.875rem",
+                }}
+              >
+                Bạn có chắc chắn muốn xóa rạp{" "}
+                <strong>{cinemaToDelete.name}</strong> không? Hành động này
+                không thể hoàn tác.
+              </p>
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  onClick={() => setCinemaToDelete(null)}
+                  disabled={isSubmitting}
+                  className={styles.cancelBtn}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDeleteCinema}
+                  disabled={isSubmitting}
+                  className={styles.submitBtn}
+                  style={{ backgroundColor: "#e53935", color: "white" }}
+                >
+                  {isSubmitting ? "Đang xóa..." : "Xóa"}
+                </button>
+              </div>
             </div>
           </div>,
           document.body,

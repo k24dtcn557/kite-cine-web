@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieShowtimes.module.css";
-import {
-  showTimeService,
-  CinemaShowtimesDto,
-} from "../../../api/show-time.service";
-import { MovieDto } from "../../../api/movie.service";
+import { showTimeService } from "../../../services/show-time.service";
+import { CinemaShowtimesDto } from "../../../types/showtime";
+import { MovieDto } from "../../../types/movie";
 
 interface Props {
   movieId: number;
@@ -84,7 +82,7 @@ const MovieShowtimes: React.FC<Props> = ({ movieId, movie }) => {
       </div>
 
       {/* Theater Groups */}
-      <div>
+      <div className={styles.theatersList}>
         {cinemaShowtimes.length === 0 ? (
           <div
             style={{

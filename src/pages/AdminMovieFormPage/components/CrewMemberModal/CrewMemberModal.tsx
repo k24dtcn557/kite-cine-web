@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-hot-toast";
+import { movieService } from "../../../../services/movie.service";
 import {
-  movieService,
   CrewPersonDto,
   CrewMemberDto,
   CrewRole,
   CREW_ROLE_LABELS,
-} from "../../../../api/movie.service";
+} from "../../../../types/movie";
 import { getApiErrorMessage } from "../../../../api/types";
 import styles from "../MovieForm/MovieForm.module.css";
 

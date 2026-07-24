@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./AdminTicketManagementPage.module.css";
-import { managementService } from "../../api/management.service";
+import { managementService } from "../../services/management.service";
 import {
   PurchaseDetailDto,
   BookingStatus,
   BookingStatusText,
-} from "../../api/types";
+} from "../../types/booking";
 import toast from "react-hot-toast";
 import { getApiErrorMessage } from "../../api/types";
 import { CommonUtils } from "../../utils/CommonUtils";

@@ -42,6 +42,43 @@
   }
 }
 
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-surface-container);
+  border: 1px solid var(--color-outline-variant);
+  color: var(--color-on-surface);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.iconBtn:hover {
+  background-color: var(--color-surface-container-highest);
+}
+
+.iconBtn span {
+  font-size: 1.25rem;
+}
+
+.iconBtnDelete {
+  color: #e53935;
+}
+
+.iconBtnDelete:hover {
+  background-color: rgba(229, 57, 53, 0.1);
+  border-color: #e53935;
+}
+
 .title {
   font-family: var(--font-headline);
   font-size: 1.5rem; /* text-2xl */
@@ -333,6 +370,27 @@
 .formGroup label {
   font-size: 0.875rem;
   color: var(--color-on-surface);
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.charCount {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  background-color: var(--color-surface-variant);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.charCountOver {
+  color: var(--color-error);
+  background-color: var(--color-error-container);
+  font-weight: 600;
 }
 
 .input {
