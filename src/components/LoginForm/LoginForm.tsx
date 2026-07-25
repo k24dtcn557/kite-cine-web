@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../contexts";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 import styles from "./LoginForm.module.css";
 
 interface LoginFormProps {

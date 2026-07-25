@@ -10,7 +10,7 @@ import {
   CrewMemberDto,
 } from "../types/movie";
 import apiClient from "../api/client";
-import { ApiResponse, PageResponse } from "../api/types";
+import { ApiResponse, PageResponse } from "../types/api";
 
 export const movieService = {
   createMovie: async (payload: CreateMoviePayload): Promise<MovieDto> => {

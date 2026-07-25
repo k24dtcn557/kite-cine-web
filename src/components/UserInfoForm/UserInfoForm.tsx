@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./UserInfoForm.module.css";
 import { UserDto, UpdateMyInfoPayload } from "../../types/user";
+import { mediaService } from "../../services/media.service";
+import { authService } from "../../services/auth.service";
+import toast from "react-hot-toast";
+import { getApiErrorMessage } from "../../types/api";
 
 interface UserInfoFormProps {
   initialData: UserDto | null;
   onSubmit: (data: UpdateMyInfoPayload) => Promise<void>;
+  onAvatarUpdated?: () => void;
   isUpdating: boolean;
   submitLabel?: string;
 }
@@ -20,9 +25,14 @@ const formatDOB = (value: string) => {
 const UserInfoForm: React.FC<UserInfoFormProps> = ({
   initialData,
   onSubmit,
+  onAvatarUpdated,
   isUpdating,
   submitLabel = "Cập nhật hồ sơ",
 }) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -87,6 +97,34 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
     });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpdateAvatar = async () => {
+    if (!selectedFile) return;
+    setIsUploadingAvatar(true);
+    try {
+      const uploadRes = await mediaService.uploadMedia(selectedFile);
+      await authService.updateAvatar(uploadRes.uri);
+      toast.success("Cập nhật ảnh đại diện thành công!");
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (onAvatarUpdated) {
+        onAvatarUpdated();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(getApiErrorMessage(error, "Cập nhật ảnh đại diện thất bại."));
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
   return (
     <section className={styles.glassPanel}>
       <div className={styles.decorativeGlow}></div>
@@ -100,10 +138,13 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
       <div className={styles.profileForm}>
         {/* Avatar Upload */}
         <div className={styles.avatarSection}>
-          <div className={styles.avatarWrapper}>
-            {initialData?.avatar ? (
+          <div
+            className={styles.avatarWrapper}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {previewUrl || initialData?.avatar ? (
               <img
-                src={initialData.avatar}
+                src={previewUrl || initialData?.avatar}
                 alt="Avatar"
                 className={styles.avatarImage}
               />
@@ -125,7 +166,30 @@ const UserInfoForm: React.FC<UserInfoFormProps> = ({
               </span>
             </div>
           </div>
-          <button className={styles.btnUpload}>Tải ảnh lên</button>
+          <input
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
+          {!selectedFile ? (
+            <button
+              className={styles.btnUpload}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Tải ảnh lên
+            </button>
+          ) : (
+            <button
+              className={styles.btnPrimary}
+              style={{ padding: "0.5rem 1rem", fontSize: "0.875rem" }}
+              onClick={handleUpdateAvatar}
+              disabled={isUploadingAvatar}
+            >
+              {isUploadingAvatar ? "Đang tải lên..." : "Cập nhật Avatar"}
+            </button>
+          )}
         </div>
 
         {/* Inputs */}

@@ -1,5 +1,5 @@
 import apiClient from "../api/client";
-import { PageResponse } from "../api/types";
+import { PageResponse } from "../types/api";
 import {
   CreatePriceModelPayload,
   SearchPriceModelPayload,

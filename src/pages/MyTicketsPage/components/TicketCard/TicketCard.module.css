@@ -171,3 +171,29 @@
 .btnViewTicket:hover {
   color: color-mix(in srgb, var(--color-primary-container) 80%, #000);
 }
+
+.ticketCancelled {
+  opacity: 0.6;
+  filter: grayscale(80%);
+}
+
+.ticketCancelled:hover {
+  filter: grayscale(50%);
+  opacity: 0.8;
+}
+
+.cancelledChip {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(229, 9, 20, 0.9);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  z-index: 20;
+}

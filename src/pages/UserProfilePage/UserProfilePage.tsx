@@ -3,7 +3,7 @@ import styles from "./UserProfilePage.module.css";
 import { useAuth } from "../../contexts/AuthContext";
 import { authService } from "../../services/auth.service";
 import { UserDto } from "../../types/user";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 import toast from "react-hot-toast";
 import UserInfoForm from "../../components/UserInfoForm";
 
@@ -23,14 +23,18 @@ const UserProfilePage: React.FC = () => {
   }>({});
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
+  const fetchUserInfo = () => {
+    authService
+      .getMyInfo()
+      .then((user) => {
+        setUserInfo(user);
+      })
+      .catch((err) => console.error("Failed to fetch user info", err));
+  };
+
   useEffect(() => {
     if (isAuthenticated) {
-      authService
-        .getMyInfo()
-        .then((user) => {
-          setUserInfo(user);
-        })
-        .catch((err) => console.error("Failed to fetch user info", err));
+      fetchUserInfo();
     }
   }, [isAuthenticated]);
 
@@ -106,6 +110,7 @@ const UserProfilePage: React.FC = () => {
           <UserInfoForm
             initialData={userInfo}
             onSubmit={handleUpdateProfile}
+            onAvatarUpdated={fetchUserInfo}
             isUpdating={isUpdating}
           />
         </div>

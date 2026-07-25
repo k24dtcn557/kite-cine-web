@@ -33,7 +33,13 @@ const AdminAddShowtimePage: React.FC = () => {
     timeStr: string;
     date: Date;
   } | null>(null);
+  const [deleteModalData, setDeleteModalData] = useState<{
+    id: number;
+    title: string;
+    timeStr: string;
+  } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Generate 14 days for the weekly preview
   const dates = Array.from({ length: 14 }).map((_, i) => {
@@ -204,14 +210,28 @@ const AdminAddShowtimePage: React.FC = () => {
         priceModelId: Number(selectedPriceModelId),
       });
 
-      toast.success("Tạo suất chiếu thành công!");
+      toast.success("Tạo suất chiếu thành công");
       setConfirmModalData(null);
-      fetchShowTimes();
-    } catch (error: any) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || "Lỗi khi tạo suất chiếu");
+      fetchShowTimes(); // Refresh the chart
+    } catch (error) {
+      toast.error("Tạo suất chiếu thất bại");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDeleteShowTime = async () => {
+    if (!deleteModalData) return;
+    setIsDeleting(true);
+    try {
+      await showTimeService.deleteShowTime(deleteModalData.id);
+      toast.success("Đã xóa suất chiếu");
+      setDeleteModalData(null);
+      fetchShowTimes(); // Refresh the chart
+    } catch (error) {
+      toast.error("Xóa suất chiếu thất bại");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -446,6 +466,20 @@ const AdminAddShowtimePage: React.FC = () => {
                       {slot.start} - {slot.end}
                     </span>
                   </div>
+                  <span
+                    className={`material-symbols-outlined ${styles.deleteIcon}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDeleteModalData({
+                        id: slot.id,
+                        title: slot.title,
+                        timeStr: `${slot.start} - ${slot.end}`,
+                      });
+                    }}
+                    title="Xóa suất chiếu"
+                  >
+                    delete
+                  </span>
                 </div>
               );
             })}
@@ -504,11 +538,71 @@ const AdminAddShowtimePage: React.FC = () => {
                   Hủy
                 </button>
                 <button
-                  className={`${styles.btn} ${styles.btnPrimary}`}
+                  className={`${styles.btn} ${styles.btnConfirm}`}
                   onClick={handleCreateShowTime}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Đang xử lý..." : "Xác nhận"}
+                  {isSubmitting ? "Đang xử lý..." : "Xác nhận tạo"}
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {/* Delete Confirm Modal */}
+      {deleteModalData &&
+        createPortal(
+          <div
+            className={styles.modalOverlay}
+            onClick={() => !isDeleting && setDeleteModalData(null)}
+          >
+            <div
+              className={styles.modalContent}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3
+                className={styles.modalTitle}
+                style={{ color: "var(--color-error)" }}
+              >
+                Xác nhận xóa suất chiếu
+              </h3>
+              <div className={styles.confirmDetails}>
+                <p>
+                  <strong>Phim:</strong> {deleteModalData.title}
+                </p>
+                <p>
+                  <strong>Giờ chiếu:</strong> {deleteModalData.timeStr}
+                </p>
+                <p
+                  style={{
+                    border: "none",
+                    color: "var(--color-on-surface-variant)",
+                    marginTop: "1rem",
+                  }}
+                >
+                  Bạn có chắc chắn muốn xóa suất chiếu này không? Hành động này
+                  không thể hoàn tác.
+                </p>
+              </div>
+              <div className={styles.modalActions}>
+                <button
+                  className={`${styles.btn} ${styles.btnCancel}`}
+                  onClick={() => setDeleteModalData(null)}
+                  disabled={isDeleting}
+                >
+                  Hủy
+                </button>
+                <button
+                  className={`${styles.btn} ${styles.btnConfirm}`}
+                  style={{
+                    backgroundColor: "var(--color-error)",
+                    color: "white",
+                  }}
+                  onClick={handleDeleteShowTime}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Đang xóa..." : "Xóa"}
                 </button>
               </div>
             </div>

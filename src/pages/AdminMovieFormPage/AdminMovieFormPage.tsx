@@ -5,7 +5,7 @@ import { MovieForm, MovieFormData } from "./components";
 import { movieService } from "../../services/movie.service";
 import { MovieStatus } from "../../types/movie";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 
 const AdminMovieFormPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);

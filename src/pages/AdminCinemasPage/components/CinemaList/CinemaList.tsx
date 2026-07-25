@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import styles from "./CinemaList.module.css";
 import { cinemaService } from "../../../../services/cinema.service";
-import { getApiErrorMessage } from "../../../../api/types";
+import { getApiErrorMessage } from "../../../../types/api";
 
 interface CinemaListProps {
   selectedCinemaId?: number;

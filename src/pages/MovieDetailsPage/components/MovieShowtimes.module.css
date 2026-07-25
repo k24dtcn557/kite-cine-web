@@ -221,3 +221,41 @@
   background-color: var(--glass-border);
   margin: 1.5rem 0;
 }
+
+/* ---- Empty State ---- */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background-color: var(--glass-bg);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius-xl, 1rem);
+  text-align: center;
+  gap: 1rem;
+}
+
+.emptyStateIcon {
+  font-size: 3.5rem;
+  color: var(--color-on-surface-variant);
+  opacity: 0.5;
+  margin-bottom: 0.5rem;
+}
+
+.emptyStateTitle {
+  font-family: var(--font-headline, Montserrat);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-on-background);
+  margin: 0;
+}
+
+.emptyStateDesc {
+  font-family: var(--font-body-base, Inter);
+  font-size: 0.95rem;
+  color: var(--color-on-surface-variant);
+  max-width: 400px;
+  line-height: 1.5;
+  margin: 0;
+}

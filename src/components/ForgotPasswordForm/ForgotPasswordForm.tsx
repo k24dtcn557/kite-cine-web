@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import apiClient from "../../api/client";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 import styles from "./ForgotPasswordForm.module.css";
 
 interface ForgotPasswordFormProps {

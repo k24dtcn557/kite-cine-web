@@ -9,7 +9,7 @@ import {
   MovieDto,
 } from "../../../../types/movie";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "../../../../api/types";
+import { getApiErrorMessage } from "../../../../types/api";
 
 interface MovieCardProps {
   movie: MovieDto;

@@ -84,6 +84,7 @@
   overflow: hidden;
   border: 1px solid var(--color-outline-variant);
   flex-shrink: 0;
+  position: relative;
 }
 
 @media (min-width: 768px) {
@@ -220,4 +221,25 @@
   font-size: 0.8rem;
   color: var(--color-on-surface-variant);
   margin-top: 0.25rem;
+}
+
+.filmInfoCancelled {
+  opacity: 0.6;
+  filter: grayscale(80%);
+}
+
+.cancelledChip {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: rgba(229, 9, 20, 0.9);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  z-index: 20;
 }

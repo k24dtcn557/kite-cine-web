@@ -1,6 +1,6 @@
 import { ReserveSeatRequest, TicketDto } from "../types/booking";
 import apiClient from "../api/client";
-import { ApiResponse } from "../api/types";
+import { ApiResponse } from "../types/api";
 
 export const ticketService = {
   reserveSeat: async (data: ReserveSeatRequest): Promise<TicketDto> => {

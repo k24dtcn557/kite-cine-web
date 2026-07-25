@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { toast } from "react-hot-toast";
-import { getApiErrorMessage } from "../../../../api/types";
+import { getApiErrorMessage } from "../../../../types/api";
 import { CrewMemberItem } from "../CrewMemberItem";
 import styles from "./MovieForm.module.css";
+import { mediaService } from "../../../../services/media.service";
 import { movieService } from "../../../../services/movie.service";
 import {
   MovieStatus,
@@ -44,6 +45,37 @@ const MovieForm: React.FC<MovieFormProps> = ({
     index: number;
   } | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const posterInputRef = useRef<HTMLInputElement>(null);
+  const backdropInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingPoster, setIsUploadingPoster] = useState(false);
+  const [isUploadingBackdrop, setIsUploadingBackdrop] = useState(false);
+
+  const handleUploadMedia = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "poster" | "background",
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (type === "poster") setIsUploadingPoster(true);
+    else setIsUploadingBackdrop(true);
+
+    try {
+      const uploadRes = await mediaService.uploadMedia(file);
+      setFormData({ ...formData, [type]: uploadRes.uri });
+      toast.success(
+        type === "poster"
+          ? "Tải poster thành công!"
+          : "Tải ảnh nền thành công!",
+      );
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, "Tải ảnh thất bại."));
+    } finally {
+      if (type === "poster") setIsUploadingPoster(false);
+      else setIsUploadingBackdrop(false);
+    }
+  };
 
   const confirmDeleteCrewMember = async () => {
     if (!memberToDelete) return;
@@ -176,13 +208,14 @@ const MovieForm: React.FC<MovieFormProps> = ({
             >
               cloud_upload
             </span>
-            <h3>Tải lên phương tiện</h3>
+            <h3>Hình ảnh/video</h3>
           </div>
           <div className={styles.twoCols}>
             <div className={styles.formGroup}>
               <label>Poster phim (2:3)</label>
               <div
                 className={`${styles.uploadBox} ${styles.posterUpload}`}
+                onClick={() => posterInputRef.current?.click()}
                 style={
                   formData.poster
                     ? {
@@ -194,7 +227,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
                     : {}
                 }
               >
-                {!formData.poster && (
+                {!formData.poster && !isUploadingPoster && (
                   <>
                     <span className="material-symbols-outlined">
                       add_photo_alternate
@@ -202,11 +235,25 @@ const MovieForm: React.FC<MovieFormProps> = ({
                     <p>Chưa có ảnh</p>
                   </>
                 )}
+                {isUploadingPoster && (
+                  <span
+                    className={`material-symbols-outlined ${styles.spinner}`}
+                    style={{ animation: "spin 1s linear infinite" }}
+                  >
+                    progress_activity
+                  </span>
+                )}
               </div>
               <input
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                ref={posterInputRef}
+                onChange={(e) => handleUploadMedia(e, "poster")}
+              />
+              <input
                 type="url"
-                className={styles.input}
-                placeholder="Nhập link ảnh (URL)..."
+                placeholder="Hoặc nhập link ảnh (URL)..."
                 value={formData.poster}
                 onChange={(e) =>
                   setFormData({ ...formData, poster: e.target.value })
@@ -225,6 +272,7 @@ const MovieForm: React.FC<MovieFormProps> = ({
                 <label>Ảnh nền (16:9)</label>
                 <div
                   className={`${styles.uploadBox} ${styles.backdropUpload}`}
+                  onClick={() => backdropInputRef.current?.click()}
                   style={
                     formData.background
                       ? {
@@ -236,14 +284,28 @@ const MovieForm: React.FC<MovieFormProps> = ({
                       : {}
                   }
                 >
-                  {!formData.background && (
+                  {!formData.background && !isUploadingBackdrop && (
                     <span className="material-symbols-outlined">wallpaper</span>
+                  )}
+                  {isUploadingBackdrop && (
+                    <span
+                      className={`material-symbols-outlined ${styles.spinner}`}
+                      style={{ animation: "spin 1s linear infinite" }}
+                    >
+                      progress_activity
+                    </span>
                   )}
                 </div>
                 <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  ref={backdropInputRef}
+                  onChange={(e) => handleUploadMedia(e, "background")}
+                />
+                <input
                   type="url"
-                  className={styles.input}
-                  placeholder="Nhập link ảnh (URL)..."
+                  placeholder="Hoặc nhập link ảnh nền (URL)..."
                   value={formData.background}
                   onChange={(e) =>
                     setFormData({ ...formData, background: e.target.value })

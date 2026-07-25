@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./TicketCard.module.css";
-import { PurchaseDetailDto } from "../../../../types/booking";
+import { PurchaseDetailDto, BookingStatus, BookingStatusText } from "../../../../types/booking";
 import { CommonUtils } from "../../../../utils/CommonUtils";
 
 interface TicketCardProps {
@@ -10,9 +10,10 @@ interface TicketCardProps {
 
 export const TicketCard: React.FC<TicketCardProps> = ({ ticket }) => {
   const navigate = useNavigate();
+  const isCancelled = ticket.status === BookingStatus.CANCELLED;
 
   return (
-    <div className={`${styles.ticketCard} ${styles.ticketMask}`}>
+    <div className={`${styles.ticketCard} ${styles.ticketMask} ${isCancelled ? styles.ticketCancelled : ""}`}>
       {/* Poster */}
       <div className={styles.posterWrapper}>
         <img
@@ -21,6 +22,11 @@ export const TicketCard: React.FC<TicketCardProps> = ({ ticket }) => {
           src={ticket.showtime.movie.poster}
         />
         <div className={styles.posterOverlay}></div>
+        {isCancelled && (
+          <div className={styles.cancelledChip}>
+            {BookingStatusText[BookingStatus.CANCELLED]}
+          </div>
+        )}
       </div>
 
       {/* Details */}

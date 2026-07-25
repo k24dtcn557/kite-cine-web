@@ -12,7 +12,7 @@ import {
 } from "../types/cinema";
 
 import apiClient from "../api/client";
-import { ApiResponse, PageResponse } from "../api/types";
+import { ApiResponse, PageResponse } from "../types/api";
 
 export const cinemaService = {
   getCinemas: async (): Promise<CinemaDto[]> => {

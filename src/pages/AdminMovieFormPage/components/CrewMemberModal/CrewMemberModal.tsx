@@ -8,7 +8,7 @@ import {
   CrewRole,
   CREW_ROLE_LABELS,
 } from "../../../../types/movie";
-import { getApiErrorMessage } from "../../../../api/types";
+import { getApiErrorMessage } from "../../../../types/api";
 import styles from "../MovieForm/MovieForm.module.css";
 
 interface CrewMemberModalProps {

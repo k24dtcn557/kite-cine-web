@@ -1,5 +1,5 @@
 import apiClient from "../api/client";
-import { ApiResponse, PageResponse } from "../api/types";
+import { ApiResponse, PageResponse } from "../types/api";
 import { PurchaseDetailDto } from "../types/booking";
 import { CreateUserPayload, SearchUserPayload, UserDto } from "../types/user";
 import {

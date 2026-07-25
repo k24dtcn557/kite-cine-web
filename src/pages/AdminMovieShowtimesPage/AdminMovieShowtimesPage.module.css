@@ -641,6 +641,9 @@
   font-weight: 700;
   transition: all 0.2s ease;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .timeChip:hover {

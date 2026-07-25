@@ -7,7 +7,7 @@ import {
   ChangePasswordPayload,
 } from "../types/user";
 import apiClient from "../api/client";
-import { ApiResponse } from "../api/types";
+import { ApiResponse } from "../types/api";
 
 class AuthService {
   /**
@@ -113,6 +113,21 @@ class AuthService {
   async changePassword(payload: ChangePasswordPayload): Promise<void> {
     try {
       await apiClient.post("/kite-cine/users/change-password", payload);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Updates the current authenticated user's avatar.
+   */
+  async updateAvatar(avatar: string): Promise<UserDto> {
+    try {
+      const response = await apiClient.put<ApiResponse<UserDto>>(
+        "/kite-cine/users/avatar",
+        { avatar },
+      );
+      return response.data.result;
     } catch (error) {
       throw error;
     }

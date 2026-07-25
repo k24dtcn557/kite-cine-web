@@ -6,7 +6,7 @@ import { CreateUserPayload } from "../../types/user";
 import { UserDto, UserStatusText } from "../../types/user";
 import toast from "react-hot-toast";
 import UserInfoForm from "../../components/UserInfoForm";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 import CreateUserForm from "../../components/CreateUserForm";
 
 const getRoleDisplayName = (role?: string) => {

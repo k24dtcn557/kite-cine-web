@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MyTicketsPage.module.css";
 import { bookingService } from "../../services/booking.service";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 import { PurchaseDetailDto } from "../../types/booking";
 import { TicketCard } from "./components/TicketCard/TicketCard";
 

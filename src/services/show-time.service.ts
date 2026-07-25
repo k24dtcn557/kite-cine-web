@@ -4,7 +4,7 @@ import {
   CinemaShowtimesDto,
 } from "../types/showtime";
 import apiClient from "../api/client";
-import { ApiResponse } from "../api/types";
+import { ApiResponse } from "../types/api";
 
 export const showTimeService = {
   createShowTime: async (payload: CreateShowTimePayload) => {
@@ -40,5 +40,12 @@ export const showTimeService = {
       { params: { date } },
     );
     return response.data.result;
+  },
+
+  deleteShowTime: async (id: number) => {
+    const response = await apiClient.delete<ApiResponse<any>>(
+      `/kite-cine/management/show-times/${id}`,
+    );
+    return response.data;
   },
 };

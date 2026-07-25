@@ -84,14 +84,17 @@ const MovieShowtimes: React.FC<Props> = ({ movieId, movie }) => {
       {/* Theater Groups */}
       <div className={styles.theatersList}>
         {cinemaShowtimes.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "2rem",
-              color: "var(--color-on-surface-variant)",
-            }}
-          >
-            <p>Không có suất chiếu nào vào ngày này.</p>
+          <div className={styles.emptyState}>
+            <span
+              className={`material-symbols-outlined ${styles.emptyStateIcon}`}
+            >
+              event_busy
+            </span>
+            <h3 className={styles.emptyStateTitle}>Chưa có lịch chiếu</h3>
+            <p className={styles.emptyStateDesc}>
+              Hiện tại chưa có suất chiếu nào được lên lịch cho ngày này. Vui
+              lòng chọn ngày khác hoặc quay lại sau.
+            </p>
           </div>
         ) : (
           cinemaShowtimes.map((cinema) => (
@@ -108,12 +111,6 @@ const MovieShowtimes: React.FC<Props> = ({ movieId, movie }) => {
                     {cinema.address}
                   </div>
                 </div>
-                <button
-                  className={styles.infoBtn}
-                  aria-label="Theater Information"
-                >
-                  <span className="material-symbols-outlined">info</span>
-                </button>
               </div>
 
               {cinema.auditoriums.map((auditorium, idx) => (

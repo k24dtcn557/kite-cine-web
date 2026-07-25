@@ -1,7 +1,11 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { PurchaseDetailDto } from "../../types/booking";
-import { TicketDto } from "../../types/booking";
+import {
+  PurchaseDetailDto,
+  TicketDto,
+  BookingStatus,
+  BookingStatusText,
+} from "../../types/booking";
 import { CommonUtils } from "../../utils/CommonUtils";
 import styles from "./FilmInfoCard.module.css";
 
@@ -39,9 +43,13 @@ const FilmInfoCard: React.FC<FilmInfoCardProps> = (props) => {
   const bookingCode = props.purchase?.code ?? props.bookingCode;
   const tickets = props.purchase?.tickets ?? props.tickets ?? [];
   const { totalPrice, maskedCard } = props;
+  const status = props.purchase?.status;
+  const isCancelled = status === BookingStatus.CANCELLED;
 
   return (
-    <div className={styles.filmInfoCard}>
+    <div
+      className={`${styles.filmInfoCard} ${isCancelled ? styles.filmInfoCancelled : ""}`}
+    >
       {/* Header — Movie Title */}
       <div className={styles.cardHeader}>
         <h2 className={styles.movieTitle}>{movieTitle}</h2>
@@ -57,6 +65,11 @@ const FilmInfoCard: React.FC<FilmInfoCardProps> = (props) => {
               alt={movieTitle}
               className={styles.posterImage}
             />
+            {isCancelled && (
+              <div className={styles.cancelledChip}>
+                {BookingStatusText[BookingStatus.CANCELLED]}
+              </div>
+            )}
           </div>
         </div>
 

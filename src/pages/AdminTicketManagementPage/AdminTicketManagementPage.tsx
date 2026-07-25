@@ -7,7 +7,7 @@ import {
   BookingStatusText,
 } from "../../types/booking";
 import toast from "react-hot-toast";
-import { getApiErrorMessage } from "../../api/types";
+import { getApiErrorMessage } from "../../types/api";
 import { CommonUtils } from "../../utils/CommonUtils";
 
 const AdminTicketManagementPage: React.FC = () => {

@@ -10,7 +10,7 @@ import {
   AUDITORIUM_TYPE_LABELS,
 } from "../../../../types/cinema";
 import { AuditoriumType } from "../../../../types/cinema";
-import { getApiErrorMessage } from "../../../../api/types";
+import { getApiErrorMessage } from "../../../../types/api";
 
 interface SeatMapProps {
   cinemaId?: number;
