@@ -424,30 +424,31 @@ const AdminAddShowtimePage: React.FC = () => {
       {/* Gantt Chart Section */}
       <div className={styles.ganttSection}>
         <h2 className={styles.sectionTitle}>Lịch chiếu trong ngày</h2>
-        <div className={styles.ganttContainer}>
-          {/* Time markers 08:00 - 24:00 */}
-          <div className={styles.ganttHeader}>
-            {Array.from({ length: 65 }).map((_, i) => {
-              const isHour = i % 4 === 0;
-              return (
-                <div
-                  key={i}
-                  className={`${styles.timeTick} ${isHour ? styles.timeTickMajor : styles.timeTickMinor}`}
-                  style={{ left: `${(i / 64) * 100}%` }}
-                >
-                  {isHour && (
-                    <span className={styles.timeMarkerText}>
-                      {(i / 4 + 8).toString().padStart(2, "0")}:00
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+        <div className={styles.ganttScrollWrapper}>
+          <div className={styles.ganttContainer}>
+            {/* Time markers 08:00 - 24:00 */}
+            <div className={styles.ganttHeader}>
+              {Array.from({ length: 65 }).map((_, i) => {
+                const isHour = i % 4 === 0;
+                return (
+                  <div
+                    key={i}
+                    className={`${styles.timeTick} ${isHour ? styles.timeTickMajor : styles.timeTickMinor}`}
+                    style={{ left: `${(i / 64) * 100}%` }}
+                  >
+                    {isHour && (
+                      <span className={styles.timeMarkerText}>
+                        {(i / 4 + 8).toString().padStart(2, "0")}:00
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
 
-          {/* Timeline Row */}
-          <div className={styles.ganttRow} onClick={handleGanttClick}>
-            {/* Render occupied slots */}
+            {/* Timeline Row */}
+            <div className={styles.ganttRow} onClick={handleGanttClick}>
+              {/* Render occupied slots */}
             {occupiedSlots.map((slot) => {
               const startPct = timeToPercentage(slot.start);
               const endPct = timeToPercentage(slot.end);
@@ -483,6 +484,7 @@ const AdminAddShowtimePage: React.FC = () => {
                 </div>
               );
             })}
+            </div>
           </div>
         </div>
       </div>

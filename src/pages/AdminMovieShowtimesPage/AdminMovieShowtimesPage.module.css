@@ -4,7 +4,16 @@
   gap: 2rem;
   animation: fadeIn 0.3s ease-out;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.25rem;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    overflow-y: hidden;
+    padding-right: 0;
+  }
 }
 
 @keyframes fadeIn {
@@ -563,9 +572,15 @@
   flex-direction: column;
   gap: 1.5rem;
   flex: 1;
-  overflow-y: auto;
+  overflow-y: visible;
   padding-right: 0.75rem;
   padding-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .cinemaList {
+    overflow-y: auto;
+  }
 }
 
 .emptyState {

@@ -55,8 +55,16 @@
 /* Top Section: Context */
 .topSection {
   display: flex;
+  flex-direction: column;
   gap: 2rem;
-  align-items: flex-start;
+  align-items: stretch;
+}
+
+@media (min-width: 1024px) {
+  .topSection {
+    flex-direction: row;
+    align-items: flex-start;
+  }
 }
 
 .leftCol {
@@ -71,8 +79,15 @@
   background-color: var(--color-surface-container-low);
   padding: 1rem;
   border-radius: 16px;
-  width: 300px;
+  width: 100%;
   flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .movieCard {
+    width: 300px;
+  }
 }
 
 .moviePoster {
@@ -119,10 +134,18 @@
 
 .selectorsCard {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1.5rem;
   background-color: var(--color-surface-container-low);
   padding: 1.5rem;
   border-radius: 16px;
+}
+
+@media (min-width: 768px) {
+  .selectorsCard {
+    flex-direction: row;
+    gap: 2rem;
+  }
 }
 
 .inputGroup {
@@ -289,9 +312,23 @@
   padding: 1.5rem;
 }
 
+.ganttScrollWrapper {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.ganttScrollWrapper::-webkit-scrollbar {
+  height: 6px;
+}
+.ganttScrollWrapper::-webkit-scrollbar-thumb {
+  background-color: var(--color-surface-container-highest);
+  border-radius: 4px;
+}
+
 .ganttContainer {
   margin-top: 2rem;
   position: relative;
+  min-width: 1000px;
 }
 
 .ganttHeader {
