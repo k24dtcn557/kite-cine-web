@@ -116,13 +116,9 @@ const Navbar: React.FC = () => {
                         fontSize: "2rem",
                         color: "var(--color-on-surface-variant)",
                       }}
-                    >
-                      account_circle
-                    </span>
+                    ></span>
                   )}
-                  <span className={styles.userName}>
-                    {userInfo?.fullName || "User"}
-                  </span>
+                  <span className={styles.userName}>{userInfo?.fullName}</span>
                   <span
                     className="material-symbols-outlined"
                     style={{
@@ -169,9 +165,7 @@ const Navbar: React.FC = () => {
                             navigate("/my-cine/profile");
                           }}
                         >
-                          <span className="material-symbols-outlined">
-                            person
-                          </span>
+                          <span className="material-symbols-outlined"></span>
                           Hồ sơ
                         </button>
                       </>
@@ -195,7 +189,7 @@ const Navbar: React.FC = () => {
                 onClick={() => navigate("/login")}
                 aria-label="Sign in"
               >
-                <span className="material-symbols-outlined">person</span>
+                <span className="material-symbols-outlined"></span>
                 Đăng nhập
               </button>
             )}
