@@ -165,7 +165,9 @@ const Navbar: React.FC = () => {
                             navigate("/my-cine/profile");
                           }}
                         >
-                          <span className="material-symbols-outlined"></span>
+                          <span className="material-symbols-outlined">
+                            account_circle
+                          </span>
                           Hồ sơ
                         </button>
                       </>
@@ -189,7 +191,7 @@ const Navbar: React.FC = () => {
                 onClick={() => navigate("/login")}
                 aria-label="Sign in"
               >
-                <span className="material-symbols-outlined"></span>
+                <span className="material-symbols-outlined">login</span>
                 Đăng nhập
               </button>
             )}

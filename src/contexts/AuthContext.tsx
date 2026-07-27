@@ -14,8 +14,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
+    authService.isAuthenticated(),
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Initialize auth state from local storage on mount
   useEffect(() => {

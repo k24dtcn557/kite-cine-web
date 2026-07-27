@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Navbar, Footer } from "../../components";
+import { Navbar } from "../../components";
 import SignUpForm from "../../components/SignUpForm";
 import { useAuth } from "../../contexts/AuthContext";
 import styles from "./SignUpPage.module.css";

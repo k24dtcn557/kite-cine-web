@@ -15,9 +15,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
   };
 
   const poster = movie.poster;
-  const rating = "8.5"; // Hardcoded default as API doesn't provide this yet
-  const genre =
-    movie.genres && movie.genres.length > 0 ? movie.genres[0] : "Chưa rõ";
 
   return (
     <article

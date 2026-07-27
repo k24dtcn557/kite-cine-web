@@ -4,7 +4,6 @@ import styles from "./CheckoutPage.module.css";
 import { Navbar } from "../../components";
 import { MovieDto } from "../../types/movie";
 import { ShowTimeBriefDto } from "../../types/showtime";
-import { ticketService } from "../../services/ticket.service";
 import { TicketDto } from "../../types/booking";
 import { bookingService } from "../../services/booking.service";
 import { PurchaseDto } from "../../types/booking";
@@ -84,8 +83,7 @@ const CheckoutPage: React.FC = () => {
   };
 
   const subtotal = calculateSubtotal();
-  const taxes = 0; // Hardcoded for demo
-  const total = subtotal + taxes;
+  const total = subtotal;
 
   const handlePurchase = async () => {
     if (!bookingData?.code) {

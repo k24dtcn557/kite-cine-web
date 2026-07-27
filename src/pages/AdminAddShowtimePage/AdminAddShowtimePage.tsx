@@ -449,41 +449,41 @@ const AdminAddShowtimePage: React.FC = () => {
             {/* Timeline Row */}
             <div className={styles.ganttRow} onClick={handleGanttClick}>
               {/* Render occupied slots */}
-            {occupiedSlots.map((slot) => {
-              const startPct = timeToPercentage(slot.start);
-              const endPct = timeToPercentage(slot.end);
-              const width = endPct - startPct;
+              {occupiedSlots.map((slot) => {
+                const startPct = timeToPercentage(slot.start);
+                const endPct = timeToPercentage(slot.end);
+                const width = endPct - startPct;
 
-              return (
-                <div
-                  key={slot.id}
-                  className={styles.occupiedSlot}
-                  style={{ left: `${startPct}%`, width: `${width}%` }}
-                  title={`${slot.title} (${slot.start} - ${slot.end})`}
-                >
-                  <div className={styles.slotContent}>
-                    <span className={styles.slotTitleText}>{slot.title}</span>
-                    <span className={styles.slotTimeText}>
-                      {slot.start} - {slot.end}
+                return (
+                  <div
+                    key={slot.id}
+                    className={styles.occupiedSlot}
+                    style={{ left: `${startPct}%`, width: `${width}%` }}
+                    title={`${slot.title} (${slot.start} - ${slot.end})`}
+                  >
+                    <div className={styles.slotContent}>
+                      <span className={styles.slotTitleText}>{slot.title}</span>
+                      <span className={styles.slotTimeText}>
+                        {slot.start} - {slot.end}
+                      </span>
+                    </div>
+                    <span
+                      className={`material-symbols-outlined ${styles.deleteIcon}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteModalData({
+                          id: slot.id,
+                          title: slot.title,
+                          timeStr: `${slot.start} - ${slot.end}`,
+                        });
+                      }}
+                      title="Xóa suất chiếu"
+                    >
+                      delete
                     </span>
                   </div>
-                  <span
-                    className={`material-symbols-outlined ${styles.deleteIcon}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteModalData({
-                        id: slot.id,
-                        title: slot.title,
-                        timeStr: `${slot.start} - ${slot.end}`,
-                      });
-                    }}
-                    title="Xóa suất chiếu"
-                  >
-                    delete
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -540,7 +540,7 @@ const AdminAddShowtimePage: React.FC = () => {
                   Hủy
                 </button>
                 <button
-                  className={`${styles.btn} ${styles.btnConfirm}`}
+                  className={`${styles.btn} ${styles.btnPrimary}`}
                   onClick={handleCreateShowTime}
                   disabled={isSubmitting}
                 >
@@ -596,7 +596,7 @@ const AdminAddShowtimePage: React.FC = () => {
                   Hủy
                 </button>
                 <button
-                  className={`${styles.btn} ${styles.btnConfirm}`}
+                  className={styles.btn}
                   style={{
                     backgroundColor: "var(--color-error)",
                     color: "white",

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Navbar, Footer } from "../../components";
+import { Navbar } from "../../components";
 import LoginForm from "../../components/LoginForm";
 import { useAuth } from "../../contexts/AuthContext";
 import styles from "./LoginPage.module.css";

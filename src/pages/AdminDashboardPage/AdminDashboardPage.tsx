@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MetricCard, RevenueChart, PerformanceTable } from "./components";
+import { MetricCard, RevenueChart } from "./components";
 import styles from "./AdminDashboardPage.module.css";
 import { managementService } from "../../services/management.service";
 import { QuickStatsDto } from "../../types/booking";
@@ -70,9 +70,6 @@ const AdminDashboardPage: React.FC = () => {
       <div style={{ marginBottom: "2.5rem" }}>
         <RevenueChart />
       </div>
-
-      {/* Bottom Section: Table */}
-      <PerformanceTable />
 
       {/* Floating Action Button */}
       <button className={styles.fab}>

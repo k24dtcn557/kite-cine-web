@@ -25,7 +25,7 @@ const getSeatTypeLabel = (type: string) => {
 
 const BookingPage: React.FC = () => {
   const { showtimeId } = useParams<{ showtimeId: string }>();
-  const [searchParams] = useSearchParams();
+  useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();

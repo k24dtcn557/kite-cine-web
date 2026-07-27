@@ -6,7 +6,6 @@ import { MovieDto } from "../../types/movie";
 import { ShowTimeBriefDto } from "../../types/showtime";
 import { TicketDto } from "../../types/booking";
 import { PurchaseDto } from "../../types/booking";
-import { CommonUtils } from "../../utils/CommonUtils";
 import { FilmInfoCard } from "../../components";
 
 const OrderConfirmationPage: React.FC = () => {
