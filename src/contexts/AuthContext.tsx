@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import { authService } from "../services/auth.service";
 import { LoginPayload } from "../types/user";
 
@@ -25,16 +31,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsLoading(false);
   }, []);
 
-  const login = async (credentials: LoginPayload) => {
+  const login = useCallback(async (credentials: LoginPayload) => {
     // Calling the service automatically handles storing the token
     await authService.login(credentials);
     setIsAuthenticated(true);
-  };
+  }, []);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setIsAuthenticated(false);
     await authService.logout();
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, isLoading }}>

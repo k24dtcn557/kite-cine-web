@@ -39,11 +39,14 @@ const Navbar: React.FC = () => {
       authService
         .getMyInfo()
         .then((user) => setUserInfo(user))
-        .catch((err) => console.error("Failed to fetch user info", err));
+        .catch((err) => {
+          console.error("Failed to fetch user info", err);
+          logout();
+        });
     } else {
       setUserInfo(null);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, logout]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

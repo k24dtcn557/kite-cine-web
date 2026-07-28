@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../../contexts";
 import { getApiErrorMessage } from "../../types/api";
 import styles from "./LoginForm.module.css";
@@ -17,7 +16,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   onForgotPassword,
   onLoginSuccess,
 }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,8 +41,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim()) {
-      toast.error("Vui lòng nhập email");
+    if (!username.trim()) {
+      toast.error("Vui lòng nhập tên đăng nhập");
       return;
     }
     if (!password) {
@@ -55,7 +54,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
     // We can use a toast promise to show loading state
     toast
-      .promise(login({ username: email, password }), {
+      .promise(login({ username, password }), {
         loading: "Đang đăng nhập...",
         success: "Chào mừng bạn trở lại!",
         error: (err: any) =>
@@ -65,27 +64,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
           ),
       })
       .then(() => {
-        setEmail("");
+        setUsername("");
         setPassword("");
         setShowPassword(false);
         if (onLoginSuccess) {
           onLoginSuccess();
           return;
-        }
-        const token = localStorage.getItem("access_token");
-        if (token) {
-          try {
-            const decoded: any = jwtDecode(token);
-            if (decoded?.scope?.includes("ROLE_ADMIN")) {
-              navigate("/admin");
-            } else {
-              navigate("/my-cine");
-            }
-          } catch (e) {
-            navigate("/my-cine");
-          }
-        } else {
-          navigate("/my-cine");
         }
       })
       .catch((error) => {
@@ -100,7 +84,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     <div className={styles.card} ref={cardRef}>
       {/* Header */}
       <div className={styles.cardHeader}>
-        <h1 className={styles.heading}>Chào mừng trở lại</h1>
+        <h1 className={styles.heading}>Đăng nhập</h1>
         <p className={styles.subheading}>
           Đăng nhập để trải nghiệm những khoảnh khắc đáng nhớ cùng Kite Cine.
         </p>
@@ -108,20 +92,20 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       {/* Form */}
       <form className={styles.form} onSubmit={handleSubmit} noValidate>
-        {/* Email */}
+        {/* Username */}
         <div className={styles.fieldGroup}>
-          <label htmlFor="email" className={styles.label}>
-            Địa chỉ Email
+          <label htmlFor="username" className={styles.label}>
+            Tên đăng nhập / Email
           </label>
           <input
-            id="email"
-            type="email"
+            id="username"
+            type="text"
             className={styles.input}
-            placeholder="name@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Nhập tên đăng nhập hoặc email"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
-            autoComplete="email"
+            autoComplete="username"
             disabled={isSubmitting}
           />
         </div>
