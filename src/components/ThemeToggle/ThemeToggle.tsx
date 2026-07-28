@@ -24,7 +24,9 @@ const ThemeToggle: React.FC = () => {
         >
           <span
             className={`material-symbols-outlined icon-filled ${styles.icon}`}
-          ></span>
+          >
+            {isDark ? "dark_mode" : "light_mode"}
+          </span>
         </span>
       </span>
     </button>

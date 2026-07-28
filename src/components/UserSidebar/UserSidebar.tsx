@@ -32,7 +32,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
         className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : ""}`}
       >
         {/* Brand */}
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none" }} onClick={onClose}>
           <div className={styles.brandContainer}>
             <h1 className={styles.brandTitle}>KITE CINE</h1>
             <p className={styles.brandSubtitle}>Thành viên</p>
@@ -48,6 +48,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ isOpen, onClose }) => {
                 key={item.path}
                 to={item.path}
                 className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
+                onClick={onClose}
               >
                 <span className={`material-symbols-outlined ${styles.navIcon}`}>
                   {item.icon}
