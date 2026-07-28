@@ -2,7 +2,7 @@
 
 Chào mừng bạn đến với **Kite Cine** - Hệ thống đặt vé xem phim trực tuyến hiện đại, tiện lợi và dễ sử dụng!
 
-Dự án này được khởi tạo với [Create React App](https://github.com/facebook/create-react-app) và được phát triển bằng **React.js** kết hợp **TypeScript**.
+Dự án này được khởi tạo với [Create React App](https://github.com/react/create-react-app) và được phát triển bằng **React.js** kết hợp **TypeScript**.
 
 ## 🌟 Tính Năng Nổi Bật
 
@@ -32,7 +32,7 @@ Dự án này được khởi tạo với [Create React App](https://github.com/
 ## 🚀 Hướng Dẫn Cài Đặt và Chạy Dự Án
 
 ### Yêu cầu hệ thống:
-- Đã cài đặt [Node.js](https://nodejs.org/) (khuyến nghị phiên bản 16 hoặc 18 trở lên).
+- Đã cài đặt [Node.js](https://nodejs.org/) (khuyến nghị phiên bản 24 trở lên).
 - Trình quản lý gói `npm`.
 
 ### Các bước cài đặt:
