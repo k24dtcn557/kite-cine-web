@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts";
 import { getApiErrorMessage } from "../../types/api";
 import styles from "./LoginForm.module.css";
@@ -23,7 +22,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   /* ── Mouse-tracking spotlight effect ── */
   useEffect(() => {

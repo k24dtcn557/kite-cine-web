@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# Kite Cine Web Application 🎬
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Chào mừng bạn đến với **Kite Cine** - Hệ thống đặt vé xem phim trực tuyến hiện đại, tiện lợi và dễ sử dụng!
 
-## Available Scripts
+Dự án này được khởi tạo với [Create React App](https://github.com/facebook/create-react-app) và được phát triển bằng **React.js** kết hợp **TypeScript**.
 
-In the project directory, you can run:
+## 🌟 Tính Năng Nổi Bật
 
-### `npm start`
+- **Dành cho Khách hàng:**
+  - Xem danh sách phim đang chiếu và sắp chiếu.
+  - Xem chi tiết phim, lịch chiếu tại các cụm rạp.
+  - Chọn ghế và đặt vé trực tuyến dễ dàng.
+  - Quản lý hồ sơ cá nhân và lịch sử đặt vé (Vé của tôi).
+  - Thanh toán và nhận mã QR vé xem phim.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Dành cho Quản trị viên (Admin):**
+  - Quản trị danh sách người dùng (thêm, sửa, khóa, xóa).
+  - Quản trị danh sách phim và lịch chiếu.
+  - Xem báo cáo, thống kê doanh thu rạp chiếu với biểu đồ trực quan (sử dụng Recharts).
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🛠 Công Nghệ Sử Dụng
 
-### `npm test`
+- **Core:** [React 19](https://react.dev/), [TypeScript](https://www.typescriptlang.org/)
+- **Routing:** [React Router DOM v7](https://reactrouter.com/)
+- **State/API:** [Axios](https://axios-http.com/) cho việc giao tiếp với RESTful Backend.
+- **Xác thực:** [JWT-Decode](https://www.npmjs.com/package/jwt-decode) xử lý mã thông báo (Token) JWT.
+- **UI/UX & Tiện ích:** 
+  - [React Hot Toast](https://react-hot-toast.com/) - Hiển thị thông báo (toast) thân thiện với người dùng.
+  - [Recharts](https://recharts.org/) - Cung cấp biểu đồ thống kê mạnh mẽ.
+  - [qrcode.react](https://www.npmjs.com/package/qrcode.react) - Hiển thị mã QR vé xem phim.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Hướng Dẫn Cài Đặt và Chạy Dự Án
 
-### `npm run build`
+### Yêu cầu hệ thống:
+- Đã cài đặt [Node.js](https://nodejs.org/) (khuyến nghị phiên bản 16 hoặc 18 trở lên).
+- Trình quản lý gói `npm`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Các bước cài đặt:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Cài đặt thư viện:**
+   Tại thư mục gốc của dự án, mở terminal và chạy lệnh:
+   ```bash
+   npm install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **Khởi chạy ứng dụng (Môi trường Development):**
+   ```bash
+   npm start
+   ```
+   Ứng dụng sẽ được chạy tại địa chỉ [http://localhost:3000](http://localhost:3000).  
+   Trang web sẽ tự động tải lại (hot-reload) khi bạn chỉnh sửa mã nguồn, đồng thời sẽ báo lỗi trực tiếp trên terminal và màn hình (nếu có).
 
-### `npm run eject`
+3. **Xây dựng bản Production (Môi trường thực tế):**
+   Để đóng gói ứng dụng cho môi trường Production, chạy lệnh:
+   ```bash
+   npm run build
+   ```
+   Toàn bộ mã nguồn đã được tối ưu hóa sẽ nằm trong thư mục `build/`. Thư mục này đã sẵn sàng để được triển khai (deploy) lên các nền tảng máy chủ web như Nginx, Vercel, Netlify, hoặc AWS S3.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 📂 Cấu Trúc Thư Mục Chính
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `src/components/`: Chứa các thành phần giao diện UI độc lập, có thể tái sử dụng (Navbar, LoginForm, Modals...).
+- `src/pages/`: Chứa giao diện hoàn chỉnh của các trang chính (LoginPage, CheckoutPage, AdminDashBoard...).
+- `src/services/`: Chứa các module tương tác trực tiếp với Backend API (Auth, Shows, Booking, v.v.).
+- `src/contexts/`: Cung cấp React Context để chia sẻ và quản lý state toàn cục, như phiên đăng nhập (AuthContext).
+- `src/types/`: Nơi định nghĩa các `interface` và `type` TypeScript của hệ thống, giúp kiểm tra kiểu dữ liệu chặt chẽ.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
+*Cảm ơn bạn đã lựa chọn Kite Cine. Chúc bạn có trải nghiệm xem phim tuyệt vời!* 🍿
