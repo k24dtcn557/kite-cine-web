@@ -29,7 +29,7 @@ const HeroSection: React.FC = () => {
       setCurrentIndex((prev) => (prev + 1) % movies.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [movies.length]);
+  }, [movies.length, currentIndex]);
 
   // Fallback to static hero if no highlighted movies exist
   const currentMovie = movies.length > 0 ? movies[currentIndex] : null;
@@ -40,12 +40,7 @@ const HeroSection: React.FC = () => {
         tagline: currentMovie.tagline || "HIGHLIGHTED",
         description: currentMovie.description || "",
         genres: currentMovie.genres || [],
-        backdropUrl:
-          currentMovie.background ||
-          currentMovie.poster ||
-          "https://placehold.co/1920x1080/1E1B1B/FFFFFF?text=No+Background",
-        // Default rating since missing from dto
-        rating: "8.5",
+        backdropUrl: currentMovie.background || currentMovie.poster,
         id: currentMovie.id,
       }
     : null;
