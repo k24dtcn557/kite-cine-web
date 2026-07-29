@@ -23,10 +23,10 @@ export enum MovieStatus {
 }
 
 export const MOVIE_STATUS_LABELS: Record<MovieStatus, string> = {
-  [MovieStatus.DRAFT]: "Bản nháp",
-  [MovieStatus.COMING_SOON]: "Sắp ra mắt",
-  [MovieStatus.NOW_SHOWING]: "Đang chiếu",
-  [MovieStatus.ARCHIVED]: "Lưu trữ",
+  [MovieStatus.DRAFT]: "BẢN NHÁP",
+  [MovieStatus.COMING_SOON]: "SẮP CHIẾU",
+  [MovieStatus.NOW_SHOWING]: "ĐANG CHIẾU",
+  [MovieStatus.ARCHIVED]: "DỪNG CHIẾU",
 };
 
 export const GENRE_LIST = [

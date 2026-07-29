@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieCard.module.css";
 import { MovieDto } from "../../types/movie";
+import { CommonUtils } from "../../utils/CommonUtils";
 
 interface MovieCardProps {
   movie: MovieDto;
@@ -21,6 +22,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
       className={styles.card}
       onClick={() => navigate(`/movies/${movie.id}`)}
     >
+      {movie.status === "COMING_SOON" && (
+        <div className={styles.dateChip}>
+          {CommonUtils.formatDateVN(movie.releaseDate)}
+        </div>
+      )}
       <img
         className={styles.poster}
         src={poster}
@@ -36,6 +42,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onBook }) => {
             onClick={handleBook}
             aria-label={`Đặt vé cho ${movie.title}`}
           >
+            <span className="material-symbols-outlined">local_activity</span>
             ĐẶT VÉ
           </button>
         </div>

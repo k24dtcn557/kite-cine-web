@@ -8,19 +8,11 @@
   transition: transform 0.5s ease;
 }
 
-.card:hover {
-  transform: translateY(-8px);
-}
-
 .poster {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
-}
-
-.card:hover .poster {
-  transform: scale(1.05);
 }
 
 /* ---- Overlay ---- */
@@ -35,12 +27,8 @@
 }
 
 .info {
-  transform: translateY(1rem);
-  transition: transform 0.3s ease;
-}
-
-.card:hover .info {
   transform: translateY(0);
+  transition: transform 0.3s ease;
 }
 
 .title {
@@ -79,23 +67,52 @@
 
 .bookBtn {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   background-color: var(--color-primary-container);
   color: #fff;
   padding: 0.5rem;
   border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 0.875rem;
-  opacity: 0;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  opacity: 1;
   transition: opacity 0.3s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
 }
 
-.card:hover .bookBtn {
-  opacity: 1;
-}
-
 .bookBtn:hover {
   box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+}
+
+@media (hover: hover) {
+  .info {
+    transform: translateY(1rem);
+  }
+  
+  .bookBtn {
+    opacity: 0;
+  }
+  
+  .card:hover {
+    transform: translateY(-8px);
+  }
+
+  .card:hover .poster {
+    transform: scale(1.05);
+  }
+
+  .card:hover .info {
+    transform: translateY(0);
+  }
+
+  .card:hover .bookBtn {
+    opacity: 1;
+  }
 }
 
 /* ---- Badges ---- */
@@ -119,4 +136,20 @@
   font-weight: 700;
   color: #fff;
   text-transform: uppercase;
+}
+
+/* ---- Date Chip ---- */
+.dateChip {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.75rem;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+  z-index: 10;
+  pointer-events: none;
 }

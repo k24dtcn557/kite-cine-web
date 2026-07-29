@@ -9,15 +9,15 @@ const FILTER_TABS = [
   "Tất cả",
   "Nổi bật",
   "Đang chiếu",
-  "Sắp ra mắt",
-  "Lưu trữ",
+  "Sắp chiếu",
+  "Dừng chiếu",
   "Bản nháp",
 ];
 
 const getStatusQuery = (tab: string) => {
   if (tab === "Đang chiếu") return "NOW_SHOWING";
-  if (tab === "Sắp ra mắt") return "COMING_SOON";
-  if (tab === "Lưu trữ") return "ARCHIVED";
+  if (tab === "Sắp chiếu") return "COMING_SOON";
+  if (tab === "Dừng chiếu") return "ARCHIVED";
   if (tab === "Bản nháp") return "DRAFT";
   return undefined;
 };

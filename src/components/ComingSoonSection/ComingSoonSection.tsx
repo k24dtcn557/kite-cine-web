@@ -1,55 +1,82 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./ComingSoonSection.module.css";
 import { movieService } from "../../services/movie.service";
 import { MovieDto } from "../../types/movie";
 import MovieCarousel from "../MovieCarousel";
-
-const formatDateVI = (dateStr?: string) => {
-  if (!dateStr) return "TBA";
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return dateStr;
-  return date.toLocaleDateString("vi-VN");
-};
+import { CommonUtils } from "../../utils/CommonUtils";
 
 const FeaturedCard: React.FC<{ movie: MovieDto }> = ({ movie }) => {
-  const imageUrl =
-    movie.background ||
-    movie.poster ||
-    "https://placehold.co/800x400/1E1B1B/FFFFFF?text=No+Image";
+  const navigate = useNavigate();
+  const imageUrl = movie.background || movie.poster;
   return (
-    <div className={`${styles.card} ${styles.cardFeatured}`}>
+    <div
+      className={`${styles.card} ${styles.cardFeatured}`}
+      onClick={() => navigate(`/movies/${movie.id}`)}
+    >
       <img
         className={styles.cardImg}
         src={imageUrl}
         alt={`${movie.title} coming soon`}
         loading="lazy"
       />
-      <div className={styles.dateChip}>{formatDateVI(movie.releaseDate)}</div>
+      <div className={styles.dateChip}>
+        {CommonUtils.formatDateVN(movie.releaseDate)}
+      </div>
       <div className={styles.cardOverlay}>
-        <h3 className={`${styles.cardTitle} ${styles.cardTitleLg}`}>
-          {movie.title}
-        </h3>
+        <div className={styles.info}>
+          <h3 className={`${styles.cardTitle} ${styles.cardTitleLg}`}>
+            {movie.title}
+          </h3>
+          <button
+            className={styles.bookBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/movies/${movie.id}`);
+            }}
+            aria-label={`Đặt vé cho ${movie.title}`}
+          >
+            <span className="material-symbols-outlined">local_activity</span>
+            ĐẶT VÉ
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
 const SideCard: React.FC<{ movie: MovieDto }> = ({ movie }) => {
-  const imageUrl =
-    movie.background ||
-    movie.poster ||
-    "https://placehold.co/400x300/1E1B1B/FFFFFF?text=No+Image";
+  const navigate = useNavigate();
+  const imageUrl = movie.background || movie.poster;
   return (
-    <div className={`${styles.card} ${styles.cardSide}`}>
+    <div
+      className={`${styles.card} ${styles.cardSide}`}
+      onClick={() => navigate(`/movies/${movie.id}`)}
+    >
       <img
         className={styles.cardImg}
         src={imageUrl}
         alt={`${movie.title} coming soon`}
         loading="lazy"
       />
-      <div className={styles.dateChip}>{formatDateVI(movie.releaseDate)}</div>
+      <div className={styles.dateChip}>
+        {CommonUtils.formatDateVN(movie.releaseDate)}
+      </div>
       <div className={styles.cardOverlaySide}>
-        <h3 className={styles.cardTitle}>{movie.title}</h3>
+        <div className={styles.info}>
+          <h3 className={styles.cardTitle}>{movie.title}</h3>
+          <button
+            className={styles.bookBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/movies/${movie.id}`);
+            }}
+            aria-label={`Đặt vé`}
+          >
+            <span className="material-symbols-outlined">local_activity</span>
+            ĐẶT VÉ
+          </button>
+        </div>
       </div>
     </div>
   );

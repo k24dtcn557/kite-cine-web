@@ -169,3 +169,54 @@
   font-size: 0.9rem;
   line-height: 1.5;
 }
+
+/* ---- Hover Info & Button ---- */
+.info {
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bookBtn {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-primary-container);
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  opacity: 1;
+  transition: opacity 0.3s ease, box-shadow 0.2s ease, transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+}
+
+.bookBtn:hover {
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);
+}
+
+@media (hover: hover) {
+  .info {
+    transform: translateY(1.5rem);
+  }
+  
+  .bookBtn {
+    opacity: 0;
+  }
+  
+  .card:hover .info {
+    transform: translateY(0);
+  }
+
+  .card:hover .bookBtn {
+    opacity: 1;
+  }
+}
